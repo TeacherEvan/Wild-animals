@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wild Animals Adventure - TEACHER EVAN!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #F0E68C 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #2E8B57;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            color: #FF6347;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #F0F8FF;
+            border-radius: 15px;
+            border: 3px solid #4169E1;
+        }
+
+        .score-item {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2E8B57;
+        }
+
+        .game-area {
+            margin-bottom: 30px;
+        }
+
+        .animal-display {
+            background: #FFFACD;
+            border: 5px solid #FFD700;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .animal-emoji {
+            font-size: 8em;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .question {
+            font-size: 1.5em;
+            color: #8B4513;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            padding: 15px 25px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(45deg, #FF69B4, #FFB6C1);
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .option-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .option-btn.correct {
+            background: linear-gradient(45deg, #32CD32, #90EE90);
+            animation: correct 0.6s ease;
+        }
+
+        .option-btn.incorrect {
+            background: linear-gradient(45deg, #FF6347, #FFA07A);
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes correct {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .feedback {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin: 20px 0;
+            min-height: 30px;
+        }
+
+        .correct-feedback {
+            color: #32CD32;
+        }
+
+        .incorrect-feedback {
+            color: #FF6347;
+        }
+
+        .next-btn {
+            padding: 15px 30px;
+            font-size: 1.3em;
+            font-weight: bold;
+            background: linear-gradient(45deg, #4169E1, #87CEEB);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .next-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .next-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #FFD700;
+            animation: fall 3s linear infinite;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        .game-complete {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border: 5px solid #FF6347;
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .restart-btn {
+            padding: 15px 30px;
+            font-size: 1.3em;
+            font-weight: bold;
+            background: linear-gradient(45deg, #32CD32, #90EE90);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .restart-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .sound-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px;
+            background: #FFD700;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sound-btn:hover {
+            transform: scale(1.1);
+        }        /* Game Mode Selection */
+        .mode-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .mode-btn {
+            padding: 20px;
+            background: linear-gradient(45deg, #9370DB, #BA55D3);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .mode-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(45deg, #32CD32, #90EE90);
+        }
+
+        /* Timer */
+        .timer-container {
+            margin-bottom: 20px;
+        }
+
+        .timer-bar {
+            width: 100%;
+            height: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .timer-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #32CD32, #FFD700, #FF6347);
+            transition: width 0.1s linear;
+            border-radius: 10px;
+        }
+
+        .timer-text {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2E8B57;
+        }
+
+        /* Power-ups */
+        .powerups {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .powerup-btn {
+            padding: 10px 15px;
+            background: linear-gradient(45deg, #FF69B4, #FFB6C1);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .powerup-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .powerup-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Achievements */
+        .achievement {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #8B4513;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.5em;
+            font-weight: bold;
+            z-index: 2000;
+            animation: achievementPop 3s ease;
+            pointer-events: none;
+        }
+
+        @keyframes achievementPop {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            20% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+        }
+
+        /* Enhanced animations */
+        .animal-emoji.roar {
+            animation: roar 1s ease;
+        }
+
+        .animal-emoji.jump {
+            animation: jump 1s ease;
+        }
+
+        .animal-emoji.shake {
+            animation: animalShake 1s ease;
+        }
+
+        @keyframes roar {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.1) rotate(-2deg); }
+            75% { transform: scale(1.1) rotate(2deg); }
+        }
+
+        @keyframes jump {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-30px); }
+        }
+
+        @keyframes animalShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Particle effects */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particleFloat 2s ease-out forwards;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) scale(0);
+            }
+        }
+
+        /* High score display */
+        .high-score {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #8B4513;
+        }        /* Combo indicator */
+        .combo-indicator {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(45deg, #FF6347, #FFA500);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            animation: comboPulse 0.5s ease;
+            z-index: 100;
+        }
+
+        /* Selected option styling */
+        .option-btn.selected {
+            background: linear-gradient(45deg, #4169E1, #87CEEB);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(65, 105, 225, 0.4);
+            border: 3px solid #FFD700;
+        }
+
+        @keyframes comboPulse {
+            0% { transform: translateX(-50%) scale(0); }
+            50% { transform: translateX(-50%) scale(1.1); }
+            100% { transform: translateX(-50%) scale(1); }
+        }
+
+        @media (max-width: 600px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .animal-emoji {
+                font-size: 6em;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+
+            .mode-selection {
+                grid-template-columns: 1fr;
+            }
+
+            .powerups {
+                flex-wrap: wrap;
+            }
+        }    </style>
+    <script src="animal-sounds.js"></script>
+</head>
+<body>
+    <button class="sound-btn" onclick="toggleSound()" id="soundBtn">🔊</button>
+      <div class="game-container">
+        <h1>🦁 Wild Animals Adventure 🐯</h1>
+        <p class="subtitle">Learn English Animal Names!</p>
+        
+        <div class="high-score" id="highScore">🏆 High Score: 0</div>
+        
+        <div class="mode-selection" id="modeSelection">
+            <button class="mode-btn active" onclick="selectMode('classic')">
+                🎯 Classic Mode<br><small>10 Questions</small>
+            </button>
+            <button class="mode-btn" onclick="selectMode('speed')">
+                ⚡ Speed Mode<br><small>Time Challenge</small>
+            </button>
+            <button class="mode-btn" onclick="selectMode('survival')">
+                🔥 Survival Mode<br><small>Until Wrong</small>
+            </button>
+            <button class="mode-btn" onclick="selectMode('quiz')">
+                🧠 Quiz Mode<br><small>Mixed Questions</small>
+            </button>
+        </div>
+        
+        <div class="score-board">
+            <div class="score-item">Score: <span id="score">0</span></div>
+            <div class="score-item">Question: <span id="currentQuestion">1</span> / <span id="totalQuestions">10</span></div>
+            <div class="score-item">Streak: <span id="streak">0</span> 🔥</div>
+        </div>        <div class="game-area" id="gameArea">
+            <div class="timer-container" id="timerContainer" style="display: none;">
+                <div class="timer-bar">
+                    <div class="timer-fill" id="timerFill"></div>
+                </div>
+                <div class="timer-text" id="timerText">Time: 10s</div>
+            </div>
+            
+            <div class="powerups" id="powerups">
+                <button class="powerup-btn" id="hintBtn" onclick="useHint()">💡 Hint (3)</button>
+                <button class="powerup-btn" id="eliminateBtn" onclick="eliminateWrong()">❌ Eliminate (2)</button>
+                <button class="powerup-btn" id="skipBtn" onclick="skipQuestion()">⏭️ Skip (1)</button>
+            </div>
+            
+            <div class="animal-display">
+                <div class="animal-emoji" id="animalEmoji">🦁</div>
+                <div class="question" id="question">What animal is this?</div>
+            </div>
+            
+            <div class="options" id="options">
+                <!-- Options will be generated by JavaScript -->
+            </div>
+            
+            <div class="feedback" id="feedback"></div>
+            
+            <button class="next-btn" id="nextBtn" onclick="nextQuestion()" disabled>Next Animal →</button>
+        </div>
+    </div>
+
+    <div class="celebration" id="celebration"></div>
+
+    <script>        // Enhanced game data with more details
+        const animals = [
+            { emoji: '🦁', name: 'Lion', sound: 'roar', habitat: 'Savanna', diet: 'Carnivore', fact: 'Lives in prides' },
+            { emoji: '🐯', name: 'Tiger', sound: 'roar', habitat: 'Jungle', diet: 'Carnivore', fact: 'Excellent swimmer' },
+            { emoji: '🐘', name: 'Elephant', sound: 'trumpet', habitat: 'Savanna', diet: 'Herbivore', fact: 'Never forgets' },
+            { emoji: '🦒', name: 'Giraffe', sound: 'hum', habitat: 'Savanna', diet: 'Herbivore', fact: 'Tallest animal' },
+            { emoji: '🐻', name: 'Bear', sound: 'growl', habitat: 'Forest', diet: 'Omnivore', fact: 'Hibernates in winter' },
+            { emoji: '🦓', name: 'Zebra', sound: 'neigh', habitat: 'Savanna', diet: 'Herbivore', fact: 'Unique stripes' },
+            { emoji: '🦏', name: 'Rhino', sound: 'snort', habitat: 'Savanna', diet: 'Herbivore', fact: 'Horn made of keratin' },
+            { emoji: '🐺', name: 'Wolf', sound: 'howl', habitat: 'Forest', diet: 'Carnivore', fact: 'Hunts in packs' },
+            { emoji: '🦊', name: 'Fox', sound: 'bark', habitat: 'Forest', diet: 'Omnivore', fact: 'Very intelligent' },
+            { emoji: '🐆', name: 'Leopard', sound: 'roar', habitat: 'Forest', diet: 'Carnivore', fact: 'Excellent climber' },
+            { emoji: '🦘', name: 'Kangaroo', sound: 'grunt', habitat: 'Grassland', diet: 'Herbivore', fact: 'Carries babies in pouch' },
+            { emoji: '🐨', name: 'Koala', sound: 'grunt', habitat: 'Forest', diet: 'Herbivore', fact: 'Sleeps 20 hours a day' },
+            { emoji: '🐵', name: 'Monkey', sound: 'chatter', habitat: 'Jungle', diet: 'Omnivore', fact: 'Very social animal' },
+            { emoji: '🦍', name: 'Gorilla', sound: 'grunt', habitat: 'Jungle', diet: 'Herbivore', fact: 'Strongest primate' },
+            { emoji: '�', name: 'Penguin', sound: 'squawk', habitat: 'Antarctica', diet: 'Carnivore', fact: 'Cannot fly but swims' },
+            { emoji: '🦅', name: 'Eagle', sound: 'screech', habitat: 'Mountains', diet: 'Carnivore', fact: 'Excellent eyesight' },
+            { emoji: '🐙', name: 'Octopus', sound: 'silent', habitat: 'Ocean', diet: 'Carnivore', fact: 'Has eight arms' },
+            { emoji: '🐬', name: 'Dolphin', sound: 'click', habitat: 'Ocean', diet: 'Carnivore', fact: 'Very intelligent' },
+            { emoji: '🦈', name: 'Shark', sound: 'silent', habitat: 'Ocean', diet: 'Carnivore', fact: 'Ancient predator' },
+            { emoji: '🐸', name: 'Frog', sound: 'croak', habitat: 'Pond', diet: 'Carnivore', fact: 'Starts as tadpole' }
+        ];
+
+        // Game state variables
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let streak = 0;
+        let maxStreak = 0;
+        let currentAnimal = null;
+        let gameQuestions = [];
+        let soundEnabled = true;
+        let gameMode = 'classic';
+        let questionTypes = ['name', 'sound', 'habitat', 'diet'];
+        let currentQuestionType = 'name';
+        let timer = null;
+        let timeLeft = 10;
+        let powerups = { hints: 3, eliminate: 2, skip: 1 };
+        let highScore = parseInt(localStorage.getItem('wildAnimalsHighScore') || '0');
+        let achievements = [];
+        const totalQuestions = 10;        // Initialize game
+        function initGame() {
+            updateHighScore();
+            resetPowerups();
+            
+            // Shuffle and select random animals for this game
+            const shuffledAnimals = [...animals].sort(() => Math.random() - 0.5);
+            let questionsCount = gameMode === 'survival' ? 20 : totalQuestions;
+            gameQuestions = shuffledAnimals.slice(0, questionsCount);
+            
+            currentQuestionIndex = 0;
+            score = 0;
+            streak = 0;
+            maxStreak = 0;
+            achievements = [];
+            
+            updateScoreBoard();
+            loadQuestion();
+        }
+
+        function selectMode(mode) {
+            gameMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update total questions display
+            const totalQuestionsSpan = document.getElementById('totalQuestions');
+            if (mode === 'survival') {
+                totalQuestionsSpan.textContent = '∞';
+            } else {
+                totalQuestionsSpan.textContent = totalQuestions;
+            }
+            
+            // Show/hide timer based on mode
+            const timerContainer = document.getElementById('timerContainer');
+            if (mode === 'speed') {
+                timerContainer.style.display = 'block';
+            } else {
+                timerContainer.style.display = 'none';
+            }
+            
+            initGame();
+        }
+
+        function updateHighScore() {
+            document.getElementById('highScore').textContent = `🏆 High Score: ${highScore}`;
+        }
+
+        function resetPowerups() {
+            powerups = { hints: 3, eliminate: 2, skip: 1 };
+            updatePowerupButtons();
+        }
+
+        function updatePowerupButtons() {
+            document.getElementById('hintBtn').textContent = `💡 Hint (${powerups.hints})`;
+            document.getElementById('eliminateBtn').textContent = `❌ Eliminate (${powerups.eliminate})`;
+            document.getElementById('skipBtn').textContent = `⏭️ Skip (${powerups.skip})`;
+            
+            document.getElementById('hintBtn').disabled = powerups.hints <= 0;
+            document.getElementById('eliminateBtn').disabled = powerups.eliminate <= 0;
+            document.getElementById('skipBtn').disabled = powerups.skip <= 0;
+        }        function loadQuestion() {
+            if (gameMode === 'survival') {
+                if (currentQuestionIndex >= gameQuestions.length) {
+                    // Add more animals for survival mode
+                    const moreAnimals = [...animals].sort(() => Math.random() - 0.5).slice(0, 10);
+                    gameQuestions.push(...moreAnimals);
+                }
+            } else if (currentQuestionIndex >= totalQuestions) {
+                endGame();
+                return;
+            }
+
+            currentAnimal = gameQuestions[currentQuestionIndex];
+            
+            // Select question type for quiz mode
+            if (gameMode === 'quiz') {
+                currentQuestionType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
+            } else {
+                currentQuestionType = 'name';
+            }
+            
+            // Set up question based on type
+            setupQuestion();
+            
+            // Start timer for speed mode
+            if (gameMode === 'speed') {
+                startTimer();
+            }
+            
+            // Generate options
+            generateOptions();
+              // Clear feedback and disable next button
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('nextBtn').disabled = true;
+            
+            // Clear any previous selection
+            window.animalSounds.clearSelection();
+            
+            // Update question counter
+            if (gameMode === 'survival') {
+                document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+            } else {
+                document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+            }
+            
+            // Add animal animation
+            addAnimalAnimation();
+        }
+
+        function setupQuestion() {
+            const animalEmoji = document.getElementById('animalEmoji');
+            const questionElement = document.getElementById('question');
+            
+            switch(currentQuestionType) {
+                case 'name':
+                    animalEmoji.textContent = currentAnimal.emoji;
+                    questionElement.textContent = 'What animal is this?';
+                    break;
+                case 'sound':
+                    animalEmoji.textContent = currentAnimal.emoji;
+                    questionElement.textContent = 'What sound does this animal make?';
+                    break;
+                case 'habitat':
+                    animalEmoji.textContent = currentAnimal.emoji;
+                    questionElement.textContent = 'Where does this animal live?';
+                    break;
+                case 'diet':
+                    animalEmoji.textContent = currentAnimal.emoji;
+                    questionElement.textContent = 'What does this animal eat?';
+                    break;
+            }
+        }
+
+        function addAnimalAnimation() {
+            const animalEmoji = document.getElementById('animalEmoji');
+            const animations = ['roar', 'jump', 'shake'];
+            const randomAnimation = animations[Math.floor(Math.random() * animations.length)];
+            
+            animalEmoji.className = 'animal-emoji ' + randomAnimation;
+            setTimeout(() => {
+                animalEmoji.className = 'animal-emoji';
+            }, 1000);
+        }
+
+        function startTimer() {
+            timeLeft = 10;
+            const timerFill = document.getElementById('timerFill');
+            const timerText = document.getElementById('timerText');
+            
+            timer = setInterval(() => {
+                timeLeft--;
+                const percentage = (timeLeft / 10) * 100;
+                timerFill.style.width = percentage + '%';
+                timerText.textContent = `Time: ${timeLeft}s`;
+                  if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    // Auto-select timeout when time runs out
+                    window.animalSounds.selectOption('TIME_UP');
+                    document.getElementById('nextBtn').disabled = false;
+                }
+            }, 1000);
+        }        function generateOptions() {
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            
+            // Get correct answer based on question type
+            let correctAnswer;
+            let wrongAnswers = [];
+            
+            switch(currentQuestionType) {
+                case 'name':
+                    correctAnswer = currentAnimal.name;
+                    wrongAnswers = animals.filter(a => a.name !== correctAnswer).map(a => a.name);
+                    break;
+                case 'sound':
+                    correctAnswer = currentAnimal.sound;
+                    wrongAnswers = [...new Set(animals.filter(a => a.sound !== correctAnswer).map(a => a.sound))];
+                    break;
+                case 'habitat':
+                    correctAnswer = currentAnimal.habitat;
+                    wrongAnswers = [...new Set(animals.filter(a => a.habitat !== correctAnswer).map(a => a.habitat))];
+                    break;
+                case 'diet':
+                    correctAnswer = currentAnimal.diet;
+                    wrongAnswers = [...new Set(animals.filter(a => a.diet !== correctAnswer).map(a => a.diet))];
+                    break;
+            }
+            
+            // Get 3 random wrong answers
+            wrongAnswers = wrongAnswers.sort(() => Math.random() - 0.5).slice(0, 3);
+            
+            // Combine and shuffle all options
+            const allOptions = [correctAnswer, ...wrongAnswers];
+            allOptions.sort(() => Math.random() - 0.5);
+                  // Create option buttons
+        allOptions.forEach(option => {
+            const button = document.createElement('button');
+            button.className = 'option-btn';
+            button.textContent = option;
+            button.onclick = () => handleOptionClick(option, button);
+            optionsContainer.appendChild(button);
+        });
+    }
+
+    // New function to handle option clicks (plays sound but doesn't lock in answer)
+    function handleOptionClick(selectedOption, buttonElement) {
+        // Play animal sound when option is clicked
+        if (currentQuestionType === 'name') {
+            window.animalSounds.playAnimalSound(selectedOption);
+        } else {
+            window.animalSounds.playUISound('select');
+        }
+        
+        // Update selection in the sound module
+        window.animalSounds.selectOption(selectedOption);
+        
+        // Enable next button if an option is selected
+        document.getElementById('nextBtn').disabled = false;
+    }        function selectOption(selectedOption, buttonElement) {
+            const correctAnswer = getCorrectAnswer();
+            const isCorrect = selectedOption === correctAnswer;
+            const allButtons = document.querySelectorAll('.option-btn');
+            
+            // Clear timer for speed mode
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+            
+            // Disable all buttons
+            allButtons.forEach(btn => {
+                btn.disabled = true;
+                if (btn.textContent === correctAnswer) {
+                    btn.classList.add('correct');
+                } else if (btn === buttonElement && !isCorrect) {
+                    btn.classList.add('incorrect');
+                }
+            });
+            
+            // Update score and streak
+            if (isCorrect && selectedOption !== 'TIME_UP') {
+                let points = 10;
+                
+                // Time bonus for speed mode
+                if (gameMode === 'speed' && timeLeft > 5) {
+                    points += (timeLeft - 5) * 2;
+                }
+                
+                score += points;
+                streak++;
+                maxStreak = Math.max(maxStreak, streak);
+                
+                showFeedback(`Excellent! ${getFeedbackMessage()}! 🎉`, 'correct');
+                window.animalSounds.playUISound('correct');
+                createParticles();
+                
+                // Show combo indicator for streaks
+                if (streak >= 3) {
+                    showComboIndicator();
+                    showConfetti();
+                }
+                
+                // Check achievements
+                checkAchievements();
+            } else {
+                if (gameMode === 'survival') {
+                    endGame();
+                    return;
+                }
+                streak = 0;
+                showFeedback(`${selectedOption === 'TIME_UP' ? 'Time\'s up!' : 'Oops!'} ${getFeedbackMessage()}. Try again next time! 😊`, 'incorrect');
+                window.animalSounds.playUISound('incorrect');
+            }
+            
+            updateScoreBoard();
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        // Modified next question function to process the selected answer
+        function nextQuestion() {
+            const selectedOption = window.animalSounds.getCurrentSelection();
+            
+            if (selectedOption) {
+                // Process the answer when next is clicked
+                selectOption(selectedOption, null);
+                
+                // Clear the selection for next question
+                window.animalSounds.clearSelection();
+                
+                // Move to next question after a short delay to show feedback
+                setTimeout(() => {
+                    currentQuestionIndex++;
+                    loadQuestion();
+                }, 1500);
+            } else {
+                // If no option selected, just move to next question
+                currentQuestionIndex++;
+                loadQuestion();
+            }
+        }
+
+        function getCorrectAnswer() {
+            switch(currentQuestionType) {
+                case 'name': return currentAnimal.name;
+                case 'sound': return currentAnimal.sound;
+                case 'habitat': return currentAnimal.habitat;
+                case 'diet': return currentAnimal.diet;
+                default: return currentAnimal.name;
+            }
+        }
+
+        function getFeedbackMessage() {
+            switch(currentQuestionType) {
+                case 'name': return `It's a ${currentAnimal.name}`;
+                case 'sound': return `${currentAnimal.name}s make a "${currentAnimal.sound}" sound`;
+                case 'habitat': return `${currentAnimal.name}s live in the ${currentAnimal.habitat}`;
+                case 'diet': return `${currentAnimal.name}s are ${currentAnimal.diet}s`;
+                default: return `It's a ${currentAnimal.name}`;
+            }
+        }
+
+        function createParticles() {
+            const animalDisplay = document.querySelector('.animal-display');
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.backgroundColor = ['#FFD700', '#FF69B4', '#87CEEB', '#98FB98', '#FFA500'][Math.floor(Math.random() * 5)];
+                particle.style.width = particle.style.height = Math.random() * 10 + 5 + 'px';
+                animalDisplay.appendChild(particle);
+                
+                setTimeout(() => particle.remove(), 2000);
+            }
+        }
+
+        function showComboIndicator() {
+            const indicator = document.createElement('div');
+            indicator.className = 'combo-indicator';
+            indicator.textContent = `🔥 ${streak} COMBO! 🔥`;
+            document.body.appendChild(indicator);
+            
+            setTimeout(() => indicator.remove(), 2000);
+        }
+
+        function checkAchievements() {
+            const newAchievements = [];
+            
+            if (streak === 5 && !achievements.includes('streak5')) {
+                newAchievements.push({ text: '🔥 5 Streak Master!', id: 'streak5' });
+            }
+            if (streak === 10 && !achievements.includes('streak10')) {
+                newAchievements.push({ text: '🌟 Perfect Streak!', id: 'streak10' });
+            }
+            if (score >= 100 && !achievements.includes('score100')) {
+                newAchievements.push({ text: '💯 Century Club!', id: 'score100' });
+            }
+            
+            newAchievements.forEach(achievement => {
+                achievements.push(achievement.id);
+                showAchievement(achievement.text);
+            });
+        }
+
+        function showAchievement(text) {
+            const achievement = document.createElement('div');
+            achievement.className = 'achievement';
+            achievement.textContent = text;
+            document.body.appendChild(achievement);
+            
+            setTimeout(() => achievement.remove(), 3000);
+        }
+
+        function showFeedback(message, type) {
+            const feedback = document.getElementById('feedback');
+            feedback.textContent = message;
+            feedback.className = `feedback ${type}-feedback`;
+        }
+
+        function updateScoreBoard() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('streak').textContent = streak;
+        }        function endGame() {
+            // Save high score
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('wildAnimalsHighScore', highScore.toString());
+                showAchievement('🏆 NEW HIGH SCORE! 🏆');
+            }
+            
+            const gameArea = document.getElementById('gameArea');
+            const questionsAnswered = gameMode === 'survival' ? currentQuestionIndex : totalQuestions;
+            const percentage = Math.round((score / (questionsAnswered * 10)) * 100);
+            
+            let message = '';
+            let emoji = '';
+            
+            if (percentage >= 90) {
+                message = 'Amazing! You\'re a Wild Animal Expert! 🌟';
+                emoji = '🏆';
+                showConfetti();
+            } else if (percentage >= 70) {
+                message = 'Great job! You know your animals well! 👏';
+                emoji = '🥈';
+            } else if (percentage >= 50) {
+                message = 'Good effort! Keep learning about animals! 👍';
+                emoji = '🥉';
+            } else {
+                message = 'Nice try! Practice makes perfect! 😊';
+                emoji = '🌟';
+            }
+            
+            let modeText = '';
+            switch(gameMode) {
+                case 'survival': modeText = `Survival Mode - ${currentQuestionIndex} questions!`; break;
+                case 'speed': modeText = 'Speed Mode - Time Challenge!'; break;
+                case 'quiz': modeText = 'Quiz Mode - Mixed Questions!'; break;
+                default: modeText = 'Classic Mode Completed!';
+            }
+            
+            gameArea.innerHTML = `
+                <div class="game-complete">
+                    <div style="font-size: 4em; margin-bottom: 20px;">${emoji}</div>
+                    <h2 style="color: #2E8B57; margin-bottom: 15px;">${message}</h2>
+                    <div style="font-size: 1.3em; margin-bottom: 15px; color: #8B4513;">
+                        ${modeText}
+                    </div>
+                    <div style="font-size: 1.5em; margin-bottom: 15px;">
+                        Final Score: <strong>${score}</strong>
+                    </div>
+                    <div style="font-size: 1.2em; margin-bottom: 15px;">
+                        Best Streak: <strong>${maxStreak}</strong> 🔥
+                    </div>
+                    <div style="font-size: 1.1em; margin-bottom: 20px; color: #666;">
+                        High Score: <strong>${highScore}</strong> 🏆
+                    </div>
+                    <button class="restart-btn" onclick="restartGame()">
+                        🎮 Play Again!
+                    </button>
+                </div>            `;
+            
+            window.animalSounds.playUISound('complete');
+        }
+
+        // Power-up functions
+        function useHint() {
+            if (powerups.hints <= 0) return;
+            
+            powerups.hints--;
+            updatePowerupButtons();
+            
+            const correctAnswer = getCorrectAnswer();
+            const feedback = document.getElementById('feedback');
+            feedback.textContent = `💡 Hint: The answer starts with "${correctAnswer.charAt(0)}"`;
+            feedback.className = 'feedback';
+              playSound('powerup');
+            window.animalSounds.playUISound('powerup');
+        }
+
+        function eliminateWrong() {
+            if (powerups.eliminate <= 0) return;
+            
+            powerups.eliminate--;
+            updatePowerupButtons();
+            
+            const correctAnswer = getCorrectAnswer();
+            const buttons = Array.from(document.querySelectorAll('.option-btn'));
+            const wrongButtons = buttons.filter(btn => btn.textContent !== correctAnswer);
+            
+            // Remove 2 wrong answers
+            for (let i = 0; i < 2 && i < wrongButtons.length; i++) {
+                wrongButtons[i].style.opacity = '0.3';
+                wrongButtons[i].disabled = true;
+            }
+            
+            window.animalSounds.playUISound('powerup');
+        }
+
+        function skipQuestion() {
+            if (powerups.skip <= 0) return;
+            
+            powerups.skip--;
+            updatePowerupButtons();
+            
+            // Clear timer
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+            
+            showFeedback('⏭️ Question skipped!', 'correct');
+            score += 5; // Half points for skipping
+            updateScoreBoard();
+            
+            setTimeout(() => {
+                currentQuestionIndex++;
+                loadQuestion();            }, 1000);
+            
+            window.animalSounds.playUISound('powerup');
+        }        function restartGame() {
+            // Reset all buttons styles
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('correct', 'incorrect');
+                btn.disabled = false;
+            });
+            
+            // Clear any existing timer
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+            
+            // Restore game area
+            document.getElementById('gameArea').innerHTML = `
+                <div class="timer-container" id="timerContainer" style="display: none;">
+                    <div class="timer-bar">
+                        <div class="timer-fill" id="timerFill"></div>
+                    </div>
+                    <div class="timer-text" id="timerText">Time: 10s</div>
+                </div>
+                
+                <div class="powerups" id="powerups">
+                    <button class="powerup-btn" id="hintBtn" onclick="useHint()">💡 Hint (3)</button>
+                    <button class="powerup-btn" id="eliminateBtn" onclick="eliminateWrong()">❌ Eliminate (2)</button>
+                    <button class="powerup-btn" id="skipBtn" onclick="skipQuestion()">⏭️ Skip (1)</button>
+                </div>
+                
+                <div class="animal-display">
+                    <div class="animal-emoji" id="animalEmoji">🦁</div>
+                    <div class="question" id="question">What animal is this?</div>
+                </div>
+                
+                <div class="options" id="options">
+                    <!-- Options will be generated by JavaScript -->
+                </div>
+                
+                <div class="feedback" id="feedback"></div>
+                
+                <button class="next-btn" id="nextBtn" onclick="nextQuestion()" disabled>Next Animal →</button>
+            `;
+            
+            // Show/hide timer based on current mode
+            const timerContainer = document.getElementById('timerContainer');
+            if (gameMode === 'speed') {
+                timerContainer.style.display = 'block';
+            }
+            
+            initGame();
+        }
+
+        function showConfetti() {
+            const celebration = document.getElementById('celebration');
+            celebration.innerHTML = '';
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.animationDelay = Math.random() * 3 + 's';
+                confetti.style.backgroundColor = ['#FFD700', '#FF69B4', '#87CEEB', '#98FB98', '#FFA500'][Math.floor(Math.random() * 5)];
+                celebration.appendChild(confetti);
+                
+                setTimeout(() => confetti.remove(), 3000);
+            }        }
+
+        function toggleSound() {
+            const isEnabled = window.animalSounds.toggleSound();
+            const soundBtn = document.getElementById('soundBtn');
+            soundBtn.textContent = isEnabled ? '🔊' : '🔇';
+        }        // Initialize the game when page loads
+        window.onload = () => {
+            updateHighScore();
+            initGame();
+            
+            // Initialize sound module
+            if (window.animalSounds) {
+                console.log('Animal sounds module loaded successfully');
+            }
+        };
+    </script>
+</body>
+</html>
