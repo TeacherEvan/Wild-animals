@@ -147,7 +147,7 @@ class AnimalSounds {
         // Add selection styling to current option
         const buttons = document.querySelectorAll('.option-btn');
         buttons.forEach(btn => {
-            if (btn.textContent === selectedOption) {
+            if (btn.dataset.value === selectedOption) {
                 btn.classList.add('selected');
             }
         });
