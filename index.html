@@ -536,28 +536,28 @@
 
     <div class="celebration" id="celebration"></div>
 
-    <script>        // Enhanced game data with more details
+    <script>        // Enhanced game data with visual symbols and categories for non-reading kids
         const animals = [
-            { emoji: '🦁', name: 'Lion', sound: 'roar', habitat: 'Savanna', diet: 'Carnivore', fact: 'Lives in prides' },
-            { emoji: '🐯', name: 'Tiger', sound: 'roar', habitat: 'Jungle', diet: 'Carnivore', fact: 'Excellent swimmer' },
-            { emoji: '🐘', name: 'Elephant', sound: 'trumpet', habitat: 'Savanna', diet: 'Herbivore', fact: 'Never forgets' },
-            { emoji: '🦒', name: 'Giraffe', sound: 'hum', habitat: 'Savanna', diet: 'Herbivore', fact: 'Tallest animal' },
-            { emoji: '🐻', name: 'Bear', sound: 'growl', habitat: 'Forest', diet: 'Omnivore', fact: 'Hibernates in winter' },
-            { emoji: '🦓', name: 'Zebra', sound: 'neigh', habitat: 'Savanna', diet: 'Herbivore', fact: 'Unique stripes' },
-            { emoji: '🦏', name: 'Rhino', sound: 'snort', habitat: 'Savanna', diet: 'Herbivore', fact: 'Horn made of keratin' },
-            { emoji: '🐺', name: 'Wolf', sound: 'howl', habitat: 'Forest', diet: 'Carnivore', fact: 'Hunts in packs' },
-            { emoji: '🦊', name: 'Fox', sound: 'bark', habitat: 'Forest', diet: 'Omnivore', fact: 'Very intelligent' },
-            { emoji: '🐆', name: 'Leopard', sound: 'roar', habitat: 'Forest', diet: 'Carnivore', fact: 'Excellent climber' },
-            { emoji: '🦘', name: 'Kangaroo', sound: 'grunt', habitat: 'Grassland', diet: 'Herbivore', fact: 'Carries babies in pouch' },
-            { emoji: '🐨', name: 'Koala', sound: 'grunt', habitat: 'Forest', diet: 'Herbivore', fact: 'Sleeps 20 hours a day' },
-            { emoji: '🐵', name: 'Monkey', sound: 'chatter', habitat: 'Jungle', diet: 'Omnivore', fact: 'Very social animal' },
-            { emoji: '🦍', name: 'Gorilla', sound: 'grunt', habitat: 'Jungle', diet: 'Herbivore', fact: 'Strongest primate' },
-            { emoji: '�', name: 'Penguin', sound: 'squawk', habitat: 'Antarctica', diet: 'Carnivore', fact: 'Cannot fly but swims' },
-            { emoji: '🦅', name: 'Eagle', sound: 'screech', habitat: 'Mountains', diet: 'Carnivore', fact: 'Excellent eyesight' },
-            { emoji: '🐙', name: 'Octopus', sound: 'silent', habitat: 'Ocean', diet: 'Carnivore', fact: 'Has eight arms' },
-            { emoji: '🐬', name: 'Dolphin', sound: 'click', habitat: 'Ocean', diet: 'Carnivore', fact: 'Very intelligent' },
-            { emoji: '🦈', name: 'Shark', sound: 'silent', habitat: 'Ocean', diet: 'Carnivore', fact: 'Ancient predator' },
-            { emoji: '🐸', name: 'Frog', sound: 'croak', habitat: 'Pond', diet: 'Carnivore', fact: 'Starts as tadpole' }
+            { emoji: '🦁', name: 'Lion', sound: 'roar', habitat: 'Savanna', diet: 'Carnivore', fact: 'Lives in prides', symbol: '👑', color: '#FFD700', category: 'Big Cats' },
+            { emoji: '🐯', name: 'Tiger', sound: 'roar', habitat: 'Jungle', diet: 'Carnivore', fact: 'Excellent swimmer', symbol: '🐅', color: '#FF6347', category: 'Big Cats' },
+            { emoji: '🐘', name: 'Elephant', sound: 'trumpet', habitat: 'Savanna', diet: 'Herbivore', fact: 'Never forgets', symbol: '🐽', color: '#808080', category: 'Giants' },
+            { emoji: '🦒', name: 'Giraffe', sound: 'hum', habitat: 'Savanna', diet: 'Herbivore', fact: 'Tallest animal', symbol: '📏', color: '#DEB887', category: 'Giants' },
+            { emoji: '🐻', name: 'Bear', sound: 'growl', habitat: 'Forest', diet: 'Omnivore', fact: 'Hibernates in winter', symbol: '🍯', color: '#8B4513', category: 'Forest Friends' },
+            { emoji: '🦓', name: 'Zebra', sound: 'neigh', habitat: 'Savanna', diet: 'Herbivore', fact: 'Unique stripes', symbol: '⚫⚪', color: '#000000', category: 'Striped' },
+            { emoji: '🦏', name: 'Rhino', sound: 'snort', habitat: 'Savanna', diet: 'Herbivore', fact: 'Horn made of keratin', symbol: '🔺', color: '#696969', category: 'Giants' },
+            { emoji: '🐺', name: 'Wolf', sound: 'howl', habitat: 'Forest', diet: 'Carnivore', fact: 'Hunts in packs', symbol: '🌙', color: '#708090', category: 'Wild Dogs' },
+            { emoji: '🦊', name: 'Fox', sound: 'bark', habitat: 'Forest', diet: 'Omnivore', fact: 'Very intelligent', symbol: '🧠', color: '#FF4500', category: 'Smart Animals' },
+            { emoji: '🐆', name: 'Leopard', sound: 'roar', habitat: 'Forest', diet: 'Carnivore', fact: 'Excellent climber', symbol: '🌳', color: '#DAA520', category: 'Big Cats' },
+            { emoji: '🦘', name: 'Kangaroo', sound: 'grunt', habitat: 'Grassland', diet: 'Herbivore', fact: 'Carries babies in pouch', symbol: '👶', color: '#CD853F', category: 'Hoppers' },
+            { emoji: '🐨', name: 'Koala', sound: 'grunt', habitat: 'Forest', diet: 'Herbivore', fact: 'Sleeps 20 hours a day', symbol: '😴', color: '#A9A9A9', category: 'Sleepy Animals' },
+            { emoji: '🐵', name: 'Monkey', sound: 'chatter', habitat: 'Jungle', diet: 'Omnivore', fact: 'Very social animal', symbol: '🍌', color: '#F4A460', category: 'Primates' },
+            { emoji: '🦍', name: 'Gorilla', sound: 'grunt', habitat: 'Jungle', diet: 'Herbivore', fact: 'Strongest primate', symbol: '💪', color: '#2F4F4F', category: 'Primates' },
+            { emoji: '🐧', name: 'Penguin', sound: 'squawk', habitat: 'Antarctica', diet: 'Carnivore', fact: 'Cannot fly but swims', symbol: '🏊', color: '#000080', category: 'Ocean Birds' },
+            { emoji: '🦅', name: 'Eagle', sound: 'screech', habitat: 'Mountains', diet: 'Carnivore', fact: 'Excellent eyesight', symbol: '👁️', color: '#8B4513', category: 'Flying Hunters' },
+            { emoji: '🐙', name: 'Octopus', sound: 'silent', habitat: 'Ocean', diet: 'Carnivore', fact: 'Has eight arms', symbol: '8️⃣', color: '#800080', category: 'Ocean Creatures' },
+            { emoji: '🐬', name: 'Dolphin', sound: 'click', habitat: 'Ocean', diet: 'Carnivore', fact: 'Very intelligent', symbol: '🧠', color: '#4682B4', category: 'Smart Ocean' },
+            { emoji: '🦈', name: 'Shark', sound: 'silent', habitat: 'Ocean', diet: 'Carnivore', fact: 'Ancient predator', symbol: '⚡', color: '#708090', category: 'Ocean Hunters' },
+            { emoji: '🐸', name: 'Frog', sound: 'croak', habitat: 'Pond', diet: 'Carnivore', fact: 'Starts as tadpole', symbol: '🌊', color: '#32CD32', category: 'Water Hoppers' }
         ];
 
         // Game state variables
