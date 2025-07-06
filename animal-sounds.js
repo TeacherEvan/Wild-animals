@@ -176,5 +176,16 @@ class AnimalSounds {
     }
 }
 
-// Create global instance
-window.animalSounds = new AnimalSounds();
+// Create global instance and expose under the new namespace
+window.realAnimalSounds = new AnimalSounds();
+
+// ---------------------------------------------------------------------------
+// Backward-compatibility shim
+// ---------------------------------------------------------------------------
+// Older game logic (or cached versions) may still reference "window.animalSounds".
+// To avoid breaking those calls during/after the migration, alias the new
+// implementation to the legacy name **only if it isn't already defined**.
+// This keeps a single shared instance and prevents duplicate objects.
+if (!window.animalSounds) {
+    window.animalSounds = window.realAnimalSounds;
+}
