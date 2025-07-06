@@ -673,7 +673,9 @@
             document.getElementById('nextBtn').disabled = true;
             
             // Clear any previous selection
-            window.animalSounds.clearSelection();
+            if (window.realAnimalSounds && window.realAnimalSounds.clearSelection) {
+                window.realAnimalSounds.clearSelection();
+            }
             
             // Update question counter
             if (gameMode === 'survival') {
@@ -734,7 +736,9 @@
                   if (timeLeft <= 0) {
                     clearInterval(timer);
                     // Auto-select timeout when time runs out
-                    window.animalSounds.selectOption('TIME_UP');
+                    if (window.realAnimalSounds && window.realAnimalSounds.selectOption) {
+                        window.realAnimalSounds.selectOption('TIME_UP');
+                    }
                     document.getElementById('nextBtn').disabled = false;
                 }
             }, 1000);
@@ -785,13 +789,19 @@
     function handleOptionClick(selectedOption, buttonElement) {
         // Play animal sound when option is clicked
         if (currentQuestionType === 'name') {
-            window.animalSounds.playAnimalSound(selectedOption);
+            if (window.realAnimalSounds && window.realAnimalSounds.playAnimalSound) {
+                window.realAnimalSounds.playAnimalSound(selectedOption);
+            }
         } else {
-            window.animalSounds.playUISound('select');
+            if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
+                window.realAnimalSounds.playUISound('select');
+            }
         }
         
         // Update selection in the sound module
-        window.animalSounds.selectOption(selectedOption);
+        if (window.realAnimalSounds && window.realAnimalSounds.selectOption) {
+            window.realAnimalSounds.selectOption(selectedOption);
+        }
         
         // Enable next button if an option is selected
         document.getElementById('nextBtn').disabled = false;
@@ -830,7 +840,9 @@
                 maxStreak = Math.max(maxStreak, streak);
                 
                 showFeedback(`Excellent! ${getFeedbackMessage()}! 🎉`, 'correct');
-                window.animalSounds.playUISound('correct');
+                if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
+                    window.realAnimalSounds.playUISound('correct');
+                }
                 createParticles();
                 
                 // Show combo indicator for streaks
@@ -848,7 +860,9 @@
                 }
                 streak = 0;
                 showFeedback(`${selectedOption === 'TIME_UP' ? 'Time\'s up!' : 'Oops!'} ${getFeedbackMessage()}. Try again next time! 😊`, 'incorrect');
-                window.animalSounds.playUISound('incorrect');
+                if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
+                    window.realAnimalSounds.playUISound('incorrect');
+                }
             }
             
             updateScoreBoard();
@@ -857,14 +871,17 @@
 
         // Modified next question function to process the selected answer
         function nextQuestion() {
-            const selectedOption = window.animalSounds.getCurrentSelection();
+            const selectedOption = window.realAnimalSounds && window.realAnimalSounds.getCurrentSelection ? 
+                window.realAnimalSounds.getCurrentSelection() : null;
             
             if (selectedOption) {
                 // Process the answer when next is clicked
                 selectOption(selectedOption, null);
                 
                 // Clear the selection for next question
-                window.animalSounds.clearSelection();
+                if (window.realAnimalSounds && window.realAnimalSounds.clearSelection) {
+                    window.realAnimalSounds.clearSelection();
+                }
                 
                 // Move to next question after a short delay to show feedback
                 setTimeout(() => {
@@ -1017,7 +1034,9 @@
                     </button>
                 </div>            `;
             
-            window.animalSounds.playUISound('complete');
+            if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
+                window.realAnimalSounds.playUISound('complete');
+            }
         }
 
         // Power-up functions
@@ -1031,8 +1050,9 @@
             const feedback = document.getElementById('feedback');
             feedback.textContent = `💡 Hint: The answer starts with "${correctAnswer.charAt(0)}"`;
             feedback.className = 'feedback';
-              playSound('powerup');
-            window.animalSounds.playUISound('powerup');
+            if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
+                window.realAnimalSounds.playUISound('powerup');
+            }
         }
 
         function eliminateWrong() {
@@ -1051,7 +1071,9 @@
                 wrongButtons[i].disabled = true;
             }
             
-            window.animalSounds.playUISound('powerup');
+            if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
+                window.realAnimalSounds.playUISound('powerup');
+            }
         }
 
         function skipQuestion() {
@@ -1074,7 +1096,9 @@
                 currentQuestionIndex++;
                 loadQuestion();            }, 1000);
             
-            window.animalSounds.playUISound('powerup');
+            if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
+                window.realAnimalSounds.playUISound('powerup');
+            }
         }        function restartGame() {
             // Reset all buttons styles
             document.querySelectorAll('.option-btn').forEach(btn => {
@@ -1142,7 +1166,8 @@
             }        }
 
         function toggleSound() {
-            const isEnabled = window.animalSounds.toggleSound();
+            const isEnabled = window.realAnimalSounds && window.realAnimalSounds.toggleSound ? 
+                window.realAnimalSounds.toggleSound() : false;
             const soundBtn = document.getElementById('soundBtn');
             soundBtn.textContent = isEnabled ? '🔊' : '🔇';
         }        // Initialize the game when page loads
@@ -1151,8 +1176,15 @@
             initGame();
             
             // Initialize sound module
-            if (window.animalSounds) {
-                console.log('Animal sounds module loaded successfully');
+            if (window.realAnimalSounds) {
+                console.log('Real Animal sounds module loaded successfully');
+                if (window.realAnimalSounds.isReady && window.realAnimalSounds.isReady()) {
+                    console.log('Web Audio API initialized successfully');
+                } else {
+                    console.log('Using fallback audio system');
+                }
+            } else {
+                console.warn('Real Animal sounds module not available');
             }
         };
     </script>
