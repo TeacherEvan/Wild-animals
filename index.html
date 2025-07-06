@@ -81,6 +81,7 @@
             font-size: 8em;
             margin-bottom: 20px;
             animation: bounce 2s infinite;
+            cursor: pointer;
         }
 
         @keyframes bounce {
@@ -1117,6 +1118,9 @@
                 <button class="next-btn" id="nextBtn" onclick="nextQuestion()" disabled>Next Animal →</button>
             `;
             
+            // Reattach click listener for the new emoji element
+            document.getElementById('animalEmoji').onclick = playCurrentAnimalSound;
+            
             // Show/hide timer based on current mode
             const timerContainer = document.getElementById('timerContainer');
             if (gameMode === 'speed') {
@@ -1155,6 +1159,14 @@
                 console.log('Animal sounds module loaded successfully');
             }
         };
+
+        // Ensure clicking the emoji repeats the current animal sound
+        const playCurrentAnimalSound = () => {
+            if (currentAnimal) {
+                window.animalSounds.playAnimalSound(currentAnimal.name);
+            }
+        };
+        document.getElementById('animalEmoji').onclick = playCurrentAnimalSound;
     </script>
 </body>
 </html>

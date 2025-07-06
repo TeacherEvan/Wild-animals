@@ -5,6 +5,25 @@ class AnimalSounds {
         this.currentSelection = null;
         this.speechSynthesis = window.speechSynthesis;
         this.voices = [];
+
+        // NEW: mapping of animal names to audio file URLs (place files in ./sounds or use remote links)
+        this.soundMap = {
+            Lion: 'sounds/lion.mp3',
+            Tiger: 'sounds/tiger.mp3',
+            Elephant: 'sounds/elephant.mp3',
+            Bear: 'sounds/bear.mp3',
+            Wolf: 'sounds/wolf.mp3',
+            Fox: 'sounds/fox.mp3',
+            Monkey: 'sounds/monkey.mp3',
+            Dolphin: 'sounds/dolphin.mp3',
+            Eagle: 'sounds/eagle.mp3',
+            Frog: 'sounds/frog.mp3',
+            Zebra: 'sounds/zebra.mp3'
+        };
+
+        // Holds currently playing Audio object so we can stop it if needed
+        this.currentAudio = null;
+
         this.initVoices();
     }
 
@@ -72,10 +91,30 @@ class AnimalSounds {
         this.speechSynthesis.speak(utterance);
     }
 
-    // Play animal sound based on name (now pronounces the name)
+    // Play animal sound based on name (now prefers real audio, falls back to pronunciation)
     playAnimalSound(animalName) {
-        this.pronounceAnimal(animalName);
-    }    // UI feedback sounds using simple tones
+        if (!this.isEnabled) return;
+
+        // Stop any previous audio
+        if (this.currentAudio) {
+            try { this.currentAudio.pause(); } catch (e) {}
+            this.currentAudio = null;
+        }
+
+        const audioUrl = this.soundMap[animalName];
+        if (audioUrl) {
+            this.currentAudio = new Audio(audioUrl);
+            this.currentAudio.play().catch(() => {
+                // If playback fails (e.g., file missing), fallback to TTS
+                this.pronounceAnimal(animalName);
+            });
+        } else {
+            // Fallback to TTS pronunciation
+            this.pronounceAnimal(animalName);
+        }
+    }
+
+    // UI feedback sounds using simple tones
     playUISound(type) {
         if (!this.isEnabled) return;
         
@@ -167,6 +206,10 @@ class AnimalSounds {
     // Toggle sound on/off
     toggleSound() {
         this.isEnabled = !this.isEnabled;
+        if (!this.isEnabled && this.currentAudio) {
+            try { this.currentAudio.pause(); } catch (e) {}
+            this.currentAudio = null;
+        }
         return this.isEnabled;
     }
 
