@@ -996,6 +996,7 @@ cursor/fix-sound-migration-and-error-handling-a131
         oscillator.stop(this.audioContext.currentTime + duration);
     }
 
+ cursor/fix-sound-migration-and-error-handling-a131
     // Fallback to text-to-speech when Web Audio API is not available
     fallbackTextToSpeech(animalName) {
         if ('speechSynthesis' in window) {
@@ -1062,7 +1063,10 @@ cursor/fix-sound-migration-and-error-handling-a131
     // Play a simple tone for UI feedback
     playSimpleTone(frequency, duration) {
 
+ main
+
     // Enhanced UI sounds with better feedback
+main
     playUISound(type) {
         if (!this.isEnabled || !this.audioContext) return;
         
@@ -1236,8 +1240,19 @@ cursor/fix-sound-migration-and-error-handling-a131
     }
 }
 
-// Create global instance as realAnimalSounds
-window.realAnimalSounds = new RealAnimalSounds();
+ cursor/fix-sound-migration-and-error-handling-a131
 
-// Maintain backward compatibility
-window.animalSounds = window.realAnimalSounds;
+// Create global instance and expose under the new namespace
+window.realAnimalSounds = new AnimalSounds();
+
+// ---------------------------------------------------------------------------
+// Backward-compatibility shim
+// ---------------------------------------------------------------------------
+// Older game logic (or cached versions) may still reference "window.animalSounds".
+// To avoid breaking those calls during/after the migration, alias the new
+// implementation to the legacy name **only if it isn't already defined**.
+// This keeps a single shared instance and prevents duplicate objects.
+if (!window.animalSounds) {
+    window.animalSounds = window.realAnimalSounds;
+}
+main
