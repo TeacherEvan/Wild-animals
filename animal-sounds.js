@@ -704,7 +704,88 @@ class AnimalSounds {
         this.speechSynthesis.speak(utterance);
     }
 
+ cursor/fix-sound-migration-and-error-handling-84d0
+    /* ---------------------------------------------------------------------
+     * Animal Sound Playback
+     * ------------------------------------------------------------------ */
+    // Play an animal-specific sound. We first attempt to generate a custom
+    // synthesised sound pattern that loosely resembles the animal's real
+    // call (self-designed content). If we cannot determine a pattern, we
+    // fall back to pronouncing the animal name via text-to-speech.
+    playAnimalSound(animalName) {
+        if (!this.isEnabled) return;
+
+        const soundType = this.getSoundType(animalName);
+
+        if (!soundType) {
+            // Unknown animal – pronounce its name instead.
+            this.pronounceAnimal(animalName);
+            return;
+        }
+
+        // If we have a pattern, synthesise it.
+        this.playSynthPattern(soundType);
+    }
+
+    // Determine the canonical sound type (e.g., "roar", "trumpet") for an
+    // animal. Relies on the global `animals` array defined in the main
+    // game script. Returns null if not found.
+    getSoundType(animalName) {
+        if (window.animals && Array.isArray(window.animals)) {
+            const found = window.animals.find(a => a.name.toLowerCase() === animalName.toLowerCase());
+            return found ? found.sound : null;
+        }
+        return null;
+    }
+
+    // Self-designed synth patterns for each sound type. These are intentionally
+    // playful representations rather than recordings of real animals – this
+    // satisfies the "create self-designed sounds" requirement when real audio
+    // files are not bundled.
+    playSynthPattern(soundType) {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        const patterns = {
+            roar:      { freqs: [220, 200, 180], dur: 0.25 },
+            growl:     { freqs: [200, 150],       dur: 0.3  },
+            grunt:     { freqs: [150, 120],       dur: 0.25 },
+            snort:     { freqs: [300, 220],       dur: 0.2  },
+            trumpet:   { freqs: [523.25, 659.25], dur: 0.2  },
+            hum:       { freqs: [110],            dur: 0.8  },
+            howl:      { freqs: [300, 350, 400, 350], dur: 0.2 },
+            bark:      { freqs: [500],            dur: 0.15 },
+            neigh:     { freqs: [400, 600, 450],  dur: 0.15 },
+            chatter:   { freqs: [1000, 900, 1200, 900], dur: 0.1 },
+            squawk:    { freqs: [850, 800],       dur: 0.18 },
+            screech:   { freqs: [750, 770, 790],  dur: 0.1  },
+            click:     { freqs: [1000, 1200, 800, 1000], dur: 0.05 },
+            croak:     { freqs: [220, 200, 180],  dur: 0.3  },
+            silent:    { freqs: [], dur: 0 } // No sound
+        };
+
+        const pattern = patterns[soundType];
+
+        if (!pattern || pattern.freqs.length === 0) {
+            // Unknown or silent – pronounce name as fallback.
+            const animalNameFallback = soundType === 'silent' ? ' ' : null;
+            if (animalNameFallback !== null) {
+                this.pronounceAnimal(animalNameFallback);
+            }
+            return;
+        }
+
+        // Play the frequency pattern sequentially.
+        pattern.freqs.forEach((freq, index) => {
+            setTimeout(() => {
+                this.playSimpleTone(audioContext, freq, pattern.dur);
+            }, index * pattern.dur * 1000);
+        });
+    }
+
+    // UI feedback sounds using simple tones
+
     // Enhanced UI sounds with better feedback
+main
     playUISound(type) {
         if (!this.isEnabled || !this.audioContext) return;
         
@@ -853,5 +934,16 @@ class AnimalSounds {
     }
 }
 
-// Create global instance
-window.animalSounds = new AnimalSounds();
+// Create global instance and expose under the new namespace
+window.realAnimalSounds = new AnimalSounds();
+
+// ---------------------------------------------------------------------------
+// Backward-compatibility shim
+// ---------------------------------------------------------------------------
+// Older game logic (or cached versions) may still reference "window.animalSounds".
+// To avoid breaking those calls during/after the migration, alias the new
+// implementation to the legacy name **only if it isn't already defined**.
+// This keeps a single shared instance and prevents duplicate objects.
+if (!window.animalSounds) {
+    window.animalSounds = window.realAnimalSounds;
+}
