@@ -399,7 +399,28 @@
             75% { transform: translateX(10px); }
         }
 
-        /* Particle effects */
+        /* Enhanced screen shake effect */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0) translateY(0); }
+            10% { transform: translateX(-5px) translateY(-2px); }
+            20% { transform: translateX(5px) translateY(2px); }
+            30% { transform: translateX(-3px) translateY(-1px); }
+            40% { transform: translateX(3px) translateY(1px); }
+            50% { transform: translateX(-2px) translateY(-1px); }
+            60% { transform: translateX(2px) translateY(1px); }
+            70% { transform: translateX(-1px) translateY(0); }
+            80% { transform: translateX(1px) translateY(0); }
+            90% { transform: translateX(-1px) translateY(0); }
+        }
+
+        /* Pulse animation for buttons */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Enhanced particle effects */
         .particle {
             position: absolute;
             border-radius: 50%;
@@ -415,6 +436,67 @@
             100% {
                 opacity: 0;
                 transform: translateY(-100px) scale(0);
+            }
+        }
+
+        /* Sound particle effects */
+        .sound-particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background-color: #FFD700;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Enhanced hover effects for mobile */
+        .option-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Touch-friendly enhancements */
+        .animal-display {
+            position: relative;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        .animal-display:active {
+            transform: scale(1.02);
+        }
+
+        /* Enhanced visual feedback */
+        .game-container {
+            transition: transform 0.1s ease;
+        }
+
+        /* Improved accessibility */
+        .option-btn:focus {
+            outline: 3px solid #FFD700;
+            outline-offset: 2px;
+        }
+
+        .sound-btn:focus {
+            outline: 3px solid #FFD700;
+            outline-offset: 2px;
+        }
+
+        /* Mobile-specific enhancements */
+        @media (max-width: 600px) {
+            .option-btn {
+                padding: 20px 15px;
+                font-size: 1.1em;
+                min-height: 60px;
+            }
+            
+            .animal-emoji {
+                font-size: 5em;
+            }
+            
+            .sound-btn {
+                padding: 15px;
+                font-size: 1.8em;
             }
         }
 
@@ -866,9 +948,12 @@
                 <button class="powerup-btn" id="skipBtn" onclick="skipQuestion()">⏭️ Skip (1)</button>
             </div>
             
-            <div class="animal-display">
+            <div class="animal-display" onclick="playCurrentAnimalSound()">
                 <div class="animal-emoji" id="animalEmoji">🦁</div>
                 <div class="question" id="question">What animal is this?</div>
+                <div class="tap-hint" style="font-size: 0.9em; color: #666; margin-top: 10px;">
+                    👆 Tap the animal to hear its sound!
+                </div>
             </div>
             
             <div class="options" id="options">
@@ -1013,6 +1098,9 @@
             }
 
             currentAnimal = gameQuestions[currentQuestionIndex];
+            
+            // Make current animal available globally for sound playback
+            window.currentAnimal = currentAnimal;
             
             // Select question type for quiz mode
             if (gameMode === 'quiz') {
@@ -1511,6 +1599,13 @@
             
             const soundBtn = document.getElementById('soundBtn');
             soundBtn.textContent = isEnabled ? '🔊' : '🔇';
+        }
+
+        // Play current animal sound when display is clicked
+        function playCurrentAnimalSound() {
+            if (window.currentAnimal && window.animalSounds) {
+                window.animalSounds.playAnimalSound(window.currentAnimal.name);
+            }
         }        // Initialize the game when page loads
         window.onload = () => {
             updateHighScore();
