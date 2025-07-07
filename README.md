@@ -1,163 +1,147 @@
-# 🦁 Wild Animals Adventure - Learn English! 🐯
+# 🦁 Wild Animals Adventure - Enhanced Edition 🐯
 
-An interactive HTML game designed for bilingual kindergarteners to learn wild animal names in English. This fun, educational game helps young learners identify and memorize animal names through engaging gameplay.
+An interactive educational game designed for kindergarten students to learn about wild animals through fun, engaging activities and real animal sounds!
 
-## 🎮 Game Features
+## � New Features
 
-### Educational Benefits
-- **15 Different Wild Animals**: Lion, Tiger, Elephant, Giraffe, Bear, Zebra, Rhino, Wolf, Fox, Leopard, Kangaroo, Koala, Monkey, Gorilla, and more!
-- **English Language Learning**: Perfect for bilingual children learning animal names in English
-- **Multiple Choice Questions**: 4 options per question to build recognition skills
-- **Progressive Learning**: 10 random questions per game session
+### 🔊 Real Animal Sounds
+- **Authentic Audio**: Real animal sounds from high-quality audio sources
+- **Visual Feedback**: Sound wave animations when animals make sounds
+- **Loading Indicators**: Child-friendly loading animations while sounds load
+- **Fallback Support**: Text-to-speech backup if audio files fail to load
 
-### Interactive Elements
-- 🎨 **Colorful, Kid-Friendly Design**: Bright gradients and bouncing animations
-- 📱 **Responsive Design**: Works on computers, tablets, and phones
-- 🔊 **Sound Effects**: Musical feedback with toggle option
-- 🎉 **Celebrations**: Confetti animations for achievements
-- 🏆 **Scoring System**: Points, streaks, and encouraging feedback
+### 🎮 Interactive Game Modes
 
-### User Experience
-- **Large Buttons**: Easy for small fingers to tap
-- **Comic Sans Font**: Readable and child-friendly
-- **Visual Feedback**: Green for correct, red for incorrect answers
-- **Positive Reinforcement**: Encouraging messages for all performance levels
-- **No Save Required**: Play instantly without setup
+#### 🏠 Habitat Matching (NEW!)
+- **Drag & Drop**: Kids can drag animals to their correct habitats
+- **Visual Learning**: Colorful habitat backgrounds (savanna, forest, ocean, jungle)
+- **Touch Support**: Works on tablets and touchscreen devices
+- **Celebration Effects**: Confetti and particles when matching correctly
 
-## 🚀 How to Play
+#### 🔊 Sound Guessing Game (NEW!)
+- **Audio Recognition**: Play animal sounds and guess which animal it is
+- **Big Play Button**: Easy-to-tap button for young children
+- **Visual Options**: Animal pictures to choose from
 
-1. **Open the Game**: Double-click `index.html` in any web browser
-2. **Look at the Animal**: A wild animal emoji will appear with a bouncing animation
-3. **Read the Question**: "What animal is this?"
-4. **Choose Your Answer**: Click one of the four multiple-choice options
-5. **Get Feedback**: See if you're correct with visual and audio feedback
-6. **Continue Playing**: Click "Next Animal" to continue
-7. **View Final Score**: See your results and play again!
+#### Classic Modes (Enhanced)
+- **🎯 Classic Mode**: 10 questions with improved visual feedback
+- **⚡ Speed Mode**: Time-based challenges with bonus points
+- **🔥 Survival Mode**: Keep playing until you make a mistake
+- **🧠 Quiz Mode**: Mixed question types about habitats, diet, and sounds
 
-## 🎯 Game Mechanics
+### 🎨 Visual Enhancements
 
-### Scoring
-- **10 points** for each correct answer
-- **Streak counter** tracks consecutive correct answers
-- **Final percentage** shows overall performance
-- **Encouraging messages** based on score ranges:
-  - 90%+: "Amazing! You're a Wild Animal Expert!" 🏆
-  - 70-89%: "Great job! You know your animals well!" 🥈
-  - 50-69%: "Good effort! Keep learning about animals!" 🥉
-  - Below 50%: "Nice try! Practice makes perfect!" 🌟
+#### Animations
+- **Animal Movements**: Animals bounce, shake, and roar
+- **Sound Waves**: Visual ripples when sounds play
+- **Drag Effects**: Smooth dragging with shadow effects
+- **Celebration Particles**: Colorful particles for correct answers
+- **Score Bumps**: Numbers grow when points are earned
 
-### Special Features
-- **Confetti Celebration**: Triggers on 3+ answer streaks and high scores
-- **Sound Toggle**: Click the speaker icon (🔊/🔇) to enable/disable sounds
-- **Randomized Questions**: Different animals appear each game
-- **Adaptive Feedback**: Specific messages for each animal
+#### Kid-Friendly Design
+- **Large Buttons**: Easy to tap for small fingers
+- **Bright Colors**: Engaging color palette
+- **Clear Emojis**: Large, recognizable animal emojis
+- **Simple Navigation**: Clear mode selection
 
-## 🛠️ Technical Details
-
-### File Structure
-```
-Wild animals/
-├── index.html          # Complete game file
-└── README.md          # This documentation
-```
-
-### Browser Compatibility
-- ✅ Chrome (recommended)
-- ✅ Firefox
+### 📱 Cross-Browser Compatibility
+- ✅ Google Chrome
+- ✅ Microsoft Edge
+- ✅ Mozilla Firefox
 - ✅ Safari
-- ✅ Edge
-- ✅ Mobile browsers
-
-### No Dependencies
-- **Self-contained**: No internet connection required
-- **No installation**: Just open and play
-- **No external libraries**: Pure HTML, CSS, and JavaScript
-
-## 🎨 Design Features
-
-### Visual Elements
-- **Gradient Background**: Sky blue to green to yellow
-- **Bouncing Animals**: CSS animations for engagement
-- **Rounded Corners**: Soft, child-friendly design
-- **Color-coded Feedback**: Green (correct), Red (incorrect)
-- **Responsive Layout**: Adapts to screen size
-
-### Accessibility
-- **Large Text**: Easy to read for young children
-- **High Contrast**: Good visibility
-- **Touch-friendly**: Large buttons for mobile devices
-- **Simple Navigation**: One-click gameplay
-
-## 🧒 Target Audience
-
-### Primary Users
-- **Age Group**: Kindergarten (4-6 years old)
-- **Language Level**: Bilingual children learning English
-- **Setting**: Home, school, or educational centers
-- **Device**: Any device with a web browser
-
-### Learning Objectives
-- Recognize wild animal names in English
-- Improve vocabulary retention
-- Build confidence through positive feedback
-- Develop basic computer/touch interaction skills
-
-## 🔧 Customization Options
-
-### Easy Modifications
-To add more animals, edit the `animals` array in the JavaScript section:
-```javascript
-const animals = [
-    { emoji: '🦁', name: 'Lion', sound: 'roar' },
-    // Add more animals here...
-];
-```
-
-### Adjustable Settings
-- Change `totalQuestions` to modify game length
-- Adjust scoring values in `selectOption()` function
-- Modify colors in the CSS section
-- Update messages in `endGame()` function
-
-## 📖 Educational Use
-
-### Classroom Integration
-- **ESL Classes**: Perfect for English as Second Language learning
-- **Vocabulary Building**: Reinforces animal names through repetition
-- **Independent Learning**: Students can play without teacher supervision
-- **Assessment Tool**: Teachers can observe learning progress
-
-### Home Learning
-- **Parent-Child Activity**: Can be played together
-- **Screen Time Value**: Educational entertainment
-- **Progress Tracking**: Built-in scoring system
-- **Replay Value**: Randomized questions keep it fresh
+- ✅ Mobile browsers (iOS/Android)
 
 ## 🚀 Getting Started
 
-1. **Download**: Save the `index.html` file to your computer
-2. **Open**: Double-click the file or right-click → "Open with" → Web Browser
-3. **Play**: The game starts automatically
-4. **Enjoy**: Have fun learning about wild animals!
+1. Open `index.html` in any modern web browser
+2. Click on a game mode to start playing
+3. Turn sound on/off using the speaker button in the top-right
 
-## 🔄 Updates and Versions
+## � How to Play
 
-**Current Version**: 1.0
-- Initial release with 15 wild animals
-- Complete scoring system
-- Sound effects and animations
-- Mobile-responsive design
+### Classic Animal Quiz
+1. Look at the animal emoji
+2. Click on animal names to hear their sounds
+3. Click "Next Animal" when ready to submit your answer
+4. Earn points and build streaks!
 
-## 📞 Support
+### Habitat Matching Game
+1. Drag animals from the bottom pool
+2. Drop them into their correct habitat
+3. Match all animals to complete the game
+4. Try to get a perfect score!
 
-If you encounter any issues:
-1. Try refreshing the browser
-2. Ensure JavaScript is enabled
-3. Test in a different browser
-4. Check that the HTML file is complete
+### Sound Guessing Game
+1. Click the big play button to hear an animal sound
+2. Choose which animal makes that sound
+3. Score points for correct guesses
+
+## 🛠️ Technical Features
+
+### Audio System
+- Preloaded common animal sounds for faster playback
+- Audio caching to reduce loading times
+- Web Audio API for UI sound effects
+- Graceful fallback to text-to-speech
+
+### Interaction System
+- Mouse and touch event support
+- Drag and drop with visual feedback
+- Accessible button sizes and spacing
+- Responsive design for all screen sizes
+
+### Educational Value
+- **Animal Recognition**: Visual learning with emojis
+- **Sound Association**: Connect animals to their sounds
+- **Habitat Learning**: Understand where animals live
+- **Diet Categories**: Learn about carnivores, herbivores, omnivores
+- **Memory Skills**: Remember animal characteristics
+- **Motor Skills**: Drag and drop activities
+
+## 🎓 For Educators
+
+This game supports early childhood education by:
+- Building vocabulary (animal names)
+- Developing classification skills
+- Encouraging audio-visual association
+- Supporting fine motor skill development
+- Providing positive reinforcement
+
+## 🔧 Customization
+
+To add more animals, edit the `animals` array in `index.html`:
+
+```javascript
+{ 
+    emoji: '🦁', 
+    name: 'Lion', 
+    sound: 'roar', 
+    habitat: 'Savanna', 
+    diet: 'Carnivore' 
+}
+```
+
+## 📝 Files Structure
+
+- `index.html` - Main game file with all game logic
+- `animal-sounds.js` - Text-to-speech pronunciation system
+- `real-animal-sounds.js` - Real animal audio playback system
+- `interactive-features.js` - Drag & drop and interactive games
+- `README.md` - This documentation file
+
+## 🌈 Future Enhancements
+
+- Animal fact cards with more information
+- Drawing mode to color animals
+- More puzzle games
+- Achievement badges
+- Multi-language support
+- Offline mode with cached sounds
+
+## 🙏 Credits
+
+Created with ❤️ for kindergarten students to make learning about animals fun and interactive!
 
 ---
 
-**Have fun learning about wild animals!** 🦁🐯🐘🦒🐻
-
-*Made with ❤️ for young learners*
+**Note**: For best experience, ensure your device volume is turned up and you have a stable internet connection for loading animal sounds.
