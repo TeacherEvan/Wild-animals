@@ -921,33 +921,7 @@
             20%, 40%, 60%, 80% { transform: translateX(5px); }
         }    </style>
     <script src="animal-sounds.js"></script>
-cursor/fix-sound-migration-and-error-handling-84d0
-    <!-- Safety stub: ensure sound modules exist even if the script fails to load -->
-    <script>
-        // If the real sound module failed to load, create a no-op fallback so that
-        // game logic doesn't crash when trying to call its methods.
-        if (!window.realAnimalSounds) {
-            const noop = () => {};
-            window.realAnimalSounds = {
-                playAnimalSound: noop,
-                playUISound: noop,
-                selectOption: noop,
-                getCurrentSelection: () => null,
-                clearSelection: noop,
-                toggleSound: () => false,
-                isSoundEnabled: () => false
-            };
-        }
-
-        // Maintain backward-compatibility with legacy references.
-        if (!window.animalSounds) {
-            window.animalSounds = window.realAnimalSounds;
-        }
-    </script>
-
-    <script src="real-animal-sounds.js"></script>
     <script src="interactive-features.js"></script>
- main
 </head>
 <body>
     <button class="sound-btn" onclick="toggleSound()" id="soundBtn">🔊</button>
