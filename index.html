@@ -1149,7 +1149,9 @@ cursor/fix-sound-migration-and-error-handling-84d0
             document.getElementById('nextBtn').disabled = true;
             
             // Clear any previous selection
-            window.animalSounds.clearSelection();
+            if (window.realAnimalSounds && window.realAnimalSounds.clearSelection) {
+                window.realAnimalSounds.clearSelection();
+            }
             
             // Update question counter
             if (gameMode === 'survival') {
@@ -1210,7 +1212,9 @@ cursor/fix-sound-migration-and-error-handling-84d0
                   if (timeLeft <= 0) {
                     clearInterval(timer);
                     // Auto-select timeout when time runs out
-                    window.animalSounds.selectOption('TIME_UP');
+                    if (window.realAnimalSounds && window.realAnimalSounds.selectOption) {
+                        window.realAnimalSounds.selectOption('TIME_UP');
+                    }
                     document.getElementById('nextBtn').disabled = false;
                 }
             }, 1000);
@@ -1261,13 +1265,22 @@ cursor/fix-sound-migration-and-error-handling-84d0
     function handleOptionClick(selectedOption, buttonElement) {
         // Play animal sound when option is clicked
         if (currentQuestionType === 'name') {
-            window.realAnimalSounds.playAnimalSound(selectedOption);
+cursor/fix-sound-migration-and-error-handling-a131
+            if (window.realAnimalSounds && window.realAnimalSounds.playAnimalSound) {
+                window.realAnimalSounds.playAnimalSound(selectedOption);
+            }
         } else {
-            window.realAnimalSounds.playUISound('select');
+            if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
+                window.realAnimalSounds.playUISound('select');
+            }
+
+ main
         }
         
         // Update selection in the sound module
-        window.animalSounds.selectOption(selectedOption);
+        if (window.realAnimalSounds && window.realAnimalSounds.selectOption) {
+            window.realAnimalSounds.selectOption(selectedOption);
+        }
         
         // Enable next button if an option is selected
         document.getElementById('nextBtn').disabled = false;
@@ -1306,7 +1319,13 @@ cursor/fix-sound-migration-and-error-handling-84d0
                 maxStreak = Math.max(maxStreak, streak);
                 
                 showFeedback(`Excellent! ${getFeedbackMessage()}! 🎉`, 'correct');
-                window.realAnimalSounds.playUISound('correct');
+cursor/fix-sound-migration-and-error-handling-a131
+                if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
+                    window.realAnimalSounds.playUISound('correct');
+                }
+
+            
+ main
                 createParticles();
                 
                 // Show combo indicator for streaks
@@ -1324,7 +1343,12 @@ cursor/fix-sound-migration-and-error-handling-84d0
                 }
                 streak = 0;
                 showFeedback(`${selectedOption === 'TIME_UP' ? 'Time\'s up!' : 'Oops!'} ${getFeedbackMessage()}. Try again next time! 😊`, 'incorrect');
-                window.realAnimalSounds.playUISound('incorrect');
+ cursor/fix-sound-migration-and-error-handling-a131
+                if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
+                    window.realAnimalSounds.playUISound('incorrect');
+                }
+
+ main
             }
             
             updateScoreBoard();
@@ -1333,14 +1357,17 @@ cursor/fix-sound-migration-and-error-handling-84d0
 
         // Modified next question function to process the selected answer
         function nextQuestion() {
-            const selectedOption = window.animalSounds.getCurrentSelection();
+            const selectedOption = window.realAnimalSounds && window.realAnimalSounds.getCurrentSelection ? 
+                window.realAnimalSounds.getCurrentSelection() : null;
             
             if (selectedOption) {
                 // Process the answer when next is clicked
                 selectOption(selectedOption, null);
                 
                 // Clear the selection for next question
-                window.animalSounds.clearSelection();
+                if (window.realAnimalSounds && window.realAnimalSounds.clearSelection) {
+                    window.realAnimalSounds.clearSelection();
+                }
                 
                 // Move to next question after a short delay to show feedback
                 setTimeout(() => {
@@ -1493,7 +1520,13 @@ cursor/fix-sound-migration-and-error-handling-84d0
                     </button>
                 </div>            `;
             
-            window.realAnimalSounds.playUISound('complete');
+ cursor/fix-sound-migration-and-error-handling-a131
+            if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
+                window.realAnimalSounds.playUISound('complete');
+            }
+
+        
+ main
         }
 
         // Power-up functions
@@ -1507,8 +1540,14 @@ cursor/fix-sound-migration-and-error-handling-84d0
             const feedback = document.getElementById('feedback');
             feedback.textContent = `💡 Hint: The answer starts with "${correctAnswer.charAt(0)}"`;
             feedback.className = 'feedback';
+cursor/fix-sound-migration-and-error-handling-a131
+            if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
+                window.realAnimalSounds.playUISound('powerup');
+            }
+
             
-            window.realAnimalSounds.playUISound('powerup');
+           
+ main
         }
 
         function eliminateWrong() {
@@ -1527,7 +1566,12 @@ cursor/fix-sound-migration-and-error-handling-84d0
                 wrongButtons[i].disabled = true;
             }
             
-            window.realAnimalSounds.playUISound('powerup');
+ cursor/fix-sound-migration-and-error-handling-a131
+            if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
+                window.realAnimalSounds.playUISound('powerup');
+            }
+
+main
         }
 
         function skipQuestion() {
@@ -1550,7 +1594,11 @@ cursor/fix-sound-migration-and-error-handling-84d0
                 currentQuestionIndex++;
                 loadQuestion();            }, 1000);
             
-            window.realAnimalSounds.playUISound('powerup');
+ cursor/fix-sound-migration-and-error-handling-a131
+            if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
+                window.realAnimalSounds.playUISound('powerup');
+            }
+ main
         }        function restartGame() {
             // Reset all buttons styles
             document.querySelectorAll('.option-btn').forEach(btn => {
@@ -1618,10 +1666,14 @@ cursor/fix-sound-migration-and-error-handling-84d0
             }        }
 
         function toggleSound() {
+ cursor/fix-sound-migration-and-error-handling-a131
+            const isEnabled = window.realAnimalSounds && window.realAnimalSounds.toggleSound ? 
+                window.realAnimalSounds.toggleSound() : false;
+
             // Toggle both sound systems
-            const isEnabled = window.animalSounds.toggleSound();
-            window.realAnimalSounds.toggleSound();
+          
             
+ main
             const soundBtn = document.getElementById('soundBtn');
             soundBtn.textContent = isEnabled ? '🔊' : '🔇';
         }
@@ -1636,15 +1688,20 @@ cursor/fix-sound-migration-and-error-handling-84d0
             updateHighScore();
             initGame();
             
-            // Initialize sound modules
-            if (window.animalSounds) {
-                console.log('Text-to-speech module loaded successfully');
-            }
+cursor/fix-sound-migration-and-error-handling-a131
+            // Initialize sound module
             if (window.realAnimalSounds) {
-                console.log('Real animal sounds module loaded successfully');
-            }
-            if (window.interactiveFeatures) {
-                console.log('Interactive features module loaded successfully');
+                console.log('Real Animal sounds module loaded successfully');
+                if (window.realAnimalSounds.isReady && window.realAnimalSounds.isReady()) {
+                    console.log('Web Audio API initialized successfully');
+                } else {
+                    console.log('Using fallback audio system');
+                }
+            } else {
+                console.warn('Real Animal sounds module not available')
+           
+            
+ main
             }
         };
     </script>
