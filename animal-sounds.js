@@ -9,10 +9,39 @@ class AnimalSounds {
         this.currentSelection = null;
         this.speechSynthesis = window.speechSynthesis;
         this.voices = [];
+ cursor/enhance-interactive-features-for-kids-3660
+        // Fallback flag for TTS availability
+        this.speechSupported = !!this.speechSynthesis;
+
+        // NEW: mapping of animal names to audio file URLs (place files in ./sounds or use remote links)
+        this.soundMap = {
+            // Using Mixkit and Pixabay CDN links (royalty-free, no attribution required)
+            Lion: 'https://assets.mixkit.co/sfx/preview/mixkit-wild-lion-animal-roar-6.mp3',
+            Tiger: 'https://assets.mixkit.co/sfx/preview/mixkit-wild-lion-animal-roar-6.mp3', // placeholder
+            Elephant: 'https://assets.mixkit.co/sfx/preview/mixkit-elephant-blowing-water-1452.mp3',
+            Bear: 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_a6a1430e72.mp3?filename=angry-bear-110521.mp3',
+            Wolf: 'https://assets.mixkit.co/sfx/preview/mixkit-wolf-howler-45.mp3',
+            Fox: 'https://cdn.pixabay.com/download/audio/2021/09/20/audio_6b05b4f07e.mp3?filename=fox-bark-7074.mp3',
+            Monkey: 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_ae684fbc32.mp3?filename=monkey-110527.mp3',
+            Dolphin: 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_7a6db4fccd.mp3?filename=dolphin-110525.mp3',
+            Eagle: 'https://cdn.pixabay.com/download/audio/2021/11/30/audio_ff1aa8b0d8.mp3?filename=eagle-scream-9259.mp3',
+            Frog: 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_ea996a96f2.mp3?filename=frog-croaking-110526.mp3',
+            Zebra: 'https://cdn.pixabay.com/download/audio/2022/07/20/audio_f033f25e76.mp3?filename=zebra-bray-112087.mp3'
+        };
+
+        // Holds currently playing Audio object so we can stop it if needed
+        this.currentAudio = null;
+
+        // Simple browser audio capability detection (mp3)
+        const testAudio = document.createElement('audio');
+        this.audioSupported = !!testAudio.canPlayType && testAudio.canPlayType('audio/mpeg') !== '';
+
+
         this.audioContext = null;
         this.touchStartX = 0;
         this.touchStartY = 0;
         this.initAudio();
+ main
         this.initVoices();
         this.initTouchGestures();
     }
@@ -959,6 +988,54 @@ cursor/fix-sound-migration-and-error-handling-a131
         oscillator.stop(this.audioContext.currentTime + duration);
     }
 
+cursor/enhance-interactive-features-for-kids-3660
+    // Play animal sound based on name (now prefers real audio, falls back to pronunciation)
+    playAnimalSound(animalName) {
+        if (!this.isEnabled) return;
+
+        // Stop any previous audio
+        if (this.currentAudio) {
+            try { this.currentAudio.pause(); } catch (e) {}
+            this.currentAudio = null;
+        }
+
+        const emojiEl = document.getElementById('animalEmoji');
+        if (emojiEl) emojiEl.classList.add('playing');
+
+        const audioUrl = this.soundMap[animalName];
+
+        const cleanupVisual = () => {
+            if (emojiEl) emojiEl.classList.remove('playing');
+        };
+
+        const playFallbackTTS = () => {
+            this.pronounceAnimal(animalName);
+            // Remove visual glow when TTS is done
+            if (this.speechSynthesis) {
+                const timer = setInterval(() => {
+                    if (!this.speechSynthesis.speaking) {
+                        clearInterval(timer);
+                        cleanupVisual();
+                    }
+                }, 200);
+            } else {
+                cleanupVisual();
+            }
+        };
+
+        if (this.audioSupported && audioUrl) {
+            this.currentAudio = new Audio(audioUrl);
+            // Some browsers block autoplay – play after user interaction only (the app already requires clicks)
+            this.currentAudio.play().then(() => {
+                this.currentAudio.onended = cleanupVisual;
+            }).catch(() => {
+                // Playback failed (maybe CORS or autoplay) -> fallback
+                playFallbackTTS();
+            });
+        } else {
+            // Fallback to TTS pronunciation
+            playFallbackTTS();
+
     createSnortSound(frequencies, duration) {
         const oscillator = this.audioContext.createOscillator();
         const gainNode = this.audioContext.createGain();
@@ -1025,6 +1102,7 @@ cursor/fix-sound-migration-and-error-handling-a131
         } catch (error) {
             console.error('Error playing animal sound:', error);
             this.fallbackTextToSpeech(animalName);
+ main
         }
     }
 
@@ -1216,6 +1294,8 @@ main
     // Toggle sound on/off
     toggleSound() {
         this.isEnabled = !this.isEnabled;
+ cursor/enhance-interactive-features-for-kids-3660
+  
         
         // Visual feedback
         const soundBtn = document.getElementById('soundBtn');
@@ -1226,6 +1306,7 @@ main
             }, 200);
         }
         
+ main
         return this.isEnabled;
     }
 

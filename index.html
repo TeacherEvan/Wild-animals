@@ -81,6 +81,8 @@
             font-size: 8em;
             margin-bottom: 20px;
             animation: bounce 2s infinite;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         @keyframes bounce {
@@ -93,6 +95,27 @@
             60% {
                 transform: translateY(-5px);
             }
+        }
+
+        /* Subtle pulse to indicate clickability */
+        .animal-emoji.clickable {
+            animation: clickablePulse 3s infinite ease-in-out;
+        }
+
+        @keyframes clickablePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Glow effect while sound is playing */
+        .animal-emoji.playing {
+            box-shadow: 0 0 15px 5px rgba(255, 215, 0, 0.8);
+            animation: playingGlow 1s infinite alternate;
+        }
+
+        @keyframes playingGlow {
+            from { box-shadow: 0 0 10px 3px rgba(255, 215, 0, 0.5); }
+            to   { box-shadow: 0 0 20px 6px rgba(255, 215, 0, 1); }
         }
 
         .question {
@@ -1641,6 +1664,11 @@ main
                 <button class="next-btn" id="nextBtn" onclick="nextQuestion()" disabled>Next Animal →</button>
             `;
             
+            // Reattach click listener for the new emoji element
+            const newEmoji = document.getElementById('animalEmoji');
+            newEmoji.onclick = playCurrentAnimalSound;
+            newEmoji.classList.add('clickable');
+            
             // Show/hide timer based on current mode
             const timerContainer = document.getElementById('timerContainer');
             if (gameMode === 'speed') {
@@ -1704,6 +1732,15 @@ cursor/fix-sound-migration-and-error-handling-a131
  main
             }
         };
+
+        // Ensure clicking the emoji repeats the current animal sound
+        const playCurrentAnimalSound = () => {
+            if (currentAnimal) {
+                window.animalSounds.playAnimalSound(currentAnimal.name);
+            }
+        };
+        document.getElementById('animalEmoji').onclick = playCurrentAnimalSound;
+        document.getElementById('animalEmoji').classList.add('clickable');
     </script>
 </body>
 </html>
