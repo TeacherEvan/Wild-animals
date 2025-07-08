@@ -1,7 +1,3 @@
-cursor/fix-sound-migration-and-error-handling-a131
-
-
-     
 // Enhanced Animal Sounds Module - Real Animal Sounds & Interactive Features
 class AnimalSounds {
     constructor() {
@@ -9,7 +5,6 @@ class AnimalSounds {
         this.currentSelection = null;
         this.speechSynthesis = window.speechSynthesis;
         this.voices = [];
- cursor/enhance-interactive-features-for-kids-3660
         // Fallback flag for TTS availability
         this.speechSupported = !!this.speechSynthesis;
 
@@ -41,7 +36,6 @@ class AnimalSounds {
         this.touchStartX = 0;
         this.touchStartY = 0;
         this.initAudio();
- main
         this.initVoices();
         this.initTouchGestures();
     }
@@ -60,7 +54,6 @@ class AnimalSounds {
         } catch (error) {
             console.log('Web Audio API not supported, using fallback');
         }
- main
     }
 
     initAudioContext() {
@@ -194,7 +187,6 @@ class AnimalSounds {
     loadVoices() {
         this.voices = this.speechSynthesis.getVoices();
         console.log('Available voices:', this.voices.length);
- main
     }
 
     createHowlSound(frequencies, duration) {
@@ -256,7 +248,6 @@ class AnimalSounds {
     // Create roar sound (Lion, Tiger)
     createRoarSound(variation = 1) {
         const duration = 1.5;
- main
         const oscillator = this.audioContext.createOscillator();
         const gainNode = this.audioContext.createGain();
         
@@ -793,7 +784,13 @@ class AnimalSounds {
             console.log('Speech synthesis not available or disabled');
             return;
         }
- main
+
+        const utterance = new SpeechSynthesisUtterance(animalName);
+        utterance.rate = 0.7; // Slower for kindergarten students
+        utterance.pitch = 1.2; // Higher pitch for child-friendly sound
+        utterance.volume = 0.8;
+        this.speechSynthesis.speak(utterance);
+    }
 
     createBarkSound(frequencies, duration) {
         // Short, sharp bark
@@ -845,15 +842,10 @@ class AnimalSounds {
         oscillator.connect(gainNode);
         gainNode.connect(this.audioContext.destination);
         
- cursor/fix-sound-migration-and-error-handling-a131
         // Frequency modulation for croak
         oscillator.frequency.setValueAtTime(frequencies[0], this.audioContext.currentTime);
         oscillator.frequency.exponentialRampToValueAtTime(frequencies[1], this.audioContext.currentTime + duration * 0.5);
         oscillator.frequency.exponentialRampToValueAtTime(frequencies[2], this.audioContext.currentTime + duration);
-        utterance.rate = 0.7; // Slower for kindergarten students
-        utterance.pitch = 1.2; // Higher pitch for child-friendly sound
-        utterance.volume = 0.8;
- main
         
         gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
         gainNode.gain.linearRampToValueAtTime(0.25, this.audioContext.currentTime + 0.1);
@@ -968,7 +960,6 @@ class AnimalSounds {
         oscillator.stop(this.audioContext.currentTime + duration);
     }
 
-cursor/fix-sound-migration-and-error-handling-a131
     createHumSound(frequencies, duration) {
         const oscillator = this.audioContext.createOscillator();
         const gainNode = this.audioContext.createGain();
@@ -987,8 +978,6 @@ cursor/fix-sound-migration-and-error-handling-a131
         oscillator.start(this.audioContext.currentTime);
         oscillator.stop(this.audioContext.currentTime + duration);
     }
-
-cursor/enhance-interactive-features-for-kids-3660
     // Play animal sound based on name (now prefers real audio, falls back to pronunciation)
     playAnimalSound(animalName) {
         if (!this.isEnabled) return;
@@ -1035,6 +1024,8 @@ cursor/enhance-interactive-features-for-kids-3660
         } else {
             // Fallback to TTS pronunciation
             playFallbackTTS();
+        }
+    }
 
     createSnortSound(frequencies, duration) {
         const oscillator = this.audioContext.createOscillator();
@@ -1073,7 +1064,6 @@ cursor/enhance-interactive-features-for-kids-3660
         oscillator.stop(this.audioContext.currentTime + duration);
     }
 
- cursor/fix-sound-migration-and-error-handling-a131
     // Fallback to text-to-speech when Web Audio API is not available
     fallbackTextToSpeech(animalName) {
         if ('speechSynthesis' in window) {
@@ -1084,25 +1074,6 @@ cursor/enhance-interactive-features-for-kids-3660
             window.speechSynthesis.speak(utterance);
         } else {
             console.log(`${animalName} sound (text-to-speech not available)`);
-        }
-    }
-
-    // Main method to play animal sound
-    playAnimalSound(animalName) {
-        if (!this.isEnabled) return;
-        
-        try {
-            const soundConfig = this.animalSoundMap[animalName];
-            if (soundConfig) {
-                this.createAnimalSound({ ...soundConfig, animal: animalName });
-            } else {
-                // Fallback for unknown animals
-                this.fallbackTextToSpeech(animalName);
-            }
-        } catch (error) {
-            console.error('Error playing animal sound:', error);
-            this.fallbackTextToSpeech(animalName);
- main
         }
     }
 
@@ -1140,36 +1111,6 @@ cursor/enhance-interactive-features-for-kids-3660
 
     // Play a simple tone for UI feedback
     playSimpleTone(frequency, duration) {
-
- main
-
-    // Enhanced UI sounds with better feedback
-main
-    playUISound(type) {
-        if (!this.isEnabled || !this.audioContext) return;
-        
-        switch(type) {
-            case 'select':
-                this.playEnhancedTone(440, 0.15);
-                break;
-            case 'correct':
-                this.playSuccessSound();
-                break;
-            case 'incorrect':
-                this.playErrorSound();
-                break;
-            case 'complete':
-                this.playVictorySound();
-                break;
-            case 'powerup':
-                this.playPowerupSound();
-                break;
-        }
-    }
-
-    // Play enhanced tone with better sound quality
-    playEnhancedTone(frequency, duration) {
- main
         const oscillator = this.audioContext.createOscillator();
         const gainNode = this.audioContext.createGain();
         
@@ -1180,16 +1121,30 @@ main
         oscillator.type = 'sine';
         
         gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
- cursor/fix-sound-migration-and-error-handling-a131
-        gainNode.gain.linearRampToValueAtTime(0.1, this.audioContext.currentTime + 0.05);
-
-        gainNode.gain.linearRampToValueAtTime(0.15, this.audioContext.currentTime + 0.02);
- main
+        gainNode.gain.linearRampToValueAtTime(0.1, this.audioContext.currentTime + 0.02);
         gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
         
         oscillator.start(this.audioContext.currentTime);
         oscillator.stop(this.audioContext.currentTime + duration);
- cursor/fix-sound-migration-and-error-handling-a131
+    }
+
+    // Play enhanced tone with better sound quality
+    playEnhancedTone(frequency, duration) {
+        const oscillator = this.audioContext.createOscillator();
+        const gainNode = this.audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(this.audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
+        oscillator.type = 'sine';
+        
+        gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.15, this.audioContext.currentTime + 0.02);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+        
+        oscillator.start(this.audioContext.currentTime);
+        oscillator.stop(this.audioContext.currentTime + duration);
     }
 
     // Play a melody for UI feedback
@@ -1199,10 +1154,6 @@ main
                 this.playSimpleTone(freq, noteDuration);
             }, index * noteDuration * 1000);
         });
-    }
-
-    // Selection management methods
-
     }
 
     // Play success sound (correct answer)
@@ -1246,7 +1197,6 @@ main
     }
 
     // Selection management with enhanced feedback
- main
     selectOption(option) {
         this.currentSelection = option;
         this.playUISound('select');
@@ -1265,7 +1215,6 @@ main
         });
         
         // Add selection styling to current option
-
         const buttons = document.querySelectorAll('.option-btn');
         buttons.forEach(btn => {
             if (btn.textContent === selectedOption) {
@@ -1277,7 +1226,6 @@ main
                 }, 300);
             }
         });
- main
     }
 
     getCurrentSelection() {
@@ -1294,8 +1242,6 @@ main
     // Toggle sound on/off
     toggleSound() {
         this.isEnabled = !this.isEnabled;
- cursor/enhance-interactive-features-for-kids-3660
-  
         
         // Visual feedback
         const soundBtn = document.getElementById('soundBtn');
@@ -1306,7 +1252,6 @@ main
             }, 200);
         }
         
- main
         return this.isEnabled;
     }
 
@@ -1321,8 +1266,6 @@ main
     }
 }
 
- cursor/fix-sound-migration-and-error-handling-a131
-
 // Create global instance and expose under the new namespace
 window.realAnimalSounds = new AnimalSounds();
 
@@ -1336,4 +1279,3 @@ window.realAnimalSounds = new AnimalSounds();
 if (!window.animalSounds) {
     window.animalSounds = window.realAnimalSounds;
 }
-main
