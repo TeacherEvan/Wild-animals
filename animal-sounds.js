@@ -154,21 +154,23 @@ class AnimalSounds {
             this.currentAudio = new Audio(soundUrl);
             this.currentAudio.volume = 0.7;
             
+            // Set onended callback BEFORE calling play() to prevent race condition
+            this.currentAudio.onended = () => {
+                this.pronounceAnimal(animalName);
+            };
+            
             const playPromise = this.currentAudio.play();
             
             if (playPromise !== undefined) {
                 playPromise.then(() => {
-                    // Sound played successfully
-                    this.currentAudio.onended = () => {
-                        this.pronounceAnimal(animalName);
-                    };
+                    // Sound played successfully - onended callback already set
                 }).catch(error => {
                     console.log('Audio playback failed, using fallback:', error);
                     this.fallbackToSynthesis(animalName);
                 });
             } else {
-                // Fallback for older browsers
-                this.fallbackToSynthesis(animalName);
+                // Older browsers - onended callback is already set above
+                // Audio will play and trigger the callback when finished
             }
         } else {
             // No audio file available, use synthesis
