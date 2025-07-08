@@ -921,7 +921,6 @@
             20%, 40%, 60%, 80% { transform: translateX(5px); }
         }    </style>
     <script src="animal-sounds.js"></script>
-cursor/fix-sound-migration-and-error-handling-84d0
     <!-- Safety stub: ensure sound modules exist even if the script fails to load -->
     <script>
         // If the real sound module failed to load, create a no-op fallback so that
@@ -947,7 +946,6 @@ cursor/fix-sound-migration-and-error-handling-84d0
 
     <script src="real-animal-sounds.js"></script>
     <script src="interactive-features.js"></script>
- main
 </head>
 <body>
     <button class="sound-btn" onclick="toggleSound()" id="soundBtn">🔊</button>
@@ -1288,7 +1286,6 @@ cursor/fix-sound-migration-and-error-handling-84d0
     function handleOptionClick(selectedOption, buttonElement) {
         // Play animal sound when option is clicked
         if (currentQuestionType === 'name') {
-cursor/fix-sound-migration-and-error-handling-a131
             if (window.realAnimalSounds && window.realAnimalSounds.playAnimalSound) {
                 window.realAnimalSounds.playAnimalSound(selectedOption);
             }
@@ -1297,7 +1294,6 @@ cursor/fix-sound-migration-and-error-handling-a131
                 window.realAnimalSounds.playUISound('select');
             }
 
- main
         }
         
         // Update selection in the sound module
@@ -1342,13 +1338,11 @@ cursor/fix-sound-migration-and-error-handling-a131
                 maxStreak = Math.max(maxStreak, streak);
                 
                 showFeedback(`Excellent! ${getFeedbackMessage()}! 🎉`, 'correct');
-cursor/fix-sound-migration-and-error-handling-a131
                 if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
                     window.realAnimalSounds.playUISound('correct');
                 }
 
             
- main
                 createParticles();
                 
                 // Show combo indicator for streaks
@@ -1366,12 +1360,10 @@ cursor/fix-sound-migration-and-error-handling-a131
                 }
                 streak = 0;
                 showFeedback(`${selectedOption === 'TIME_UP' ? 'Time\'s up!' : 'Oops!'} ${getFeedbackMessage()}. Try again next time! 😊`, 'incorrect');
- cursor/fix-sound-migration-and-error-handling-a131
                 if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
                     window.realAnimalSounds.playUISound('incorrect');
                 }
 
- main
             }
             
             updateScoreBoard();
@@ -1543,13 +1535,11 @@ cursor/fix-sound-migration-and-error-handling-a131
                     </button>
                 </div>            `;
             
- cursor/fix-sound-migration-and-error-handling-a131
             if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
                 window.realAnimalSounds.playUISound('complete');
             }
 
         
- main
         }
 
         // Power-up functions
@@ -1563,14 +1553,12 @@ cursor/fix-sound-migration-and-error-handling-a131
             const feedback = document.getElementById('feedback');
             feedback.textContent = `💡 Hint: The answer starts with "${correctAnswer.charAt(0)}"`;
             feedback.className = 'feedback';
-cursor/fix-sound-migration-and-error-handling-a131
             if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
                 window.realAnimalSounds.playUISound('powerup');
             }
 
             
            
- main
         }
 
         function eliminateWrong() {
@@ -1589,12 +1577,10 @@ cursor/fix-sound-migration-and-error-handling-a131
                 wrongButtons[i].disabled = true;
             }
             
- cursor/fix-sound-migration-and-error-handling-a131
             if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
                 window.realAnimalSounds.playUISound('powerup');
             }
 
-main
         }
 
         function skipQuestion() {
@@ -1617,11 +1603,9 @@ main
                 currentQuestionIndex++;
                 loadQuestion();            }, 1000);
             
- cursor/fix-sound-migration-and-error-handling-a131
             if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
                 window.realAnimalSounds.playUISound('powerup');
             }
- main
         }        function restartGame() {
             // Reset all buttons styles
             document.querySelectorAll('.option-btn').forEach(btn => {
@@ -1694,14 +1678,12 @@ main
             }        }
 
         function toggleSound() {
- cursor/fix-sound-migration-and-error-handling-a131
             const isEnabled = window.realAnimalSounds && window.realAnimalSounds.toggleSound ? 
                 window.realAnimalSounds.toggleSound() : false;
 
             // Toggle both sound systems
           
             
- main
             const soundBtn = document.getElementById('soundBtn');
             soundBtn.textContent = isEnabled ? '🔊' : '🔇';
         }
@@ -1716,7 +1698,6 @@ main
             updateHighScore();
             initGame();
             
-cursor/fix-sound-migration-and-error-handling-a131
             // Initialize sound module
             if (window.realAnimalSounds) {
                 console.log('Real Animal sounds module loaded successfully');
@@ -1729,18 +1710,10 @@ cursor/fix-sound-migration-and-error-handling-a131
                 console.warn('Real Animal sounds module not available')
            
             
- main
             }
         };
 
         // Ensure clicking the emoji repeats the current animal sound
-        const playCurrentAnimalSound = () => {
-            if (currentAnimal) {
-                window.animalSounds.playAnimalSound(currentAnimal.name);
-            }
-        };
-        document.getElementById('animalEmoji').onclick = playCurrentAnimalSound;
-        document.getElementById('animalEmoji').classList.add('clickable');
     </script>
 </body>
 </html>
