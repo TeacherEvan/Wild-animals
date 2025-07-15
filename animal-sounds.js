@@ -41,29 +41,16 @@ class AnimalSounds {
     }
 
     initAudio() {
-        try {
-            // Initialize Web Audio API for better cross-browser support
-            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            
-            // Resume audio context for Chrome autoplay policy
-            if (this.audioContext.state === 'suspended') {
-                document.addEventListener('click', () => {
-                    this.audioContext.resume();
-                }, { once: true });
-            }
-        } catch (error) {
-            console.log('Web Audio API not supported, using fallback');
-        }
+        // Audio context disabled - only text-to-speech pronunciation allowed
+        this.audioContext = null;
+        console.log('Audio context disabled - only pronunciation sounds enabled');
     }
 
     initAudioContext() {
-        try {
-            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            this.isInitialized = true;
-        } catch (error) {
-            console.warn('Audio context not available, using fallback text-to-speech');
-            this.isInitialized = false;
-        }
+        // Audio context disabled - only text-to-speech pronunciation allowed
+        this.audioContext = null;
+        this.isInitialized = false;
+        console.log('Audio context disabled - only pronunciation sounds enabled');
     }
 
     // Load and cache animal sounds
@@ -213,59 +200,17 @@ class AnimalSounds {
     }
 
 
-    // Create realistic animal sounds using Web Audio API
+    // Create realistic animal sounds using Web Audio API - DISABLED
     playRealAnimalSound(animalName) {
-        if (!this.isEnabled || !this.audioContext) return;
-
-        const soundMap = {
-            'Lion': () => this.createRoarSound(),
-            'Tiger': () => this.createRoarSound(0.8),
-            'Elephant': () => this.createTrumpetSound(),
-            'Bear': () => this.createGrowlSound(),
-            'Wolf': () => this.createHowlSound(),
-            'Dog': () => this.createBarkSound(),
-            'Cat': () => this.createMeowSound(),
-            'Cow': () => this.createMooSound(),
-            'Sheep': () => this.createBaaSound(),
-            'Horse': () => this.createNeighSound(),
-            'Pig': () => this.createOinkSound(),
-            'Rooster': () => this.createCockSound(),
-            'Duck': () => this.createQuackSound(),
-            'Owl': () => this.createHootSound(),
-            'Frog': () => this.createRibbitSound(),
-            'Monkey': () => this.createChatterSound(),
-            'Bird': () => this.createTweetSound(),
-            'Snake': () => this.createHissSound(),
-            'Bee': () => this.createBuzzSound(),
-            'Dolphin': () => this.createClickSound(),
-            'Whale': () => this.createWhaleSound()
-        };
-
-        const soundFunction = soundMap[animalName] || soundMap['Lion'];
-        soundFunction();
+        console.log(`Real animal sound disabled for ${animalName} - only pronunciation allowed`);
+        // No sound generation - silently ignore
+        return;
     }
 
-    // Create roar sound (Lion, Tiger)
+    // Create roar sound (Lion, Tiger) - DISABLED
     createRoarSound(variation = 1) {
-        const duration = 1.5;
-        const oscillator = this.audioContext.createOscillator();
-        const gainNode = this.audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(this.audioContext.destination);
-        
-
-
-        oscillator.frequency.setValueAtTime(80 * variation, this.audioContext.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(60 * variation, this.audioContext.currentTime + duration);
-        oscillator.type = 'sawtooth';
-        
-        gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
-        gainNode.gain.linearRampToValueAtTime(0.3, this.audioContext.currentTime + 0.1);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
-        
-        oscillator.start(this.audioContext.currentTime);
-        oscillator.stop(this.audioContext.currentTime + duration);
+        console.log(`Roar sound disabled - only pronunciation allowed`);
+        // No sound generation - silently ignore
     }
 
     // Create trumpet sound (Elephant)
@@ -691,91 +636,44 @@ class AnimalSounds {
         oscillator.stop(this.audioContext.currentTime + duration);
     }
 
-    // Enhanced animal sound player with real sounds
+    // Enhanced animal sound player - ONLY pronunciation allowed
     playAnimalSound(animalName) {
         if (!this.isEnabled) return;
 
-        // Play real animal sound
-        this.playRealAnimalSound(animalName);
+        console.log(`Playing pronunciation for: ${animalName}`);
         
-        // Add visual feedback
+        // Only play pronunciation - no animal sound effects
+        this.pronounceAnimal(animalName);
+        
+        // Add minimal visual feedback
         this.addAnimalReaction(animalName);
-        
-        // Also pronounce the name after the sound
-        setTimeout(() => {
-            this.pronounceAnimal(animalName);
-        }, 1000);
     }
 
-    // Add visual reaction when animal sound is played
+    // Add minimal visual reaction when animal pronunciation is played
     addAnimalReaction(animalName) {
         const animalEmoji = document.getElementById('animalEmoji');
         if (!animalEmoji) return;
 
-        // Add bounce effect
-        animalEmoji.style.transform = 'scale(1.2)';
-        animalEmoji.style.transition = 'transform 0.3s ease';
-        
-        // Add screen shake effect
-        this.addScreenShake();
-        
-        // Add particle burst
-        this.createSoundParticles();
+        // Add gentle bounce effect only
+        animalEmoji.style.transform = 'scale(1.1)';
+        animalEmoji.style.transition = 'transform 0.2s ease';
         
         // Reset after animation
         setTimeout(() => {
             animalEmoji.style.transform = 'scale(1)';
-        }, 300);
+        }, 200);
     }
 
-    // Add screen shake effect
+    // Screen shake effect - DISABLED (only pronunciation allowed)
     addScreenShake() {
-        const gameContainer = document.querySelector('.game-container');
-        if (!gameContainer) return;
-
-        gameContainer.style.animation = 'shake 0.5s ease-in-out';
-        setTimeout(() => {
-            gameContainer.style.animation = '';
-        }, 500);
+        console.log('Screen shake disabled - only pronunciation allowed');
+        // No screen shake - silently ignore
     }
 
-    // Create particle effects for sound
+    // Create particle effects for sound - DISABLED (only pronunciation allowed)
     createSoundParticles() {
-        const animalDisplay = document.querySelector('.animal-display');
-        if (!animalDisplay) return;
-
-        for (let i = 0; i < 8; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'sound-particle';
-            particle.style.position = 'absolute';
-            particle.style.width = '6px';
-            particle.style.height = '6px';
-            particle.style.backgroundColor = '#FFD700';
-            particle.style.borderRadius = '50%';
-            particle.style.left = '50%';
-            particle.style.top = '50%';
-            particle.style.transform = 'translate(-50%, -50%)';
-            particle.style.pointerEvents = 'none';
-            particle.style.zIndex = '1000';
-            
-            animalDisplay.appendChild(particle);
-            
-            // Animate particle
-            const angle = (i / 8) * Math.PI * 2;
-            const distance = 50 + Math.random() * 30;
-            const finalX = Math.cos(angle) * distance;
-            const finalY = Math.sin(angle) * distance;
-            
-            particle.animate([
-                { transform: 'translate(-50%, -50%) scale(0)', opacity: 1 },
-                { transform: `translate(${finalX}px, ${finalY}px) scale(1)`, opacity: 0 }
-            ], {
-                duration: 800,
-                easing: 'ease-out'
-            }).onfinish = () => {
-                particle.remove();
-            };
-        }
+        console.log('Sound particles disabled - only pronunciation allowed');
+        // No sound particles - silently ignore
     }
 
     // Pronounce animal name using text-to-speech
@@ -978,52 +876,32 @@ class AnimalSounds {
         oscillator.start(this.audioContext.currentTime);
         oscillator.stop(this.audioContext.currentTime + duration);
     }
-    // Play animal sound based on name (now prefers real audio, falls back to pronunciation)
+    // Play animal sound based on name - ONLY pronunciation allowed
     playAnimalSound(animalName) {
         if (!this.isEnabled) return;
 
-        // Stop any previous audio
-        if (this.currentAudio) {
-            try { this.currentAudio.pause(); } catch (e) {}
-            this.currentAudio = null;
-        }
-
+        console.log(`Playing pronunciation for: ${animalName}`);
+        
+        // Only play pronunciation - no real audio or sound effects
+        this.pronounceAnimal(animalName);
+        
+        // Add minimal visual feedback
         const emojiEl = document.getElementById('animalEmoji');
         if (emojiEl) emojiEl.classList.add('playing');
-
-        const audioUrl = this.soundMap[animalName];
-
-        const cleanupVisual = () => {
-            if (emojiEl) emojiEl.classList.remove('playing');
-        };
-
-        const playFallbackTTS = () => {
-            this.pronounceAnimal(animalName);
-            // Remove visual glow when TTS is done
-            if (this.speechSynthesis) {
-                const timer = setInterval(() => {
-                    if (!this.speechSynthesis.speaking) {
-                        clearInterval(timer);
-                        cleanupVisual();
-                    }
-                }, 200);
-            } else {
-                cleanupVisual();
-            }
-        };
-
-        if (this.audioSupported && audioUrl) {
-            this.currentAudio = new Audio(audioUrl);
-            // Some browsers block autoplay – play after user interaction only (the app already requires clicks)
-            this.currentAudio.play().then(() => {
-                this.currentAudio.onended = cleanupVisual;
-            }).catch(() => {
-                // Playback failed (maybe CORS or autoplay) -> fallback
-                playFallbackTTS();
-            });
+        
+        // Remove visual glow when TTS is done
+        if (this.speechSynthesis) {
+            const timer = setInterval(() => {
+                if (!this.speechSynthesis.speaking) {
+                    clearInterval(timer);
+                    if (emojiEl) emojiEl.classList.remove('playing');
+                }
+            }, 200);
         } else {
-            // Fallback to TTS pronunciation
-            playFallbackTTS();
+            // Remove visual feedback after short delay if TTS unavailable
+            setTimeout(() => {
+                if (emojiEl) emojiEl.classList.remove('playing');
+            }, 1000);
         }
     }
 
@@ -1077,83 +955,30 @@ class AnimalSounds {
         }
     }
 
-    // UI feedback sounds using simple tones
+    // UI feedback sounds - DISABLED (only pronunciation allowed)
     playUISound(type) {
         if (!this.isEnabled) return;
         
-        try {
-            if (!this.audioContext || !this.isInitialized) {
-                console.log(`UI Sound: ${type}`);
-                return;
-            }
-            
-            switch(type) {
-                case 'select':
-                    this.playSimpleTone(440, 0.2);
-                    break;
-                case 'correct':
-                    this.playMelody([523.25, 659.25, 783.99], 0.2);
-                    break;
-                case 'incorrect':
-                    this.playMelody([220, 196], 0.3);
-                    break;
-                case 'complete':
-                    this.playMelody([523.25, 659.25, 783.99, 1046.5], 0.2);
-                    break;
-                case 'powerup':
-                    this.playMelody([440, 554.37], 0.15);
-                    break;
-            }
-        } catch (error) {
-            console.error('Error playing UI sound:', error);
-        }
+        console.log(`UI sound disabled: ${type} - only pronunciation sounds allowed`);
+        // No UI sounds - silently ignore
     }
 
-    // Play a simple tone for UI feedback
+    // Play a simple tone for UI feedback - DISABLED
     playSimpleTone(frequency, duration) {
-        const oscillator = this.audioContext.createOscillator();
-        const gainNode = this.audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(this.audioContext.destination);
-        
-        oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
-        oscillator.type = 'sine';
-        
-        gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
-        gainNode.gain.linearRampToValueAtTime(0.1, this.audioContext.currentTime + 0.02);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
-        
-        oscillator.start(this.audioContext.currentTime);
-        oscillator.stop(this.audioContext.currentTime + duration);
+        console.log(`Simple tone disabled - only pronunciation allowed`);
+        // No sound generation - silently ignore
     }
 
-    // Play enhanced tone with better sound quality
+    // Play enhanced tone with better sound quality - DISABLED
     playEnhancedTone(frequency, duration) {
-        const oscillator = this.audioContext.createOscillator();
-        const gainNode = this.audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(this.audioContext.destination);
-        
-        oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
-        oscillator.type = 'sine';
-        
-        gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
-        gainNode.gain.linearRampToValueAtTime(0.15, this.audioContext.currentTime + 0.02);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
-        
-        oscillator.start(this.audioContext.currentTime);
-        oscillator.stop(this.audioContext.currentTime + duration);
+        console.log(`Enhanced tone disabled - only pronunciation allowed`);
+        // No sound generation - silently ignore
     }
 
-    // Play a melody for UI feedback
+    // Play a melody for UI feedback - DISABLED
     playMelody(frequencies, noteDuration) {
-        frequencies.forEach((freq, index) => {
-            setTimeout(() => {
-                this.playSimpleTone(freq, noteDuration);
-            }, index * noteDuration * 1000);
-        });
+        console.log(`Melody disabled - only pronunciation allowed`);
+        // No sound generation - silently ignore
     }
 
     // Play success sound (correct answer)

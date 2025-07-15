@@ -68,9 +68,9 @@ class RealAnimalSounds {
     }
 
     initAudioContext() {
-        if (window.AudioContext || window.webkitAudioContext) {
-            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        }
+        // Audio context disabled - only text-to-speech pronunciation allowed
+        this.audioContext = null;
+        console.log('Audio context disabled - only pronunciation sounds enabled');
     }
 
     async preloadSounds(animalNames) {
@@ -116,45 +116,10 @@ class RealAnimalSounds {
     async playAnimalSound(animalName, options = {}) {
         if (!this.isEnabled) return;
 
-        // Stop current sound if playing
-        this.stopCurrentSound();
-
-        // Show loading indicator
-        this.showSoundLoading(animalName);
-
-        try {
-            // Try to play real animal sound first
-            let audio = this.audioCache[animalName];
-            
-            if (!audio) {
-                audio = await this.loadSound(animalName);
-            }
-
-            if (audio) {
-                // Clone the audio to allow multiple plays
-                this.currentAudio = audio.cloneNode();
-                this.currentAudio.volume = options.volume || 0.7;
-                
-                // Add visual feedback during playback
-                this.currentAudio.addEventListener('play', () => {
-                    this.onSoundStart(animalName);
-                });
-                
-                this.currentAudio.addEventListener('ended', () => {
-                    this.onSoundEnd(animalName);
-                });
-
-                await this.currentAudio.play();
-            } else {
-                // Fallback to text-to-speech if real sound not available
-                this.fallbackToSpeech(animalName);
-            }
-        } catch (error) {
-            console.error('Error playing sound:', error);
-            this.fallbackToSpeech(animalName);
-        } finally {
-            this.hideSoundLoading();
-        }
+        console.log(`Playing pronunciation for: ${animalName}`);
+        
+        // Only play pronunciation - no real animal sounds or CDN audio
+        this.fallbackToSpeech(animalName);
     }
 
     fallbackToSpeech(animalName) {
@@ -269,46 +234,17 @@ class RealAnimalSounds {
         }
     }
 
-    // Play UI feedback sounds
+    // Play UI feedback sounds - DISABLED (only pronunciation allowed)
     playUISound(type) {
         if (!this.isEnabled) return;
         
-        const frequencies = {
-            'select': [440, 550],
-            'correct': [523, 659, 784, 1047],
-            'incorrect': [220, 196, 174],
-            'complete': [523, 659, 784, 880, 1047],
-            'powerup': [440, 554, 659],
-            'hint': [659, 784, 880]
-        };
-
-        if (frequencies[type]) {
-            this.playMelody(frequencies[type], 0.15);
-        }
+        console.log(`UI sound disabled: ${type} - only pronunciation sounds allowed`);
+        // No UI sounds - silently ignore
     }
 
     playMelody(frequencies, duration) {
-        if (!this.audioContext) return;
-
-        frequencies.forEach((freq, index) => {
-            setTimeout(() => {
-                const oscillator = this.audioContext.createOscillator();
-                const gainNode = this.audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(this.audioContext.destination);
-                
-                oscillator.frequency.setValueAtTime(freq, this.audioContext.currentTime);
-                oscillator.type = 'sine';
-                
-                gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0.1, this.audioContext.currentTime + 0.01);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
-                
-                oscillator.start(this.audioContext.currentTime);
-                oscillator.stop(this.audioContext.currentTime + duration);
-            }, index * duration * 1000);
-        });
+        console.log(`Melody disabled - only pronunciation sounds allowed`);
+        // No sound generation - silently ignore
     }
 
     toggleSound() {
