@@ -74,8 +74,8 @@ class InteractiveFeatures {
         document.body.appendChild(clone);
         this.dragClone = clone;
         
-        // Play pickup sound
-        window.realAnimalSounds?.playUISound('select');
+        // Play pickup sound - DISABLED (only pronunciation allowed)
+        // window.realAnimalSounds?.playUISound('select');
         
         e.preventDefault();
     }
@@ -169,8 +169,8 @@ class InteractiveFeatures {
         item.classList.add('dropped-item');
         dropZone.appendChild(item);
         
-        // Play success sound
-        window.realAnimalSounds?.playUISound('correct');
+        // Play success sound - DISABLED (only pronunciation allowed)
+        // window.realAnimalSounds?.playUISound('correct');
         
         // Create celebration particles
         this.createCelebrationParticles(dropZone);
@@ -190,8 +190,8 @@ class InteractiveFeatures {
     }
 
     handleFailedDrop() {
-        // Play error sound
-        window.realAnimalSounds?.playUISound('incorrect');
+        // Play error sound - DISABLED (only pronunciation allowed)
+        // window.realAnimalSounds?.playUISound('incorrect');
         
         // Visual shake effect
         if (this.draggedElement) {
@@ -306,7 +306,8 @@ class HabitatMatchingGame {
     }
 
     showCompletionScreen() {
-        window.realAnimalSounds?.playUISound('complete');
+        // Play completion sound - DISABLED (only pronunciation allowed)
+        // window.realAnimalSounds?.playUISound('complete');
         
         const completion = document.createElement('div');
         completion.className = 'game-completion';
@@ -390,7 +391,7 @@ class SoundMatchingGame {
     }
 
     playRandomSound() {
-        // Play a random animal sound
+        // Play a random animal sound - KEEP (pronunciation only)
         const animals = ['Lion', 'Tiger', 'Elephant', 'Monkey', 'Wolf', 'Dolphin'];
         this.currentAnimal = animals[Math.floor(Math.random() * animals.length)];
         window.realAnimalSounds?.playAnimalSound(this.currentAnimal);
@@ -440,8 +441,8 @@ class AnimalPuzzleGame {
     }
 
     showHint() {
-        // Show a hint for the puzzle
-        window.realAnimalSounds?.playUISound('hint');
+        // Show a hint for the puzzle - DISABLED (only pronunciation allowed)
+        // window.realAnimalSounds?.playUISound('hint');
     }
 }
 
