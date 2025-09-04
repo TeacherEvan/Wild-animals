@@ -41,16 +41,31 @@ class AnimalSounds {
     }
 
     initAudio() {
-        // Audio context disabled - only text-to-speech pronunciation allowed
-        this.audioContext = null;
-        console.log('Audio context disabled - only pronunciation sounds enabled');
+        // Enable Web Audio API for synthetic animal sounds
+        try {
+            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            this.isInitialized = true;
+            this.loadAnimalSounds();
+            console.log('Web Audio API initialized successfully for synthetic animal sounds');
+        } catch (error) {
+            console.warn('Web Audio API not available, using text-to-speech only:', error);
+            this.audioContext = null;
+            this.isInitialized = false;
+        }
     }
 
     initAudioContext() {
-        // Audio context disabled - only text-to-speech pronunciation allowed
-        this.audioContext = null;
-        this.isInitialized = false;
-        console.log('Audio context disabled - only pronunciation sounds enabled');
+        // Enable Web Audio API for synthetic animal sounds
+        try {
+            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            this.isInitialized = true;
+            this.loadAnimalSounds();
+            console.log('Web Audio API initialized successfully for synthetic animal sounds');
+        } catch (error) {
+            console.warn('Web Audio API not available, using text-to-speech only:', error);
+            this.audioContext = null;
+            this.isInitialized = false;
+        }
     }
 
     // Load and cache animal sounds
@@ -887,33 +902,95 @@ class AnimalSounds {
         oscillator.start(this.audioContext.currentTime);
         oscillator.stop(this.audioContext.currentTime + duration);
     }
-    // Play animal sound based on name - ONLY pronunciation allowed
+    // Play animal sound with enhanced synthetic audio + pronunciation
     playAnimalSound(animalName) {
         if (!this.isEnabled) return;
 
-        console.log(`Playing pronunciation for: ${animalName}`);
+        console.log(`Playing enhanced sound for: ${animalName}`);
         
-        // Only play pronunciation - no real audio or sound effects
+        // Play synthetic animal sound if Web Audio API is available
+        if (this.audioContext && this.isInitialized && this.animalSoundMap[animalName]) {
+            this.playSyntheticAnimalSound(animalName);
+        }
+        
+        // Also play pronunciation for educational value
         this.pronounceAnimal(animalName);
         
-        // Add minimal visual feedback
-        const emojiEl = document.getElementById('animalEmoji');
-        if (emojiEl) emojiEl.classList.add('playing');
-        
-        // Remove visual glow when TTS is done
-        if (this.speechSynthesis) {
-            const timer = setInterval(() => {
-                if (!this.speechSynthesis.speaking) {
-                    clearInterval(timer);
-                    if (emojiEl) emojiEl.classList.remove('playing');
-                }
-            }, 200);
-        } else {
-            // Remove visual feedback after short delay if TTS unavailable
-            setTimeout(() => {
-                if (emojiEl) emojiEl.classList.remove('playing');
-            }, 1000);
+        // Add enhanced visual feedback
+        this.addEnhancedVisualFeedback();
+    }
+
+    playSyntheticAnimalSound(animalName) {
+        const soundData = this.animalSoundMap[animalName];
+        if (!soundData) return;
+
+        // Resume audio context if suspended (required by browser policies)
+        if (this.audioContext.state === 'suspended') {
+            this.audioContext.resume();
         }
+
+        switch (soundData.type) {
+            case 'roar':
+                this.createRoarSound(soundData.frequencies, soundData.duration);
+                break;
+            case 'howl':
+                this.createHowlSound(soundData.frequencies, soundData.duration);
+                break;
+            case 'trumpet':
+                this.createTrumpetSound(soundData.frequencies, soundData.duration);
+                break;
+            case 'click':
+                this.createClickSound(soundData.frequencies, soundData.duration);
+                break;
+            case 'chatter':
+                this.createChatterSound(soundData.frequencies, soundData.duration);
+                break;
+            case 'bark':
+                this.createBarkSound(soundData.frequencies, soundData.duration);
+                break;
+            case 'croak':
+                this.createCroakSound(soundData.frequencies, soundData.duration);
+                break;
+            case 'squawk':
+                this.createSquawkSound(soundData.frequencies, soundData.duration);
+                break;
+            case 'screech':
+                this.createScreechSound(soundData.frequencies, soundData.duration);
+                break;
+            case 'neigh':
+                this.createNeighSound(soundData.frequencies, soundData.duration);
+                break;
+            case 'hum':
+                this.createHumSound(soundData.frequencies, soundData.duration);
+                break;
+            case 'snort':
+                this.createSnortSound(soundData.frequencies, soundData.duration);
+                break;
+            case 'grunt':
+                this.createGruntSound(soundData.frequencies, soundData.duration);
+                break;
+            case 'growl':
+                this.createGrowlSound(soundData.frequencies, soundData.duration);
+                break;
+            default:
+                console.log(`No synthetic sound for ${animalName}, using pronunciation only`);
+        }
+    }
+
+    addEnhancedVisualFeedback() {
+        const emojiEl = document.getElementById('animalEmoji');
+        if (emojiEl) {
+            emojiEl.classList.add('playing');
+            // Screen shake effect for immersion
+            this.addScreenShake();
+            // Particle effect for visual appeal
+            this.createSoundWaveParticles(emojiEl);
+        }
+        
+        // Remove visual effects after sound duration
+        setTimeout(() => {
+            if (emojiEl) emojiEl.classList.remove('playing');
+        }, 2000);
     }
 
     createSnortSound(frequencies, duration) {
@@ -1099,6 +1176,191 @@ class AnimalSounds {
     // Method to check if the module is properly initialized
     isReady() {
         return this.isInitialized;
+    }
+
+    // Additional sound creation methods for enhanced animal sounds
+    createRoarSound(frequencies, duration) {
+        const oscillator = this.audioContext.createOscillator();
+        const gainNode = this.audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(this.audioContext.destination);
+        
+        // Deep, powerful roar with frequency sweep
+        oscillator.frequency.setValueAtTime(frequencies[0], this.audioContext.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(frequencies[1], this.audioContext.currentTime + duration * 0.3);
+        oscillator.frequency.exponentialRampToValueAtTime(frequencies[2], this.audioContext.currentTime + duration * 0.7);
+        oscillator.frequency.exponentialRampToValueAtTime(frequencies[3], this.audioContext.currentTime + duration);
+        
+        // Volume envelope for roar
+        gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.3, this.audioContext.currentTime + 0.2);
+        gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime + duration * 0.6);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+        
+        oscillator.type = 'sawtooth';
+        oscillator.start(this.audioContext.currentTime);
+        oscillator.stop(this.audioContext.currentTime + duration);
+    }
+
+    createTrumpetSound(frequencies, duration) {
+        const oscillator = this.audioContext.createOscillator();
+        const gainNode = this.audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(this.audioContext.destination);
+        
+        // Elephant trumpet with deep resonance
+        oscillator.frequency.setValueAtTime(frequencies[0], this.audioContext.currentTime);
+        oscillator.frequency.linearRampToValueAtTime(frequencies[1], this.audioContext.currentTime + duration * 0.5);
+        oscillator.frequency.linearRampToValueAtTime(frequencies[2], this.audioContext.currentTime + duration);
+        
+        gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.4, this.audioContext.currentTime + 0.3);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+        
+        oscillator.type = 'square';
+        oscillator.start(this.audioContext.currentTime);
+        oscillator.stop(this.audioContext.currentTime + duration);
+    }
+
+    createClickSound(frequencies, duration) {
+        // Dolphin clicks - series of short high-frequency bursts
+        frequencies.forEach((freq, index) => {
+            setTimeout(() => {
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(freq, this.audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.2, this.audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
+                
+                oscillator.type = 'sine';
+                oscillator.start(this.audioContext.currentTime);
+                oscillator.stop(this.audioContext.currentTime + 0.1);
+            }, index * 100);
+        });
+    }
+
+    createChatterSound(frequencies, duration) {
+        // Monkey chatter - rapid frequency changes
+        const notes = frequencies;
+        const noteLength = duration / notes.length;
+        
+        notes.forEach((freq, index) => {
+            setTimeout(() => {
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(freq, this.audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.2, this.audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + noteLength);
+                
+                oscillator.type = 'square';
+                oscillator.start(this.audioContext.currentTime);
+                oscillator.stop(this.audioContext.currentTime + noteLength);
+            }, index * noteLength * 1000);
+        });
+    }
+
+    createBarkSound(frequencies, duration) {
+        // Dog/Fox bark - short, sharp sounds
+        const oscillator = this.audioContext.createOscillator();
+        const gainNode = this.audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(this.audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(frequencies[0], this.audioContext.currentTime);
+        gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.3, this.audioContext.currentTime + 0.05);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+        
+        oscillator.type = 'square';
+        oscillator.start(this.audioContext.currentTime);
+        oscillator.stop(this.audioContext.currentTime + duration);
+    }
+
+    createCroakSound(frequencies, duration) {
+        // Frog croak - low frequency with vibrato
+        const oscillator = this.audioContext.createOscillator();
+        const gainNode = this.audioContext.createGain();
+        const lfo = this.audioContext.createOscillator();
+        const lfoGain = this.audioContext.createGain();
+        
+        // Set up vibrato
+        lfo.frequency.setValueAtTime(8, this.audioContext.currentTime);
+        lfoGain.gain.setValueAtTime(10, this.audioContext.currentTime);
+        
+        lfo.connect(lfoGain);
+        lfoGain.connect(oscillator.frequency);
+        oscillator.connect(gainNode);
+        gainNode.connect(this.audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(frequencies[0], this.audioContext.currentTime);
+        gainNode.gain.setValueAtTime(0.2, this.audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+        
+        oscillator.type = 'sawtooth';
+        lfo.type = 'sine';
+        
+        oscillator.start(this.audioContext.currentTime);
+        lfo.start(this.audioContext.currentTime);
+        oscillator.stop(this.audioContext.currentTime + duration);
+        lfo.stop(this.audioContext.currentTime + duration);
+    }
+
+    createGrowlSound(frequencies, duration) {
+        // Bear growl - low, rumbling sound
+        const oscillator = this.audioContext.createOscillator();
+        const gainNode = this.audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(this.audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(frequencies[0], this.audioContext.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(frequencies[1], this.audioContext.currentTime + duration * 0.5);
+        oscillator.frequency.exponentialRampToValueAtTime(frequencies[2], this.audioContext.currentTime + duration);
+        
+        gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.25, this.audioContext.currentTime + 0.1);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+        
+        oscillator.type = 'sawtooth';
+        oscillator.start(this.audioContext.currentTime);
+        oscillator.stop(this.audioContext.currentTime + duration);
+    }
+
+    createSoundWaveParticles(element) {
+        // Create visual sound wave effect
+        const rect = element.getBoundingClientRect();
+        const waves = 5;
+        
+        for (let i = 0; i < waves; i++) {
+            const wave = document.createElement('div');
+            wave.className = 'sound-wave';
+            wave.style.cssText = `
+                position: fixed;
+                left: ${rect.left + rect.width / 2}px;
+                top: ${rect.top + rect.height / 2}px;
+                width: 20px;
+                height: 20px;
+                border: 2px solid #FFD700;
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 1000;
+                animation: soundWave 1s ease-out ${i * 0.2}s both;
+            `;
+            
+            document.body.appendChild(wave);
+            setTimeout(() => wave.remove(), 1000 + i * 200);
+        }
     }
 }
 
