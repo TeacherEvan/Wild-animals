@@ -23,32 +23,48 @@ class InteractiveFeatures {
     }
 
     setupDragAndDrop() {
-        // Make draggable elements
-        document.addEventListener('DOMContentLoaded', () => {
-            const draggables = document.querySelectorAll('.draggable');
-            const dropZones = document.querySelectorAll('.drop-zone');
+        // Setup drag and drop for current elements
+        this.attachDragDropListeners();
+    }
 
-            draggables.forEach(draggable => {
-                // Mouse events
-                draggable.addEventListener('mousedown', (e) => this.handleDragStart(e, draggable));
-                
-                // Touch events
-                draggable.addEventListener('touchstart', (e) => this.handleDragStart(e, draggable), {passive: false});
-            });
+    attachDragDropListeners() {
+        const draggables = document.querySelectorAll('.draggable');
+        const dropZones = document.querySelectorAll('.drop-zone');
 
-            dropZones.forEach(zone => {
-                zone.addEventListener('dragover', (e) => this.handleDragOver(e));
-                zone.addEventListener('drop', (e) => this.handleDrop(e, zone));
-                zone.addEventListener('touchmove', (e) => this.handleTouchMove(e), {passive: false});
-                zone.addEventListener('touchend', (e) => this.handleTouchEnd(e, zone));
-            });
-
-            // Global mouse/touch events
-            document.addEventListener('mousemove', (e) => this.handleDragMove(e));
-            document.addEventListener('mouseup', (e) => this.handleDragEnd(e));
-            document.addEventListener('touchmove', (e) => this.handleDragMove(e), {passive: false});
-            document.addEventListener('touchend', (e) => this.handleDragEnd(e));
+        draggables.forEach(draggable => {
+            // Mouse events
+            draggable.addEventListener('mousedown', (e) => this.handleDragStart(e, draggable));
+            
+            // Touch events  
+            draggable.addEventListener('touchstart', (e) => this.handleDragStart(e, draggable), {passive: false});
+            
+            // Standard HTML5 drag API
+            draggable.draggable = true;
+            draggable.addEventListener('dragstart', (e) => this.handleHTML5DragStart(e, draggable));
         });
+
+        dropZones.forEach(zone => {
+            zone.addEventListener('dragover', (e) => this.handleDragOver(e));
+            zone.addEventListener('drop', (e) => this.handleDrop(e, zone));
+            zone.addEventListener('touchmove', (e) => this.handleTouchMove(e), {passive: false});
+            zone.addEventListener('touchend', (e) => this.handleTouchEnd(e, zone));
+        });
+
+        // Global mouse/touch events
+        document.addEventListener('mousemove', (e) => this.handleDragMove(e));
+        document.addEventListener('mouseup', (e) => this.handleDragEnd(e));
+        document.addEventListener('touchmove', (e) => this.handleDragMove(e), {passive: false});
+        document.addEventListener('touchend', (e) => this.handleDragEnd(e));
+    }
+
+    handleHTML5DragStart(e, element) {
+        this.draggedElement = element;
+        const animalData = {
+            type: element.dataset.type,
+            animal: element.dataset.animal
+        };
+        e.dataTransfer.setData('text/plain', JSON.stringify(animalData));
+        e.dataTransfer.effectAllowed = 'move';
     }
 
     handleDragStart(e, element) {
@@ -139,6 +155,119 @@ class InteractiveFeatures {
 
     handleDrop(e, dropZone) {
         e.preventDefault();
+        
+        if (!this.draggedElement) return;
+        
+        // Get drop data for HTML5 drag and drop
+        let animalData;
+        try {
+            animalData = JSON.parse(e.dataTransfer.getData('text/plain'));
+        } catch {
+            // Fallback for manual drag handling
+            animalData = {
+                type: this.draggedElement.dataset.type,
+                animal: this.draggedElement.dataset.animal
+            };
+        }
+        
+        const dropType = dropZone.dataset.accepts;
+        
+        // Check if this is a valid drop
+        if (dropType === animalData.type) {
+            // Valid drop - move animal to habitat
+            this.moveAnimalToHabitat(this.draggedElement, dropZone, animalData);
+            this.showSuccessFeedback(dropZone, animalData.animal);
+            this.updateScore(10); // 10 points per correct match
+        } else {
+            // Invalid drop - show error feedback
+            this.showErrorFeedback(this.draggedElement);
+        }
+        
+        this.cleanupDrag();
+    }
+
+    moveAnimalToHabitat(animalElement, habitatZone, animalData) {
+        // Create a smaller version for the habitat
+        const habitatAnimal = document.createElement('div');
+        habitatAnimal.className = 'habitat-animal';
+        habitatAnimal.innerHTML = `
+            <span class="habitat-emoji">${animalElement.querySelector('.animal-emoji').textContent}</span>
+            <span class="habitat-name">${animalData.animal}</span>
+        `;
+        
+        // Find or create the dropped animals container
+        let droppedContainer = habitatZone.querySelector('.dropped-animals');
+        if (!droppedContainer) {
+            droppedContainer = document.createElement('div');
+            droppedContainer.className = 'dropped-animals';
+            habitatZone.appendChild(droppedContainer);
+        }
+        
+        droppedContainer.appendChild(habitatAnimal);
+        
+        // Remove original animal from pool
+        animalElement.remove();
+        
+        // Check if game is complete
+        this.checkGameCompletion();
+    }
+
+    showSuccessFeedback(zone, animalName) {
+        // Play success sound - KEEP (pronunciation only)
+        window.realAnimalSounds?.playAnimalSound(animalName);
+        
+        // Visual celebration
+        this.createCelebrationParticles(zone);
+        
+        // Flash green
+        zone.style.backgroundColor = '#4CAF50';
+        setTimeout(() => {
+            zone.style.backgroundColor = '';
+        }, 500);
+    }
+
+    showErrorFeedback(element) {
+        if (!element) return;
+        
+        // Shake animation for wrong drop
+        element.classList.add('shake-animation');
+        setTimeout(() => {
+            if (element) {
+                element.classList.remove('shake-animation');
+            }
+        }, 500);
+    }
+
+    checkGameCompletion() {
+        const remainingAnimals = document.querySelectorAll('.animal-card').length;
+        if (remainingAnimals === 0) {
+            // Game completed!
+            this.showCompletionMessage();
+        }
+    }
+
+    showCompletionMessage() {
+        const message = document.createElement('div');
+        message.className = 'game-completion';
+        message.innerHTML = `
+            <h2>🎉 Congratulations! 🎉</h2>
+            <p>You matched all animals to their homes!</p>
+            <div class="star-rating">⭐⭐⭐</div>
+            <p>Final Score: ${this.score}</p>
+            <button class="play-again-btn" onclick="location.reload()">Play Again</button>
+        `;
+        document.body.appendChild(message);
+    }
+
+    cleanupDrag() {
+        if (this.dragClone) {
+            this.dragClone.remove();
+            this.dragClone = null;
+        }
+        if (this.draggedElement) {
+            this.draggedElement.classList.remove('dragging');
+            this.draggedElement = null;
+        }
     }
 
     handleTouchMove(e) {
