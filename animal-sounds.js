@@ -171,6 +171,17 @@ class AnimalSounds {
         }
     }
 
+    initVoices() {
+        // Initialize speech synthesis voices
+        if (this.speechSupported) {
+            this.loadVoices();
+            // Ensure voices are loaded
+            if (this.speechSynthesis.onvoiceschanged !== undefined) {
+                this.speechSynthesis.onvoiceschanged = () => this.loadVoices();
+            }
+        }
+    }
+
     loadVoices() {
         this.voices = this.speechSynthesis.getVoices();
         console.log('Available voices:', this.voices.length);

@@ -401,12 +401,102 @@ class SoundMatchingGame {
     }
 
     showAnimalOptions() {
-        // Implementation for showing clickable animal options
+        const animals = ['Lion', 'Tiger', 'Elephant', 'Monkey', 'Wolf', 'Dolphin', 'Bear', 'Fox'];
+        
+        // Generate random options including the correct answer
+        const options = [this.currentAnimal];
+        const availableAnimals = animals.filter(animal => animal !== this.currentAnimal);
+        
+        // Add 3 random wrong answers
+        while (options.length < 4) {
+            const randomAnimal = availableAnimals[Math.floor(Math.random() * availableAnimals.length)];
+            if (!options.includes(randomAnimal)) {
+                options.push(randomAnimal);
+            }
+        }
+        
+        // Shuffle options
+        options.sort(() => Math.random() - 0.5);
+        
+        // Create options HTML
+        const optionsContainer = document.querySelector('.animal-options-grid');
+        optionsContainer.innerHTML = options.map(animal => `
+            <button class="sound-option-btn" onclick="window.interactiveFeatures.currentGame.selectAnimal('${animal}')">
+                <span class="option-emoji">${this.getAnimalEmoji(animal)}</span>
+                <span class="option-name">${animal}</span>
+            </button>
+        `).join('');
+        
+        optionsContainer.style.display = 'grid';
     }
 
     nextRound() {
         this.rounds++;
-        // Setup next round
+        // Clear previous options
+        const optionsContainer = document.querySelector('.animal-options-grid');
+        if (optionsContainer) {
+            optionsContainer.innerHTML = '';
+            optionsContainer.style.display = 'none';
+        }
+        // Ready for next sound to be played
+    }
+
+    selectAnimal(selectedAnimal) {
+        const isCorrect = selectedAnimal === this.currentAnimal;
+        
+        if (isCorrect) {
+            this.correctAnswers++;
+            this.showFeedback('Correct! 🎉', 'success');
+            this.updateScore(10);
+        } else {
+            this.showFeedback(`Wrong! It was ${this.currentAnimal} 🦁`, 'error');
+        }
+        
+        // Move to next round after a delay
+        setTimeout(() => this.nextRound(), 2000);
+    }
+    
+    getAnimalEmoji(animal) {
+        const emojis = {
+            'Lion': '🦁', 'Tiger': '🐯', 'Elephant': '🐘', 'Monkey': '🐵',
+            'Wolf': '🐺', 'Dolphin': '🐬', 'Bear': '🐻', 'Fox': '🦊',
+            'Giraffe': '🦒', 'Zebra': '🦓', 'Rhino': '🦏', 'Leopard': '🐆',
+            'Koala': '🐨', 'Gorilla': '🦍', 'Penguin': '🐧', 'Eagle': '🦅',
+            'Octopus': '🐙', 'Shark': '🦈', 'Frog': '🐸'
+        };
+        return emojis[animal] || '🐾';
+    }
+    
+    showFeedback(message, type) {
+        const feedback = document.createElement('div');
+        feedback.className = `sound-feedback ${type}`;
+        feedback.textContent = message;
+        feedback.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: ${type === 'success' ? '#4CAF50' : '#f44336'};
+            color: white;
+            padding: 20px 40px;
+            border-radius: 10px;
+            font-size: 1.5em;
+            font-weight: bold;
+            z-index: 1000;
+            animation: fadeInOut 2s ease-in-out;
+        `;
+        
+        document.body.appendChild(feedback);
+        
+        setTimeout(() => feedback.remove(), 2000);
+    }
+    
+    updateScore(points) {
+        const scoreElement = document.getElementById('sound-score');
+        if (scoreElement) {
+            const currentScore = parseInt(scoreElement.textContent) + points;
+            scoreElement.textContent = currentScore;
+        }
     }
 }
 
