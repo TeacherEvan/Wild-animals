@@ -262,11 +262,21 @@ class InteractiveFeatures {
 
     updateScore(points) {
         this.score += points;
+        
+        // Update main score
         const scoreElement = document.getElementById('interactive-score');
         if (scoreElement) {
             scoreElement.textContent = this.score;
             scoreElement.classList.add('score-bump');
             setTimeout(() => scoreElement.classList.remove('score-bump'), 300);
+        }
+        
+        // Update sound game score
+        const soundScoreElement = document.getElementById('sound-score');
+        if (soundScoreElement) {
+            soundScoreElement.textContent = this.currentGame?.correctAnswers || 0;
+            soundScoreElement.classList.add('score-bump');
+            setTimeout(() => soundScoreElement.classList.remove('score-bump'), 300);
         }
     }
 
@@ -421,8 +431,11 @@ class SoundMatchingGame {
                     <span>Play Sound</span>
                 </button>
                 <div class="animal-options-grid"></div>
+                <div class="sound-feedback"></div>
             </div>
-            <div class="score-display">Score: <span id="sound-score">0</span></div>
+            <div class="score-display">
+                Round: <span id="sound-round">0</span>/5 | Score: <span id="sound-score">0</span>
+            </div>
         `;
         
         document.querySelector('.game-area').appendChild(gameContainer);
@@ -440,12 +453,129 @@ class SoundMatchingGame {
     }
 
     showAnimalOptions() {
-        // Implementation for showing clickable animal options
+        // Create options for the current round
+        const options = this.generateSoundGameOptions();
+        const optionsGrid = document.querySelector('.animal-options-grid');
+        
+        if (!optionsGrid) return;
+        
+        optionsGrid.innerHTML = '';
+        options.forEach(animal => {
+            const optionButton = document.createElement('button');
+            optionButton.className = 'animal-option-btn';
+            optionButton.innerHTML = `
+                <span class="animal-emoji">${this.getAnimalEmoji(animal)}</span>
+                <span class="animal-name">${animal}</span>
+            `;
+            optionButton.onclick = () => this.checkAnswer(animal);
+            optionsGrid.appendChild(optionButton);
+        });
+    }
+
+    generateSoundGameOptions() {
+        // Get 3 wrong answers + 1 correct answer
+        const allAnimals = ['Lion', 'Tiger', 'Elephant', 'Monkey', 'Wolf', 'Dolphin', 'Bear', 'Fox', 'Frog', 'Eagle'];
+        const wrongAnimals = allAnimals.filter(animal => animal !== this.currentAnimal);
+        const randomWrong = wrongAnimals.sort(() => Math.random() - 0.5).slice(0, 3);
+        
+        // Combine and shuffle
+        const options = [this.currentAnimal, ...randomWrong];
+        return options.sort(() => Math.random() - 0.5);
+    }
+
+    checkAnswer(selectedAnimal) {
+        const isCorrect = selectedAnimal === this.currentAnimal;
+        
+        // Update score
+        if (isCorrect) {
+            this.correctAnswers++;
+            window.interactiveFeatures.updateScore(10);
+            this.showFeedback('Correct! 🎉', 'correct');
+        } else {
+            this.showFeedback(`Oops! It was a ${this.currentAnimal} 😊`, 'incorrect');
+        }
+        
+        // Disable all buttons
+        document.querySelectorAll('.animal-option-btn').forEach(btn => {
+            btn.disabled = true;
+            if (btn.textContent.includes(this.currentAnimal)) {
+                btn.classList.add('correct');
+            } else if (btn.textContent.includes(selectedAnimal) && !isCorrect) {
+                btn.classList.add('incorrect');
+            }
+        });
+        
+        // Next round after delay
+        setTimeout(() => {
+            this.nextRound();
+        }, 2000);
+    }
+
+    showFeedback(message, type) {
+        let feedback = document.querySelector('.sound-feedback');
+        if (!feedback) {
+            feedback = document.createElement('div');
+            feedback.className = 'sound-feedback';
+            document.querySelector('.sound-game-area').appendChild(feedback);
+        }
+        
+        feedback.textContent = message;
+        feedback.className = `sound-feedback ${type}`;
+    }
+
+    getAnimalEmoji(animal) {
+        const emojis = {
+            'Lion': '🦁', 'Tiger': '🐯', 'Elephant': '🐘', 'Monkey': '🐵',
+            'Wolf': '🐺', 'Dolphin': '🐬', 'Bear': '🐻', 'Fox': '🦊',
+            'Frog': '🐸', 'Eagle': '🦅'
+        };
+        return emojis[animal] || '🐾';
     }
 
     nextRound() {
         this.rounds++;
-        // Setup next round
+        
+        if (this.rounds > 5) {
+            // Game complete
+            this.showCompletionScreen();
+            return;
+        }
+        
+        // Clear feedback
+        const feedback = document.querySelector('.sound-feedback');
+        if (feedback) feedback.textContent = '';
+        
+        // Clear options
+        const optionsGrid = document.querySelector('.animal-options-grid');
+        if (optionsGrid) optionsGrid.innerHTML = '';
+        
+        // Update round counter if it exists
+        const roundCounter = document.getElementById('sound-round');
+        if (roundCounter) roundCounter.textContent = this.rounds;
+    }
+
+    showCompletionScreen() {
+        const gameArea = document.querySelector('.sound-game-container');
+        const percentage = Math.round((this.correctAnswers / 5) * 100);
+        
+        let message = '';
+        if (percentage >= 80) {
+            message = '🌟 Amazing! You know your animal sounds!';
+        } else if (percentage >= 60) {
+            message = '👏 Good job! Keep listening!';
+        } else {
+            message = '😊 Nice try! Practice makes perfect!';
+        }
+        
+        gameArea.innerHTML = `
+            <div class="sound-completion">
+                <h2>${message}</h2>
+                <div class="final-score">Final Score: ${this.correctAnswers}/5 (${percentage}%)</div>
+                <button class="play-again-btn" onclick="window.interactiveFeatures.startGame('sounds')">
+                    🎮 Play Again
+                </button>
+            </div>
+        `;
     }
 }
 
