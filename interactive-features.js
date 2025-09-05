@@ -23,32 +23,71 @@ class InteractiveFeatures {
     }
 
     setupDragAndDrop() {
-        // Make draggable elements
-        document.addEventListener('DOMContentLoaded', () => {
-            const draggables = document.querySelectorAll('.draggable');
-            const dropZones = document.querySelectorAll('.drop-zone');
+        // Setup drag and drop for existing elements
+        this.initializeDragAndDrop();
+        
+        // Also setup on DOMContentLoaded for initial page load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => this.initializeDragAndDrop());
+        }
+    }
 
-            draggables.forEach(draggable => {
-                // Mouse events
-                draggable.addEventListener('mousedown', (e) => this.handleDragStart(e, draggable));
-                
-                // Touch events
-                draggable.addEventListener('touchstart', (e) => this.handleDragStart(e, draggable), {passive: false});
-            });
+    initializeDragAndDrop() {
+        const draggables = document.querySelectorAll('.draggable');
+        const dropZones = document.querySelectorAll('.drop-zone');
 
-            dropZones.forEach(zone => {
-                zone.addEventListener('dragover', (e) => this.handleDragOver(e));
-                zone.addEventListener('drop', (e) => this.handleDrop(e, zone));
-                zone.addEventListener('touchmove', (e) => this.handleTouchMove(e), {passive: false});
-                zone.addEventListener('touchend', (e) => this.handleTouchEnd(e, zone));
-            });
+        console.log(`Initializing drag and drop: ${draggables.length} draggables, ${dropZones.length} drop zones`);
 
-            // Global mouse/touch events
-            document.addEventListener('mousemove', (e) => this.handleDragMove(e));
-            document.addEventListener('mouseup', (e) => this.handleDragEnd(e));
-            document.addEventListener('touchmove', (e) => this.handleDragMove(e), {passive: false});
-            document.addEventListener('touchend', (e) => this.handleDragEnd(e));
+        draggables.forEach(draggable => {
+            // Remove existing listeners to avoid duplicates
+            draggable.removeEventListener('mousedown', draggable._handleDragStart);
+            draggable.removeEventListener('touchstart', draggable._handleTouchStart);
+            
+            // Create bound event handlers
+            draggable._handleDragStart = (e) => this.handleDragStart(e, draggable);
+            draggable._handleTouchStart = (e) => this.handleDragStart(e, draggable);
+            
+            // Mouse events
+            draggable.addEventListener('mousedown', draggable._handleDragStart);
+            
+            // Touch events
+            draggable.addEventListener('touchstart', draggable._handleTouchStart, {passive: false});
         });
+
+        dropZones.forEach(zone => {
+            // Remove existing listeners to avoid duplicates
+            zone.removeEventListener('dragover', zone._handleDragOver);
+            zone.removeEventListener('drop', zone._handleDrop);
+            zone.removeEventListener('touchmove', zone._handleTouchMove);
+            zone.removeEventListener('touchend', zone._handleTouchEnd);
+            
+            // Create bound event handlers
+            zone._handleDragOver = (e) => this.handleDragOver(e);
+            zone._handleDrop = (e) => this.handleDrop(e, zone);
+            zone._handleTouchMove = (e) => this.handleTouchMove(e);
+            zone._handleTouchEnd = (e) => this.handleTouchEnd(e, zone);
+            
+            zone.addEventListener('dragover', zone._handleDragOver);
+            zone.addEventListener('drop', zone._handleDrop);
+            zone.addEventListener('touchmove', zone._handleTouchMove, {passive: false});
+            zone.addEventListener('touchend', zone._handleTouchEnd);
+        });
+
+        // Global mouse/touch events (remove and re-add to avoid duplicates)
+        document.removeEventListener('mousemove', this._handleDragMove);
+        document.removeEventListener('mouseup', this._handleDragEnd);
+        document.removeEventListener('touchmove', this._handleTouchDragMove);
+        document.removeEventListener('touchend', this._handleTouchDragEnd);
+        
+        this._handleDragMove = (e) => this.handleDragMove(e);
+        this._handleDragEnd = (e) => this.handleDragEnd(e);
+        this._handleTouchDragMove = (e) => this.handleDragMove(e);
+        this._handleTouchDragEnd = (e) => this.handleDragEnd(e);
+        
+        document.addEventListener('mousemove', this._handleDragMove);
+        document.addEventListener('mouseup', this._handleDragEnd);
+        document.addEventListener('touchmove', this._handleTouchDragMove, {passive: false});
+        document.addEventListener('touchend', this._handleTouchDragEnd);
     }
 
     handleDragStart(e, element) {
@@ -281,7 +320,7 @@ class HabitatMatchingGame {
         document.querySelector('.game-area').appendChild(gameContainer);
         
         // Initialize drag and drop for new elements
-        window.interactiveFeatures.setupDragAndDrop();
+        window.interactiveFeatures.initializeDragAndDrop();
         
         // Set total animals count
         this.total = document.querySelectorAll('.animal-card').length;

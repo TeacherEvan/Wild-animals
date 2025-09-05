@@ -46,6 +46,22 @@ class AnimalSounds {
         console.log('Audio context disabled - only pronunciation sounds enabled');
     }
 
+    initVoices() {
+        if (this.speechSupported) {
+            this.loadVoices();
+            if (this.speechSynthesis.onvoiceschanged !== undefined) {
+                this.speechSynthesis.onvoiceschanged = () => this.loadVoices();
+            }
+        }
+    }
+
+    loadVoices() {
+        if (this.speechSupported) {
+            this.voices = this.speechSynthesis.getVoices();
+            console.log(`Loaded ${this.voices.length} speech synthesis voices`);
+        }
+    }
+
     initAudioContext() {
         // Audio context disabled - only text-to-speech pronunciation allowed
         this.audioContext = null;
@@ -169,11 +185,6 @@ class AnimalSounds {
             this.playUISound('select');
             nextBtn.click();
         }
-    }
-
-    loadVoices() {
-        this.voices = this.speechSynthesis.getVoices();
-        console.log('Available voices:', this.voices.length);
     }
 
     createHowlSound(frequencies, duration) {
