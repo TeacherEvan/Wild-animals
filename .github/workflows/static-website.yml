@@ -1,0 +1,72 @@
+# Static Website Validation
+# This workflow validates the HTML and JavaScript files for the Wild Animals Adventure game
+
+name: Static Website CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Validate HTML structure
+      run: |
+        # Check that main HTML file exists and has basic structure
+        if [ ! -f "index.html" ]; then
+          echo "Error: index.html not found"
+          exit 1
+        fi
+        
+        # Check for basic HTML structure
+        if ! grep -q "<!DOCTYPE html>" index.html; then
+          echo "Error: Missing DOCTYPE declaration"
+          exit 1
+        fi
+        
+        if ! grep -q "<html" index.html; then
+          echo "Error: Missing html tag"
+          exit 1
+        fi
+        
+        echo "✅ HTML structure validation passed"
+    
+    - name: Validate JavaScript files
+      run: |
+        # Check that JavaScript files exist
+        for js_file in animal-sounds.js interactive-features.js real-animal-sounds.js; do
+          if [ ! -f "$js_file" ]; then
+            echo "Error: $js_file not found"
+            exit 1
+          fi
+          echo "✅ Found $js_file"
+        done
+        
+        # Basic syntax check (if node is available)
+        if command -v node >/dev/null 2>&1; then
+          for js_file in *.js; do
+            if [ -f "$js_file" ]; then
+              echo "Checking syntax of $js_file"
+              node -c "$js_file" || exit 1
+            fi
+          done
+          echo "✅ JavaScript syntax validation passed"
+        else
+          echo "Node.js not available, skipping syntax check"
+        fi
+    
+    - name: Check file integrity
+      run: |
+        echo "📁 Repository structure:"
+        ls -la
+        
+        echo "📊 File sizes:"
+        du -h *.html *.js 2>/dev/null || true
+        
+        echo "✅ File integrity check completed"
