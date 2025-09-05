@@ -1800,6 +1800,21 @@
         function playCurrentAnimalSound() {
             if (window.currentAnimal && window.animalSounds) {
                 window.animalSounds.playAnimalSound(window.currentAnimal.name);
+                
+                // Add haptic feedback for mobile devices
+                if ('vibrate' in navigator) {
+                    navigator.vibrate(100);
+                }
+                
+                // Add visual feedback
+                const animalEmoji = document.getElementById('animalEmoji');
+                if (animalEmoji) {
+                    animalEmoji.style.transform = 'scale(1.2)';
+                    animalEmoji.style.transition = 'transform 0.2s ease';
+                    setTimeout(() => {
+                        animalEmoji.style.transform = 'scale(1)';
+                    }, 200);
+                }
             }
         }        // Initialize the game when page loads
         window.onload = () => {
