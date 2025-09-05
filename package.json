@@ -1,0 +1,28 @@
+{
+  "name": "wild-animals-adventure",
+  "version": "1.0.0",
+  "description": "Educational web application for kindergarten students to learn about animals",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 8080",
+    "test": "echo \"No tests specified - this is a static HTML application\" && exit 0",
+    "build": "echo \"No build process required - this is a static HTML application\" && exit 0"
+  },
+  "keywords": [
+    "education",
+    "kindergarten",
+    "animals",
+    "learning",
+    "interactive",
+    "static-website"
+  ],
+  "author": "TeacherEvan",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TeacherEvan/Wild-animals.git"
+  },
+  "homepage": "https://github.com/TeacherEvan/Wild-animals",
+  "devDependencies": {},
+  "dependencies": {}
+}
