@@ -919,6 +919,114 @@
             0%, 100% { transform: translateX(0); }
             10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
             20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        /* Sound Game Styles */
+        .animal-options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .animal-option-btn {
+            background: linear-gradient(45deg, #98FB98, #87CEEB);
+            border: 3px solid #FFD700;
+            border-radius: 15px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            font-weight: bold;
+            color: #2E8B57;
+        }
+
+        .animal-option-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .animal-option-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .animal-option-btn.correct {
+            background: linear-gradient(45deg, #32CD32, #90EE90);
+            animation: correctPulse 0.6s ease;
+        }
+
+        .animal-option-btn.incorrect {
+            background: linear-gradient(45deg, #FF6347, #FFA07A);
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .animal-option-btn .animal-emoji {
+            font-size: 2em;
+        }
+
+        .animal-option-btn .animal-name {
+            font-size: 1.1em;
+        }
+
+        .sound-feedback {
+            font-size: 1.3em;
+            font-weight: bold;
+            text-align: center;
+            margin: 15px 0;
+            min-height: 30px;
+        }
+
+        .sound-feedback.correct {
+            color: #32CD32;
+        }
+
+        .sound-feedback.incorrect {
+            color: #FF6347;
+        }
+
+        .sound-completion {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-radius: 20px;
+            margin: 20px;
+        }
+
+        .sound-completion h2 {
+            color: #8B4513;
+            margin-bottom: 20px;
+        }
+
+        .final-score {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2E8B57;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .animal-options-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .animal-option-btn {
+                padding: 20px 15px;
+            }
         }    </style>
     <script src="animal-sounds.js"></script>
     <!-- Safety stub: ensure sound modules exist even if the script fails to load -->
@@ -1692,6 +1800,21 @@
         function playCurrentAnimalSound() {
             if (window.currentAnimal && window.animalSounds) {
                 window.animalSounds.playAnimalSound(window.currentAnimal.name);
+                
+                // Add haptic feedback for mobile devices
+                if ('vibrate' in navigator) {
+                    navigator.vibrate(100);
+                }
+                
+                // Add visual feedback
+                const animalEmoji = document.getElementById('animalEmoji');
+                if (animalEmoji) {
+                    animalEmoji.style.transform = 'scale(1.2)';
+                    animalEmoji.style.transition = 'transform 0.2s ease';
+                    setTimeout(() => {
+                        animalEmoji.style.transform = 'scale(1)';
+                    }, 200);
+                }
             }
         }        // Initialize the game when page loads
         window.onload = () => {

@@ -6,111 +6,18 @@ class RealAnimalSounds {
         this.audioCache = {};
         this.isLoading = false;
         
-        // Real animal sound URLs from CDN (using placeholder URLs - replace with actual CDN links)
-        this.animalSounds = {
-            'Lion': {
-                soundUrl: 'https://cdn.freesound.org/previews/316/316920_5123451-lq.mp3',
-                duration: 3000,
-                description: 'Powerful roar'
-            },
-            'Tiger': {
-                soundUrl: 'https://cdn.freesound.org/previews/372/372577_6988871-lq.mp3',
-                duration: 2500,
-                description: 'Deep growl'
-            },
-            'Elephant': {
-                soundUrl: 'https://cdn.freesound.org/previews/457/457838_9499683-lq.mp3',
-                duration: 3500,
-                description: 'Trumpet call'
-            },
-            'Monkey': {
-                soundUrl: 'https://cdn.freesound.org/previews/403/403006_5837110-lq.mp3',
-                duration: 2000,
-                description: 'Playful chatter'
-            },
-            'Wolf': {
-                soundUrl: 'https://cdn.freesound.org/previews/415/415209_5837110-lq.mp3',
-                duration: 4000,
-                description: 'Haunting howl'
-            },
-            'Bear': {
-                soundUrl: 'https://cdn.freesound.org/previews/416/416733_5837110-lq.mp3',
-                duration: 2500,
-                description: 'Deep growl'
-            },
-            'Dolphin': {
-                soundUrl: 'https://cdn.freesound.org/previews/14/14607_71257-lq.mp3',
-                duration: 2000,
-                description: 'Happy clicks'
-            },
-            'Frog': {
-                soundUrl: 'https://cdn.freesound.org/previews/540/540964_11795227-lq.mp3',
-                duration: 1500,
-                description: 'Ribbit ribbit'
-            },
-            'Eagle': {
-                soundUrl: 'https://cdn.freesound.org/previews/409/409035_5837110-lq.mp3',
-                duration: 2000,
-                description: 'Majestic cry'
-            },
-            'Penguin': {
-                soundUrl: 'https://cdn.freesound.org/previews/450/450622_5837110-lq.mp3',
-                duration: 2500,
-                description: 'Funny waddle sound'
-            }
-        };
-
         // Initialize audio context for better control
         this.initAudioContext();
         
-        // Preload common sounds
-        this.preloadSounds(['Lion', 'Tiger', 'Elephant', 'Monkey']);
+        // Note: Real animal sound CDN URLs removed to avoid blocking issues
+        // Using text-to-speech with animal sound descriptions instead
+        console.log('Real animal sounds module initialized with text-to-speech fallback');
     }
 
     initAudioContext() {
         // Audio context disabled - only text-to-speech pronunciation allowed
         this.audioContext = null;
         console.log('Audio context disabled - only pronunciation sounds enabled');
-    }
-
-    async preloadSounds(animalNames) {
-        for (const animal of animalNames) {
-            if (this.animalSounds[animal]) {
-                await this.loadSound(animal);
-            }
-        }
-    }
-
-    async loadSound(animalName) {
-        if (this.audioCache[animalName]) {
-            return this.audioCache[animalName];
-        }
-
-        const soundData = this.animalSounds[animalName];
-        if (!soundData) {
-            console.warn(`No sound available for ${animalName}`);
-            return null;
-        }
-
-        try {
-            const audio = new Audio(soundData.soundUrl);
-            audio.preload = 'auto';
-            
-            // Create a promise that resolves when the audio is loaded
-            await new Promise((resolve, reject) => {
-                audio.addEventListener('canplaythrough', resolve, { once: true });
-                audio.addEventListener('error', reject, { once: true });
-                
-                // Timeout after 5 seconds
-                setTimeout(() => reject(new Error('Audio load timeout')), 5000);
-            });
-
-            this.audioCache[animalName] = audio;
-            return audio;
-        } catch (error) {
-            console.error(`Failed to load sound for ${animalName}:`, error);
-            return null;
-        }
     }
 
     async playAnimalSound(animalName, options = {}) {
@@ -201,24 +108,6 @@ class RealAnimalSounds {
             wave.className = 'sound-wave';
             wave.style.animationDelay = `${i * 0.2}s`;
             element.parentElement.appendChild(wave);
-        }
-    }
-
-    showSoundLoading(animalName) {
-        const loadingDiv = document.createElement('div');
-        loadingDiv.id = 'sound-loading';
-        loadingDiv.className = 'sound-loading';
-        loadingDiv.innerHTML = `
-            <div class="loading-spinner"></div>
-            <p>Loading ${animalName} sound...</p>
-        `;
-        document.body.appendChild(loadingDiv);
-    }
-
-    hideSoundLoading() {
-        const loadingDiv = document.getElementById('sound-loading');
-        if (loadingDiv) {
-            loadingDiv.remove();
         }
     }
 
