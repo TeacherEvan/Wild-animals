@@ -1,6 +1,8 @@
 # Static Website Validation
 # This workflow validates the HTML and JavaScript files for the Wild Animals Adventure game
 
+permissions:
+  contents: write
 name: Static Website CI
 
 on:
