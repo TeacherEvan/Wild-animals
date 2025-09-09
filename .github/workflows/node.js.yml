@@ -1,0 +1,38 @@
+# Node.js CI (Deprecated)
+# This workflow is deprecated in favor of static-website.yml
+# Kept for backward compatibility with existing GitHub Actions configuration
+
+name: Node.js CI (Deprecated)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  deprecated-notice:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Deprecated Workflow Notice
+      run: |
+        echo "⚠️  This Node.js CI workflow is deprecated."
+        echo "📋 This project is a static HTML/JavaScript application that doesn't require Node.js build processes."
+        echo "✅ Please use the 'Static Website CI' workflow instead for validation."
+        echo ""
+        echo "🏗️  Static Website CI workflow provides:"
+        echo "   - HTML structure validation"
+        echo "   - JavaScript syntax checking"
+        echo "   - File integrity verification"
+        echo ""
+        echo "📁 Repository structure:"
+        ls -la
+        echo ""
+        echo "📊 File sizes:"
+        du -h *.html *.js 2>/dev/null || true
+        echo ""
+        echo "✅ This workflow completes successfully but is deprecated."
+        echo "🔄 Future builds should use static-website.yml workflow."
