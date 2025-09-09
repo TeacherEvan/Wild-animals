@@ -1,0 +1,28 @@
+# This workflow has been replaced by static-website.yml
+# This file exists only to prevent failures from historical workflow references
+# The Wild Animals Adventure application is a static HTML/CSS/JavaScript application
+# that does not require a Node.js build process.
+
+name: Node.js CI (Deprecated)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  redirect-to-static-workflow:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Workflow Deprecated Notice
+      run: |
+        echo "⚠️  This workflow has been deprecated and replaced by static-website.yml"
+        echo "🎯 The Wild Animals Adventure application is a static HTML/CSS/JavaScript application"
+        echo "📝 No Node.js build process is required"
+        echo "✅ Please refer to the static-website.yml workflow for current CI/CD"
+        echo ""
+        echo "If you're seeing this, the workflow system is still referencing the old node.js.yml"
+        echo "This placeholder ensures no failures occur while maintaining backward compatibility."
+        exit 0
