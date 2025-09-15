@@ -32,7 +32,7 @@ jobs:
         ls -la
         echo ""
         echo "📊 File sizes:"
-        du -h *.html *.js 2>/dev/null || true
+        find . -maxdepth 1 -type f \( -name "*.html" -o -name "*.js" \) -exec du -h {} +
         echo ""
         echo "✅ This workflow completes successfully but is deprecated."
         echo "🔄 Future builds should use static-website.yml workflow."
