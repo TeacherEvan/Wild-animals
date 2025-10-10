@@ -5,6 +5,8 @@ class InteractiveFeatures {
         this.currentGame = null;
         this.score = 0;
         this.touchSupported = 'ontouchstart' in window;
+        this.dropZonesCache = null;
+        this.lastHighlightCheck = null;
         
         this.initializeFeatures();
     }
@@ -128,16 +130,26 @@ class InteractiveFeatures {
         this.dragClone.style.left = (clientX - this.dragClone.offsetWidth / 2) + 'px';
         this.dragClone.style.top = (clientY - this.dragClone.offsetHeight / 2) + 'px';
         
-        // Highlight drop zones when dragging over them
-        const elementBelow = document.elementFromPoint(clientX, clientY);
-        const dropZone = elementBelow?.closest('.drop-zone');
-        
-        document.querySelectorAll('.drop-zone').forEach(zone => {
-            zone.classList.remove('drag-over');
-        });
-        
-        if (dropZone && this.isValidDrop(this.draggedElement, dropZone)) {
-            dropZone.classList.add('drag-over');
+        // Throttle drop zone highlight checks for better performance
+        if (!this.lastHighlightCheck || Date.now() - this.lastHighlightCheck > 100) {
+            this.lastHighlightCheck = Date.now();
+            
+            // Highlight drop zones when dragging over them
+            const elementBelow = document.elementFromPoint(clientX, clientY);
+            const dropZone = elementBelow?.closest('.drop-zone');
+            
+            // Cache drop zones if not already cached
+            if (!this.dropZonesCache) {
+                this.dropZonesCache = Array.from(document.querySelectorAll('.drop-zone'));
+            }
+            
+            this.dropZonesCache.forEach(zone => {
+                zone.classList.remove('drag-over');
+            });
+            
+            if (dropZone && this.isValidDrop(this.draggedElement, dropZone)) {
+                dropZone.classList.add('drag-over');
+            }
         }
     }
 
@@ -167,9 +179,19 @@ class InteractiveFeatures {
             this.draggedElement = null;
         }
         
-        document.querySelectorAll('.drop-zone').forEach(zone => {
-            zone.classList.remove('drag-over');
-        });
+        // Use cached drop zones if available
+        if (this.dropZonesCache) {
+            this.dropZonesCache.forEach(zone => {
+                zone.classList.remove('drag-over');
+            });
+        } else {
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.classList.remove('drag-over');
+            });
+        }
+        
+        // Clear the highlight check timestamp
+        this.lastHighlightCheck = null;
     }
 
     handleDragOver(e) {

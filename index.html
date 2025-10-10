@@ -1146,6 +1146,40 @@
             { emoji: '🐸', name: 'Frog', sound: 'croak', habitat: 'Pond', diet: 'Carnivore', fact: 'Starts as tadpole', symbol: '🌊', color: '#32CD32', category: 'Water Hoppers' }
         ];
 
+        // DOM element cache for better performance
+        const domCache = {
+            animalEmoji: null,
+            questionElement: null,
+            optionsContainer: null,
+            feedback: null,
+            nextBtn: null,
+            timerFill: null,
+            timerText: null,
+            score: null,
+            currentQuestion: null,
+            streak: null,
+            hintBtn: null,
+            eliminateBtn: null,
+            skipBtn: null
+        };
+
+        // Initialize DOM cache
+        function initDOMCache() {
+            domCache.animalEmoji = document.getElementById('animalEmoji');
+            domCache.questionElement = document.getElementById('question');
+            domCache.optionsContainer = document.getElementById('options');
+            domCache.feedback = document.getElementById('feedback');
+            domCache.nextBtn = document.getElementById('nextBtn');
+            domCache.timerFill = document.getElementById('timerFill');
+            domCache.timerText = document.getElementById('timerText');
+            domCache.score = document.getElementById('score');
+            domCache.currentQuestion = document.getElementById('currentQuestion');
+            domCache.streak = document.getElementById('streak');
+            domCache.hintBtn = document.getElementById('hintBtn');
+            domCache.eliminateBtn = document.getElementById('eliminateBtn');
+            domCache.skipBtn = document.getElementById('skipBtn');
+        }
+
         // Game state variables
         let currentQuestionIndex = 0;
         let score = 0;
@@ -1166,6 +1200,9 @@
         function initGame() {
             updateHighScore();
             resetPowerups();
+            
+            // Initialize DOM cache
+            initDOMCache();
             
             // Shuffle and select random animals for this game
             const shuffledAnimals = [...animals].sort(() => Math.random() - 0.5);
@@ -1232,13 +1269,19 @@
         }
 
         function updatePowerupButtons() {
-            document.getElementById('hintBtn').textContent = `💡 Hint (${powerups.hints})`;
-            document.getElementById('eliminateBtn').textContent = `❌ Eliminate (${powerups.eliminate})`;
-            document.getElementById('skipBtn').textContent = `⏭️ Skip (${powerups.skip})`;
-            
-            document.getElementById('hintBtn').disabled = powerups.hints <= 0;
-            document.getElementById('eliminateBtn').disabled = powerups.eliminate <= 0;
-            document.getElementById('skipBtn').disabled = powerups.skip <= 0;
+            // Use cached DOM elements for better performance
+            if (domCache.hintBtn) {
+                domCache.hintBtn.textContent = `💡 Hint (${powerups.hints})`;
+                domCache.hintBtn.disabled = powerups.hints <= 0;
+            }
+            if (domCache.eliminateBtn) {
+                domCache.eliminateBtn.textContent = `❌ Eliminate (${powerups.eliminate})`;
+                domCache.eliminateBtn.disabled = powerups.eliminate <= 0;
+            }
+            if (domCache.skipBtn) {
+                domCache.skipBtn.textContent = `⏭️ Skip (${powerups.skip})`;
+                domCache.skipBtn.disabled = powerups.skip <= 0;
+            }
         }        function loadQuestion() {
             if (gameMode === 'survival') {
                 if (currentQuestionIndex >= gameQuestions.length) {
@@ -1273,20 +1316,18 @@
             
             // Generate options
             generateOptions();
-              // Clear feedback and disable next button
-            document.getElementById('feedback').textContent = '';
-            document.getElementById('nextBtn').disabled = true;
+              // Clear feedback and disable next button using cached elements
+            if (domCache.feedback) domCache.feedback.textContent = '';
+            if (domCache.nextBtn) domCache.nextBtn.disabled = true;
             
             // Clear any previous selection
             if (window.realAnimalSounds && window.realAnimalSounds.clearSelection) {
                 window.realAnimalSounds.clearSelection();
             }
             
-            // Update question counter
-            if (gameMode === 'survival') {
-                document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
-            } else {
-                document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+            // Update question counter using cached element
+            if (domCache.currentQuestion) {
+                domCache.currentQuestion.textContent = currentQuestionIndex + 1;
             }
             
             // Add animal animation
@@ -1294,8 +1335,13 @@
         }
 
         function setupQuestion() {
-            const animalEmoji = document.getElementById('animalEmoji');
-            const questionElement = document.getElementById('question');
+            // Use cached DOM elements for better performance
+            if (!domCache.animalEmoji || !domCache.questionElement) {
+                initDOMCache();
+            }
+            
+            const animalEmoji = domCache.animalEmoji;
+            const questionElement = domCache.questionElement;
             
             switch(currentQuestionType) {
                 case 'name':
@@ -1318,7 +1364,14 @@
         }
 
         function addAnimalAnimation() {
-            const animalEmoji = document.getElementById('animalEmoji');
+            // Use cached DOM element for better performance
+            if (!domCache.animalEmoji) {
+                initDOMCache();
+            }
+            
+            const animalEmoji = domCache.animalEmoji;
+            if (!animalEmoji) return;
+            
             const animations = ['roar', 'jump', 'shake'];
             const randomAnimation = animations[Math.floor(Math.random() * animations.length)];
             
@@ -1330,64 +1383,101 @@
 
         function startTimer() {
             timeLeft = 10;
-            const timerFill = document.getElementById('timerFill');
-            const timerText = document.getElementById('timerText');
+            // Use cached DOM elements for better performance
+            if (!domCache.timerFill || !domCache.timerText) {
+                initDOMCache();
+            }
+            
+            const timerFill = domCache.timerFill;
+            const timerText = domCache.timerText;
             
             timer = setInterval(() => {
                 timeLeft--;
                 const percentage = (timeLeft / 10) * 100;
-                timerFill.style.width = percentage + '%';
-                timerText.textContent = `Time: ${timeLeft}s`;
+                if (timerFill) timerFill.style.width = percentage + '%';
+                if (timerText) timerText.textContent = `Time: ${timeLeft}s`;
                   if (timeLeft <= 0) {
                     clearInterval(timer);
                     // Auto-select timeout when time runs out
                     if (window.realAnimalSounds && window.realAnimalSounds.selectOption) {
                         window.realAnimalSounds.selectOption('TIME_UP');
                     }
-                    document.getElementById('nextBtn').disabled = false;
+                    if (domCache.nextBtn) domCache.nextBtn.disabled = false;
                 }
             }, 1000);
         }        function generateOptions() {
-            const optionsContainer = document.getElementById('options');
+            // Use cached DOM element for better performance
+            if (!domCache.optionsContainer) {
+                initDOMCache();
+            }
+            const optionsContainer = domCache.optionsContainer;
+            if (!optionsContainer) return;
+            
             optionsContainer.innerHTML = '';
             
             // Get correct answer based on question type
             let correctAnswer;
             let wrongAnswers = [];
             
+            // Optimize by using a single loop for each case instead of filter + map
             switch(currentQuestionType) {
                 case 'name':
                     correctAnswer = currentAnimal.name;
-                    wrongAnswers = animals.filter(a => a.name !== correctAnswer).map(a => a.name);
+                    wrongAnswers = animals.reduce((acc, a) => {
+                        if (a.name !== correctAnswer) acc.push(a.name);
+                        return acc;
+                    }, []);
                     break;
                 case 'sound':
                     correctAnswer = currentAnimal.sound;
-                    wrongAnswers = [...new Set(animals.filter(a => a.sound !== correctAnswer).map(a => a.sound))];
+                    const soundSet = new Set();
+                    for (const a of animals) {
+                        if (a.sound !== correctAnswer) soundSet.add(a.sound);
+                    }
+                    wrongAnswers = Array.from(soundSet);
                     break;
                 case 'habitat':
                     correctAnswer = currentAnimal.habitat;
-                    wrongAnswers = [...new Set(animals.filter(a => a.habitat !== correctAnswer).map(a => a.habitat))];
+                    const habitatSet = new Set();
+                    for (const a of animals) {
+                        if (a.habitat !== correctAnswer) habitatSet.add(a.habitat);
+                    }
+                    wrongAnswers = Array.from(habitatSet);
                     break;
                 case 'diet':
                     correctAnswer = currentAnimal.diet;
-                    wrongAnswers = [...new Set(animals.filter(a => a.diet !== correctAnswer).map(a => a.diet))];
+                    const dietSet = new Set();
+                    for (const a of animals) {
+                        if (a.diet !== correctAnswer) dietSet.add(a.diet);
+                    }
+                    wrongAnswers = Array.from(dietSet);
                     break;
             }
             
-            // Get 3 random wrong answers
-            wrongAnswers = wrongAnswers.sort(() => Math.random() - 0.5).slice(0, 3);
+            // Get 3 random wrong answers using Fisher-Yates shuffle (more efficient than sort)
+            for (let i = wrongAnswers.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [wrongAnswers[i], wrongAnswers[j]] = [wrongAnswers[j], wrongAnswers[i]];
+            }
+            wrongAnswers = wrongAnswers.slice(0, 3);
             
-            // Combine and shuffle all options
+            // Combine and shuffle all options using Fisher-Yates
             const allOptions = [correctAnswer, ...wrongAnswers];
-            allOptions.sort(() => Math.random() - 0.5);
-                  // Create option buttons
-        allOptions.forEach(option => {
-            const button = document.createElement('button');
-            button.className = 'option-btn';
-            button.textContent = option;
-            button.onclick = () => handleOptionClick(option, button);
-            optionsContainer.appendChild(button);
-        });
+            for (let i = allOptions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [allOptions[i], allOptions[j]] = [allOptions[j], allOptions[i]];
+            }
+            
+            // Create option buttons using DocumentFragment for better performance
+            const fragment = document.createDocumentFragment();
+            allOptions.forEach(option => {
+                const button = document.createElement('button');
+                button.className = 'option-btn';
+                button.textContent = option;
+                button.onclick = () => handleOptionClick(option, button);
+                fragment.appendChild(button);
+            });
+            optionsContainer.appendChild(fragment);
     }
 
     // New function to handle option clicks (plays sound but doesn't lock in answer)
@@ -1576,14 +1666,21 @@
         }
 
         function showFeedback(message, type) {
-            const feedback = document.getElementById('feedback');
-            feedback.textContent = message;
-            feedback.className = `feedback ${type}-feedback`;
+            // Use cached DOM element for better performance
+            if (!domCache.feedback) {
+                initDOMCache();
+            }
+            const feedback = domCache.feedback;
+            if (feedback) {
+                feedback.textContent = message;
+                feedback.className = `feedback ${type}-feedback`;
+            }
         }
 
         function updateScoreBoard() {
-            document.getElementById('score').textContent = score;
-            document.getElementById('streak').textContent = streak;
+            // Use cached DOM elements for better performance
+            if (domCache.score) domCache.score.textContent = score;
+            if (domCache.streak) domCache.streak.textContent = streak;
         }        function endGame() {
             // Save high score
             if (score > highScore) {
@@ -1756,10 +1853,14 @@
                 <button class="next-btn" id="nextBtn" onclick="nextQuestion()" disabled>Next Animal →</button>
             `;
             
+            // Reinitialize DOM cache after innerHTML change
+            initDOMCache();
+            
             // Reattach click listener for the new emoji element
-            const newEmoji = document.getElementById('animalEmoji');
-            newEmoji.onclick = playCurrentAnimalSound;
-            newEmoji.classList.add('clickable');
+            if (domCache.animalEmoji) {
+                domCache.animalEmoji.onclick = playCurrentAnimalSound;
+                domCache.animalEmoji.classList.add('clickable');
+            }
             
             // Show/hide timer based on current mode
             const timerContainer = document.getElementById('timerContainer');
@@ -1774,16 +1875,28 @@
             const celebration = document.getElementById('celebration');
             celebration.innerHTML = '';
             
+            // Use DocumentFragment for better performance
+            const fragment = document.createDocumentFragment();
+            const colors = ['#FFD700', '#FF69B4', '#87CEEB', '#98FB98', '#FFA500'];
+            const confettiElements = [];
+            
             for (let i = 0; i < 50; i++) {
                 const confetti = document.createElement('div');
                 confetti.className = 'confetti';
                 confetti.style.left = Math.random() * 100 + '%';
                 confetti.style.animationDelay = Math.random() * 3 + 's';
-                confetti.style.backgroundColor = ['#FFD700', '#FF69B4', '#87CEEB', '#98FB98', '#FFA500'][Math.floor(Math.random() * 5)];
-                celebration.appendChild(confetti);
-                
-                setTimeout(() => confetti.remove(), 3000);
-            }        }
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * 5)];
+                fragment.appendChild(confetti);
+                confettiElements.push(confetti);
+            }
+            
+            celebration.appendChild(fragment);
+            
+            // Remove all confetti at once after 3 seconds
+            setTimeout(() => {
+                confettiElements.forEach(c => c.remove());
+            }, 3000);
+        }
 
         function toggleSound() {
             const isEnabled = window.realAnimalSounds && window.realAnimalSounds.toggleSound ? 
