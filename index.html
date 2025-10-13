@@ -1473,7 +1473,18 @@
             allOptions.forEach(option => {
                 const button = document.createElement('button');
                 button.className = 'option-btn';
-                button.textContent = option;
+                // Store the raw option value for internal logic
+                button.dataset.value = option;
+
+                // Prepare display text with an identifying symbol for kids
+                let displayText = option;
+                if (currentQuestionType === 'name') {
+                    const animalObj = animals.find(a => a.name === option);
+                    if (animalObj) {
+                        displayText = `${animalObj.emoji} ${option}`;
+                    }
+                }
+                button.textContent = displayText;
                 button.onclick = () => handleOptionClick(option, button);
                 fragment.appendChild(button);
             });
@@ -1515,7 +1526,7 @@
             // Disable all buttons
             allButtons.forEach(btn => {
                 btn.disabled = true;
-                if (btn.textContent === correctAnswer) {
+                if (btn.dataset.value === correctAnswer) {
                     btn.classList.add('correct');
                 } else if (btn === buttonElement && !isCorrect) {
                     btn.classList.add('incorrect');
@@ -1774,7 +1785,7 @@
             
             const correctAnswer = getCorrectAnswer();
             const buttons = Array.from(document.querySelectorAll('.option-btn'));
-            const wrongButtons = buttons.filter(btn => btn.textContent !== correctAnswer);
+            const wrongButtons = buttons.filter(btn => btn.dataset.value !== correctAnswer);
             
             // Remove 2 wrong answers
             for (let i = 0; i < 2 && i < wrongButtons.length; i++) {
