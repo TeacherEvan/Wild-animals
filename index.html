@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -86,12 +87,19 @@
         }
 
         @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
                 transform: translateY(0);
             }
+
             40% {
                 transform: translateY(-10px);
             }
+
             60% {
                 transform: translateY(-5px);
             }
@@ -103,8 +111,15 @@
         }
 
         @keyframes clickablePulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
         }
 
         /* Glow effect while sound is playing */
@@ -114,8 +129,13 @@
         }
 
         @keyframes playingGlow {
-            from { box-shadow: 0 0 10px 3px rgba(255, 215, 0, 0.5); }
-            to   { box-shadow: 0 0 20px 6px rgba(255, 215, 0, 1); }
+            from {
+                box-shadow: 0 0 10px 3px rgba(255, 215, 0, 0.5);
+            }
+
+            to {
+                box-shadow: 0 0 20px 6px rgba(255, 215, 0, 1);
+            }
         }
 
         .question {
@@ -161,15 +181,33 @@
         }
 
         @keyframes correct {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
 
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
         }
 
         .feedback {
@@ -245,9 +283,17 @@
         }
 
         @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.02);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
 
         .restart-btn {
@@ -283,7 +329,9 @@
 
         .sound-btn:hover {
             transform: scale(1.1);
-        }        /* Game Mode Selection */
+        }
+
+        /* Game Mode Selection */
         .mode-selection {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -386,10 +434,25 @@
         }
 
         @keyframes achievementPop {
-            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-            20% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
-            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-            100% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+
+            20% {
+                transform: translate(-50%, -50%) scale(1.1);
+                opacity: 1;
+            }
+
+            80% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
         }
 
         /* Enhanced animations */
@@ -406,41 +469,107 @@
         }
 
         @keyframes roar {
-            0%, 100% { transform: scale(1) rotate(0deg); }
-            25% { transform: scale(1.1) rotate(-2deg); }
-            75% { transform: scale(1.1) rotate(2deg); }
+
+            0%,
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+
+            25% {
+                transform: scale(1.1) rotate(-2deg);
+            }
+
+            75% {
+                transform: scale(1.1) rotate(2deg);
+            }
         }
 
         @keyframes jump {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-30px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-30px);
+            }
         }
 
         @keyframes animalShake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-10px);
+            }
+
+            75% {
+                transform: translateX(10px);
+            }
         }
 
         /* Enhanced screen shake effect */
         @keyframes shake {
-            0%, 100% { transform: translateX(0) translateY(0); }
-            10% { transform: translateX(-5px) translateY(-2px); }
-            20% { transform: translateX(5px) translateY(2px); }
-            30% { transform: translateX(-3px) translateY(-1px); }
-            40% { transform: translateX(3px) translateY(1px); }
-            50% { transform: translateX(-2px) translateY(-1px); }
-            60% { transform: translateX(2px) translateY(1px); }
-            70% { transform: translateX(-1px) translateY(0); }
-            80% { transform: translateX(1px) translateY(0); }
-            90% { transform: translateX(-1px) translateY(0); }
+
+            0%,
+            100% {
+                transform: translateX(0) translateY(0);
+            }
+
+            10% {
+                transform: translateX(-5px) translateY(-2px);
+            }
+
+            20% {
+                transform: translateX(5px) translateY(2px);
+            }
+
+            30% {
+                transform: translateX(-3px) translateY(-1px);
+            }
+
+            40% {
+                transform: translateX(3px) translateY(1px);
+            }
+
+            50% {
+                transform: translateX(-2px) translateY(-1px);
+            }
+
+            60% {
+                transform: translateX(2px) translateY(1px);
+            }
+
+            70% {
+                transform: translateX(-1px) translateY(0);
+            }
+
+            80% {
+                transform: translateX(1px) translateY(0);
+            }
+
+            90% {
+                transform: translateX(-1px) translateY(0);
+            }
         }
 
         /* Pulse animation for buttons */
         @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
 
         /* Enhanced particle effects */
@@ -456,6 +585,7 @@
                 opacity: 1;
                 transform: translateY(0) scale(1);
             }
+
             100% {
                 opacity: 0;
                 transform: translateY(-100px) scale(0);
@@ -512,11 +642,11 @@
                 font-size: 1.1em;
                 min-height: 60px;
             }
-            
+
             .animal-emoji {
                 font-size: 5em;
             }
-            
+
             .sound-btn {
                 padding: 15px;
                 font-size: 1.8em;
@@ -531,7 +661,9 @@
             margin-bottom: 20px;
             font-weight: bold;
             color: #8B4513;
-        }        /* Combo indicator */
+        }
+
+        /* Combo indicator */
         .combo-indicator {
             position: absolute;
             top: 10px;
@@ -555,20 +687,28 @@
         }
 
         @keyframes comboPulse {
-            0% { transform: translateX(-50%) scale(0); }
-            50% { transform: translateX(-50%) scale(1.1); }
-            100% { transform: translateX(-50%) scale(1); }
+            0% {
+                transform: translateX(-50%) scale(0);
+            }
+
+            50% {
+                transform: translateX(-50%) scale(1.1);
+            }
+
+            100% {
+                transform: translateX(-50%) scale(1);
+            }
         }
 
         @media (max-width: 600px) {
             .options {
                 grid-template-columns: 1fr;
             }
-            
+
             .animal-emoji {
                 font-size: 6em;
             }
-            
+
             h1 {
                 font-size: 2em;
             }
@@ -624,9 +764,18 @@
         }
 
         @keyframes dropSuccess {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); background-color: rgba(76, 175, 80, 0.2); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+                background-color: rgba(76, 175, 80, 0.2);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
 
         /* Sound Wave Animation */
@@ -635,8 +784,15 @@
         }
 
         @keyframes soundPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
         }
 
         .sound-wave {
@@ -657,6 +813,7 @@
                 height: 50px;
                 opacity: 1;
             }
+
             100% {
                 width: 200px;
                 height: 200px;
@@ -689,8 +846,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         /* Habitat Game Styles */
@@ -708,8 +870,15 @@
         }
 
         @keyframes titleBounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
         }
 
         .habitats-grid {
@@ -807,6 +976,7 @@
                 opacity: 1;
                 transform: translate(0, 0) scale(1);
             }
+
             100% {
                 opacity: 0;
                 transform: translate(var(--random-x), var(--random-y)) scale(0);
@@ -829,9 +999,17 @@
         }
 
         @keyframes completionPop {
-            0% { transform: translate(-50%, -50%) scale(0); }
-            80% { transform: translate(-50%, -50%) scale(1.1); }
-            100% { transform: translate(-50%, -50%) scale(1); }
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+            }
+
+            80% {
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
         }
 
         .star-rating {
@@ -841,8 +1019,15 @@
         }
 
         @keyframes starSpin {
-            0%, 100% { transform: rotate(0deg); }
-            50% { transform: rotate(10deg); }
+
+            0%,
+            100% {
+                transform: rotate(0deg);
+            }
+
+            50% {
+                transform: rotate(10deg);
+            }
         }
 
         .play-again-btn {
@@ -906,8 +1091,16 @@
         }
 
         @keyframes scoreBump {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.3); color: #FFD700; }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.3);
+                color: #FFD700;
+            }
         }
 
         /* Shake animation for failed drops */
@@ -916,9 +1109,26 @@
         }
 
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-5px);
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(5px);
+            }
         }
 
         /* Sound Game Styles */
@@ -969,9 +1179,17 @@
         }
 
         @keyframes correctPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
 
         .animal-option-btn .animal-emoji {
@@ -1023,18 +1241,19 @@
                 grid-template-columns: 1fr;
                 gap: 10px;
             }
-            
+
             .animal-option-btn {
                 padding: 20px 15px;
             }
-        }    </style>
+        }
+    </style>
     <script src="animal-sounds.js"></script>
     <!-- Safety stub: ensure sound modules exist even if the script fails to load -->
     <script>
         // If the real sound module failed to load, create a no-op fallback so that
         // game logic doesn't crash when trying to call its methods.
         if (!window.realAnimalSounds) {
-            const noop = () => {};
+            const noop = () => { };
             window.realAnimalSounds = {
                 playAnimalSound: noop,
                 playUISound: noop,
@@ -1055,14 +1274,15 @@
     <script src="real-animal-sounds.js"></script>
     <script src="interactive-features.js"></script>
 </head>
+
 <body>
     <button class="sound-btn" onclick="toggleSound()" id="soundBtn">🔊</button>
-      <div class="game-container">
+    <div class="game-container">
         <h1>🦁 Wild Animals Adventure 🐯</h1>
         <p class="subtitle">Learn English Animal Names!</p>
-        
+
         <div class="high-score" id="highScore">🏆 High Score: 0</div>
-        
+
         <div class="mode-selection" id="modeSelection">
             <button class="mode-btn active" onclick="selectMode('classic')">
                 🎯 Classic Mode<br><small>10 Questions</small>
@@ -1083,25 +1303,27 @@
                 🔊 Sound Game<br><small>Guess Sounds</small>
             </button>
         </div>
-        
+
         <div class="score-board">
             <div class="score-item">Score: <span id="score">0</span></div>
-            <div class="score-item">Question: <span id="currentQuestion">1</span> / <span id="totalQuestions">10</span></div>
+            <div class="score-item">Question: <span id="currentQuestion">1</span> / <span id="totalQuestions">10</span>
+            </div>
             <div class="score-item">Streak: <span id="streak">0</span> 🔥</div>
-        </div>        <div class="game-area" id="gameArea">
+        </div>
+        <div class="game-area" id="gameArea">
             <div class="timer-container" id="timerContainer" style="display: none;">
                 <div class="timer-bar">
                     <div class="timer-fill" id="timerFill"></div>
                 </div>
                 <div class="timer-text" id="timerText">Time: 10s</div>
             </div>
-            
+
             <div class="powerups" id="powerups">
                 <button class="powerup-btn" id="hintBtn" onclick="useHint()">💡 Hint (3)</button>
                 <button class="powerup-btn" id="eliminateBtn" onclick="eliminateWrong()">❌ Eliminate (2)</button>
                 <button class="powerup-btn" id="skipBtn" onclick="skipQuestion()">⏭️ Skip (1)</button>
             </div>
-            
+
             <div class="animal-display" onclick="playCurrentAnimalSound()">
                 <div class="animal-emoji" id="animalEmoji">🦁</div>
                 <div class="question" id="question">What animal is this?</div>
@@ -1109,13 +1331,13 @@
                     👆 Tap the animal to hear its sound!
                 </div>
             </div>
-            
+
             <div class="options" id="options">
                 <!-- Options will be generated by JavaScript -->
             </div>
-            
+
             <div class="feedback" id="feedback"></div>
-            
+
             <button class="next-btn" id="nextBtn" onclick="nextQuestion()" disabled>Next Animal →</button>
         </div>
     </div>
@@ -1200,21 +1422,21 @@
         function initGame() {
             updateHighScore();
             resetPowerups();
-            
+
             // Initialize DOM cache
             initDOMCache();
-            
+
             // Shuffle and select random animals for this game
             const shuffledAnimals = [...animals].sort(() => Math.random() - 0.5);
             let questionsCount = gameMode === 'survival' ? 20 : totalQuestions;
             gameQuestions = shuffledAnimals.slice(0, questionsCount);
-            
+
             currentQuestionIndex = 0;
             score = 0;
             streak = 0;
             maxStreak = 0;
             achievements = [];
-            
+
             updateScoreBoard();
             loadQuestion();
         }
@@ -1223,23 +1445,23 @@
             gameMode = mode;
             document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
-            
+
             // Check if it's an interactive game mode
             if (mode === 'habitat' || mode === 'sounds') {
                 // Clear current game area
                 document.getElementById('gameArea').innerHTML = '';
-                
+
                 // Start the interactive game
                 window.interactiveFeatures.startGame(mode);
-                
+
                 // Hide regular game elements
                 document.querySelector('.score-board').style.display = 'none';
                 return;
             }
-            
+
             // Show regular game elements for standard modes
             document.querySelector('.score-board').style.display = 'flex';
-            
+
             // Update total questions display
             const totalQuestionsSpan = document.getElementById('totalQuestions');
             if (mode === 'survival') {
@@ -1247,7 +1469,7 @@
             } else {
                 totalQuestionsSpan.textContent = totalQuestions;
             }
-            
+
             // Show/hide timer based on mode
             const timerContainer = document.getElementById('timerContainer');
             if (mode === 'speed') {
@@ -1255,7 +1477,7 @@
             } else {
                 timerContainer.style.display = 'none';
             }
-            
+
             initGame();
         }
 
@@ -1282,7 +1504,7 @@
                 domCache.skipBtn.textContent = `⏭️ Skip (${powerups.skip})`;
                 domCache.skipBtn.disabled = powerups.skip <= 0;
             }
-        }        function loadQuestion() {
+        } function loadQuestion() {
             if (gameMode === 'survival') {
                 if (currentQuestionIndex >= gameQuestions.length) {
                     // Add more animals for survival mode
@@ -1295,41 +1517,41 @@
             }
 
             currentAnimal = gameQuestions[currentQuestionIndex];
-            
+
             // Make current animal available globally for sound playback
             window.currentAnimal = currentAnimal;
-            
+
             // Select question type for quiz mode
             if (gameMode === 'quiz') {
                 currentQuestionType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
             } else {
                 currentQuestionType = 'name';
             }
-            
+
             // Set up question based on type
             setupQuestion();
-            
+
             // Start timer for speed mode
             if (gameMode === 'speed') {
                 startTimer();
             }
-            
+
             // Generate options
             generateOptions();
-              // Clear feedback and disable next button using cached elements
+            // Clear feedback and disable next button using cached elements
             if (domCache.feedback) domCache.feedback.textContent = '';
             if (domCache.nextBtn) domCache.nextBtn.disabled = true;
-            
+
             // Clear any previous selection
             if (window.realAnimalSounds && window.realAnimalSounds.clearSelection) {
                 window.realAnimalSounds.clearSelection();
             }
-            
+
             // Update question counter using cached element
             if (domCache.currentQuestion) {
                 domCache.currentQuestion.textContent = currentQuestionIndex + 1;
             }
-            
+
             // Add animal animation
             addAnimalAnimation();
         }
@@ -1339,11 +1561,11 @@
             if (!domCache.animalEmoji || !domCache.questionElement) {
                 initDOMCache();
             }
-            
+
             const animalEmoji = domCache.animalEmoji;
             const questionElement = domCache.questionElement;
-            
-            switch(currentQuestionType) {
+
+            switch (currentQuestionType) {
                 case 'name':
                     animalEmoji.textContent = currentAnimal.emoji;
                     questionElement.textContent = 'What animal is this?';
@@ -1368,13 +1590,13 @@
             if (!domCache.animalEmoji) {
                 initDOMCache();
             }
-            
+
             const animalEmoji = domCache.animalEmoji;
             if (!animalEmoji) return;
-            
+
             const animations = ['roar', 'jump', 'shake'];
             const randomAnimation = animations[Math.floor(Math.random() * animations.length)];
-            
+
             animalEmoji.className = 'animal-emoji ' + randomAnimation;
             setTimeout(() => {
                 animalEmoji.className = 'animal-emoji';
@@ -1387,16 +1609,16 @@
             if (!domCache.timerFill || !domCache.timerText) {
                 initDOMCache();
             }
-            
+
             const timerFill = domCache.timerFill;
             const timerText = domCache.timerText;
-            
+
             timer = setInterval(() => {
                 timeLeft--;
                 const percentage = (timeLeft / 10) * 100;
                 if (timerFill) timerFill.style.width = percentage + '%';
                 if (timerText) timerText.textContent = `Time: ${timeLeft}s`;
-                  if (timeLeft <= 0) {
+                if (timeLeft <= 0) {
                     clearInterval(timer);
                     // Auto-select timeout when time runs out
                     if (window.realAnimalSounds && window.realAnimalSounds.selectOption) {
@@ -1405,22 +1627,22 @@
                     if (domCache.nextBtn) domCache.nextBtn.disabled = false;
                 }
             }, 1000);
-        }        function generateOptions() {
+        } function generateOptions() {
             // Use cached DOM element for better performance
             if (!domCache.optionsContainer) {
                 initDOMCache();
             }
             const optionsContainer = domCache.optionsContainer;
             if (!optionsContainer) return;
-            
+
             optionsContainer.innerHTML = '';
-            
+
             // Get correct answer based on question type
             let correctAnswer;
             let wrongAnswers = [];
-            
+
             // Optimize by using a single loop for each case instead of filter + map
-            switch(currentQuestionType) {
+            switch (currentQuestionType) {
                 case 'name':
                     correctAnswer = currentAnimal.name;
                     wrongAnswers = animals.reduce((acc, a) => {
@@ -1453,21 +1675,21 @@
                     wrongAnswers = Array.from(dietSet);
                     break;
             }
-            
+
             // Get 3 random wrong answers using Fisher-Yates shuffle (more efficient than sort)
             for (let i = wrongAnswers.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [wrongAnswers[i], wrongAnswers[j]] = [wrongAnswers[j], wrongAnswers[i]];
             }
             wrongAnswers = wrongAnswers.slice(0, 3);
-            
+
             // Combine and shuffle all options using Fisher-Yates
             const allOptions = [correctAnswer, ...wrongAnswers];
             for (let i = allOptions.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [allOptions[i], allOptions[j]] = [allOptions[j], allOptions[i]];
             }
-            
+
             // Create option buttons using DocumentFragment for better performance
             const fragment = document.createDocumentFragment();
             allOptions.forEach(option => {
@@ -1489,40 +1711,40 @@
                 fragment.appendChild(button);
             });
             optionsContainer.appendChild(fragment);
-    }
-
-    // New function to handle option clicks (plays sound but doesn't lock in answer)
-    function handleOptionClick(selectedOption, buttonElement) {
-        // Play animal sound when option is clicked
-        if (currentQuestionType === 'name') {
-            if (window.realAnimalSounds && window.realAnimalSounds.playAnimalSound) {
-                window.realAnimalSounds.playAnimalSound(selectedOption);
-            }
-        } else {
-            if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
-                window.realAnimalSounds.playUISound('select');
-            }
-
         }
-        
-        // Update selection in the sound module
-        if (window.realAnimalSounds && window.realAnimalSounds.selectOption) {
-            window.realAnimalSounds.selectOption(selectedOption);
-        }
-        
-        // Enable next button if an option is selected
-        document.getElementById('nextBtn').disabled = false;
-    }        function selectOption(selectedOption, buttonElement) {
+
+        // New function to handle option clicks (plays sound but doesn't lock in answer)
+        function handleOptionClick(selectedOption, buttonElement) {
+            // Play animal sound when option is clicked
+            if (currentQuestionType === 'name') {
+                if (window.realAnimalSounds && window.realAnimalSounds.playAnimalSound) {
+                    window.realAnimalSounds.playAnimalSound(selectedOption);
+                }
+            } else {
+                if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
+                    window.realAnimalSounds.playUISound('select');
+                }
+
+            }
+
+            // Update selection in the sound module
+            if (window.realAnimalSounds && window.realAnimalSounds.selectOption) {
+                window.realAnimalSounds.selectOption(selectedOption);
+            }
+
+            // Enable next button if an option is selected
+            document.getElementById('nextBtn').disabled = false;
+        } function selectOption(selectedOption, buttonElement) {
             const correctAnswer = getCorrectAnswer();
             const isCorrect = selectedOption === correctAnswer;
             const allButtons = document.querySelectorAll('.option-btn');
-            
+
             // Clear timer for speed mode
             if (timer) {
                 clearInterval(timer);
                 timer = null;
             }
-            
+
             // Disable all buttons
             allButtons.forEach(btn => {
                 btn.disabled = true;
@@ -1532,34 +1754,34 @@
                     btn.classList.add('incorrect');
                 }
             });
-            
+
             // Update score and streak
             if (isCorrect && selectedOption !== 'TIME_UP') {
                 let points = 10;
-                
+
                 // Time bonus for speed mode
                 if (gameMode === 'speed' && timeLeft > 5) {
                     points += (timeLeft - 5) * 2;
                 }
-                
+
                 score += points;
                 streak++;
                 maxStreak = Math.max(maxStreak, streak);
-                
+
                 showFeedback(`Excellent! ${getFeedbackMessage()}! 🎉`, 'correct');
                 if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
                     window.realAnimalSounds.playUISound('correct');
                 }
 
-            
+
                 createParticles();
-                
+
                 // Show combo indicator for streaks
                 if (streak >= 3) {
                     showComboIndicator();
                     showConfetti();
                 }
-                
+
                 // Check achievements
                 checkAchievements();
             } else {
@@ -1574,25 +1796,25 @@
                 }
 
             }
-            
+
             updateScoreBoard();
             document.getElementById('nextBtn').disabled = false;
         }
 
         // Modified next question function to process the selected answer
         function nextQuestion() {
-            const selectedOption = window.realAnimalSounds && window.realAnimalSounds.getCurrentSelection ? 
+            const selectedOption = window.realAnimalSounds && window.realAnimalSounds.getCurrentSelection ?
                 window.realAnimalSounds.getCurrentSelection() : null;
-            
+
             if (selectedOption) {
                 // Process the answer when next is clicked
                 selectOption(selectedOption, null);
-                
+
                 // Clear the selection for next question
                 if (window.realAnimalSounds && window.realAnimalSounds.clearSelection) {
                     window.realAnimalSounds.clearSelection();
                 }
-                
+
                 // Move to next question after a short delay to show feedback
                 setTimeout(() => {
                     currentQuestionIndex++;
@@ -1606,7 +1828,7 @@
         }
 
         function getCorrectAnswer() {
-            switch(currentQuestionType) {
+            switch (currentQuestionType) {
                 case 'name': return currentAnimal.name;
                 case 'sound': return currentAnimal.sound;
                 case 'habitat': return currentAnimal.habitat;
@@ -1616,7 +1838,7 @@
         }
 
         function getFeedbackMessage() {
-            switch(currentQuestionType) {
+            switch (currentQuestionType) {
                 case 'name': return `It's a ${currentAnimal.name}`;
                 case 'sound': return `${currentAnimal.name}s make a "${currentAnimal.sound}" sound`;
                 case 'habitat': return `${currentAnimal.name}s live in the ${currentAnimal.habitat}`;
@@ -1634,7 +1856,7 @@
                 particle.style.backgroundColor = ['#FFD700', '#FF69B4', '#87CEEB', '#98FB98', '#FFA500'][Math.floor(Math.random() * 5)];
                 particle.style.width = particle.style.height = Math.random() * 10 + 5 + 'px';
                 animalDisplay.appendChild(particle);
-                
+
                 setTimeout(() => particle.remove(), 2000);
             }
         }
@@ -1644,13 +1866,13 @@
             indicator.className = 'combo-indicator';
             indicator.textContent = `🔥 ${streak} COMBO! 🔥`;
             document.body.appendChild(indicator);
-            
+
             setTimeout(() => indicator.remove(), 2000);
         }
 
         function checkAchievements() {
             const newAchievements = [];
-            
+
             if (streak === 5 && !achievements.includes('streak5')) {
                 newAchievements.push({ text: '🔥 5 Streak Master!', id: 'streak5' });
             }
@@ -1660,7 +1882,7 @@
             if (score >= 100 && !achievements.includes('score100')) {
                 newAchievements.push({ text: '💯 Century Club!', id: 'score100' });
             }
-            
+
             newAchievements.forEach(achievement => {
                 achievements.push(achievement.id);
                 showAchievement(achievement.text);
@@ -1672,7 +1894,7 @@
             achievement.className = 'achievement';
             achievement.textContent = text;
             document.body.appendChild(achievement);
-            
+
             setTimeout(() => achievement.remove(), 3000);
         }
 
@@ -1692,21 +1914,21 @@
             // Use cached DOM elements for better performance
             if (domCache.score) domCache.score.textContent = score;
             if (domCache.streak) domCache.streak.textContent = streak;
-        }        function endGame() {
+        } function endGame() {
             // Save high score
             if (score > highScore) {
                 highScore = score;
                 localStorage.setItem('wildAnimalsHighScore', highScore.toString());
                 showAchievement('🏆 NEW HIGH SCORE! 🏆');
             }
-            
+
             const gameArea = document.getElementById('gameArea');
             const questionsAnswered = gameMode === 'survival' ? currentQuestionIndex : totalQuestions;
             const percentage = Math.round((score / (questionsAnswered * 10)) * 100);
-            
+
             let message = '';
             let emoji = '';
-            
+
             if (percentage >= 90) {
                 message = 'Amazing! You\'re a Wild Animal Expert! 🌟';
                 emoji = '🏆';
@@ -1721,15 +1943,15 @@
                 message = 'Nice try! Practice makes perfect! 😊';
                 emoji = '🌟';
             }
-            
+
             let modeText = '';
-            switch(gameMode) {
+            switch (gameMode) {
                 case 'survival': modeText = `Survival Mode - ${currentQuestionIndex} questions!`; break;
                 case 'speed': modeText = 'Speed Mode - Time Challenge!'; break;
                 case 'quiz': modeText = 'Quiz Mode - Mixed Questions!'; break;
                 default: modeText = 'Classic Mode Completed!';
             }
-            
+
             gameArea.innerHTML = `
                 <div class="game-complete">
                     <div style="font-size: 4em; margin-bottom: 20px;">${emoji}</div>
@@ -1750,21 +1972,21 @@
                         🎮 Play Again!
                     </button>
                 </div>            `;
-            
+
             if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
                 window.realAnimalSounds.playUISound('complete');
             }
 
-        
+
         }
 
         // Power-up functions
         function useHint() {
             if (powerups.hints <= 0) return;
-            
+
             powerups.hints--;
             updatePowerupButtons();
-            
+
             const correctAnswer = getCorrectAnswer();
             const feedback = document.getElementById('feedback');
             feedback.textContent = `💡 Hint: The answer starts with "${correctAnswer.charAt(0)}"`;
@@ -1773,26 +1995,26 @@
                 window.realAnimalSounds.playUISound('powerup');
             }
 
-            
-           
+
+
         }
 
         function eliminateWrong() {
             if (powerups.eliminate <= 0) return;
-            
+
             powerups.eliminate--;
             updatePowerupButtons();
-            
+
             const correctAnswer = getCorrectAnswer();
             const buttons = Array.from(document.querySelectorAll('.option-btn'));
             const wrongButtons = buttons.filter(btn => btn.dataset.value !== correctAnswer);
-            
+
             // Remove 2 wrong answers
             for (let i = 0; i < 2 && i < wrongButtons.length; i++) {
                 wrongButtons[i].style.opacity = '0.3';
                 wrongButtons[i].disabled = true;
             }
-            
+
             if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
                 window.realAnimalSounds.playUISound('powerup');
             }
@@ -1801,40 +2023,41 @@
 
         function skipQuestion() {
             if (powerups.skip <= 0) return;
-            
+
             powerups.skip--;
             updatePowerupButtons();
-            
+
             // Clear timer
             if (timer) {
                 clearInterval(timer);
                 timer = null;
             }
-            
+
             showFeedback('⏭️ Question skipped!', 'correct');
             score += 5; // Half points for skipping
             updateScoreBoard();
-            
+
             setTimeout(() => {
                 currentQuestionIndex++;
-                loadQuestion();            }, 1000);
-            
+                loadQuestion();
+            }, 1000);
+
             if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
                 window.realAnimalSounds.playUISound('powerup');
             }
-        }        function restartGame() {
+        } function restartGame() {
             // Reset all buttons styles
             document.querySelectorAll('.option-btn').forEach(btn => {
                 btn.classList.remove('correct', 'incorrect');
                 btn.disabled = false;
             });
-            
+
             // Clear any existing timer
             if (timer) {
                 clearInterval(timer);
                 timer = null;
             }
-            
+
             // Restore game area
             document.getElementById('gameArea').innerHTML = `
                 <div class="timer-container" id="timerContainer" style="display: none;">
@@ -1863,34 +2086,34 @@
                 
                 <button class="next-btn" id="nextBtn" onclick="nextQuestion()" disabled>Next Animal →</button>
             `;
-            
+
             // Reinitialize DOM cache after innerHTML change
             initDOMCache();
-            
+
             // Reattach click listener for the new emoji element
             if (domCache.animalEmoji) {
                 domCache.animalEmoji.onclick = playCurrentAnimalSound;
                 domCache.animalEmoji.classList.add('clickable');
             }
-            
+
             // Show/hide timer based on current mode
             const timerContainer = document.getElementById('timerContainer');
             if (gameMode === 'speed') {
                 timerContainer.style.display = 'block';
             }
-            
+
             initGame();
         }
 
         function showConfetti() {
             const celebration = document.getElementById('celebration');
             celebration.innerHTML = '';
-            
+
             // Use DocumentFragment for better performance
             const fragment = document.createDocumentFragment();
             const colors = ['#FFD700', '#FF69B4', '#87CEEB', '#98FB98', '#FFA500'];
             const confettiElements = [];
-            
+
             for (let i = 0; i < 50; i++) {
                 const confetti = document.createElement('div');
                 confetti.className = 'confetti';
@@ -1900,9 +2123,9 @@
                 fragment.appendChild(confetti);
                 confettiElements.push(confetti);
             }
-            
+
             celebration.appendChild(fragment);
-            
+
             // Remove all confetti at once after 3 seconds
             setTimeout(() => {
                 confettiElements.forEach(c => c.remove());
@@ -1910,12 +2133,12 @@
         }
 
         function toggleSound() {
-            const isEnabled = window.realAnimalSounds && window.realAnimalSounds.toggleSound ? 
+            const isEnabled = window.realAnimalSounds && window.realAnimalSounds.toggleSound ?
                 window.realAnimalSounds.toggleSound() : false;
 
             // Toggle both sound systems
-          
-            
+
+
             const soundBtn = document.getElementById('soundBtn');
             soundBtn.textContent = isEnabled ? '🔊' : '🔇';
         }
@@ -1924,12 +2147,12 @@
         function playCurrentAnimalSound() {
             if (window.currentAnimal && window.animalSounds) {
                 window.animalSounds.playAnimalSound(window.currentAnimal.name);
-                
+
                 // Add haptic feedback for mobile devices
                 if ('vibrate' in navigator) {
                     navigator.vibrate(100);
                 }
-                
+
                 // Add visual feedback
                 const animalEmoji = document.getElementById('animalEmoji');
                 if (animalEmoji) {
@@ -1944,7 +2167,7 @@
         window.onload = () => {
             updateHighScore();
             initGame();
-            
+
             // Initialize sound module
             if (window.realAnimalSounds) {
                 console.log('Real Animal sounds module loaded successfully');
@@ -1955,12 +2178,13 @@
                 }
             } else {
                 console.warn('Real Animal sounds module not available')
-           
-            
+
+
             }
         };
 
         // Ensure clicking the emoji repeats the current animal sound
     </script>
 </body>
+
 </html>
