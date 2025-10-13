@@ -1,0 +1,19 @@
+# Ignore git history and configuration
+.git
+.gitignore
+
+# Ignore Docker related files
+Dockerfile
+.dockerignore
+
+# Ignore GitHub Actions workflows
+.github
+
+# Ignore VS Code settings
+.vscode
+
+# Ignore Node.js dependencies (if any)
+node_modules
+
+# Ignore markdown files (documentation)
+*.md
