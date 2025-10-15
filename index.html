@@ -226,27 +226,7 @@
         }
 
         .next-btn {
-            padding: 15px 30px;
-            font-size: 1.3em;
-            font-weight: bold;
-            background: linear-gradient(45deg, #4169E1, #87CEEB);
-            color: white;
-            border: none;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 20px;
-        }
-
-        .next-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .next-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
+            display: none; /* Hide the Next button - auto-advance feature enabled */
         }
 
         .celebration {
@@ -1713,28 +1693,19 @@
             optionsContainer.appendChild(fragment);
         }
 
-        // New function to handle option clicks (plays sound but doesn't lock in answer)
+        // Modified function to handle option clicks - now immediately processes answer
         function handleOptionClick(selectedOption, buttonElement) {
-            // Play animal sound when option is clicked
-            if (currentQuestionType === 'name') {
-                if (window.realAnimalSounds && window.realAnimalSounds.playAnimalSound) {
-                    window.realAnimalSounds.playAnimalSound(selectedOption);
-                }
-            } else {
-                if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
-                    window.realAnimalSounds.playUISound('select');
-                }
-
-            }
-
-            // Update selection in the sound module
-            if (window.realAnimalSounds && window.realAnimalSounds.selectOption) {
-                window.realAnimalSounds.selectOption(selectedOption);
-            }
-
-            // Enable next button if an option is selected
-            document.getElementById('nextBtn').disabled = false;
-        } function selectOption(selectedOption, buttonElement) {
+            // Immediately process the selected answer
+            selectOption(selectedOption, buttonElement);
+            
+            // Auto-advance to next question after showing feedback
+            setTimeout(() => {
+                currentQuestionIndex++;
+                loadQuestion();
+            }, 2000); // 2 second delay to show feedback and let user see the result
+        }
+        
+        function selectOption(selectedOption, buttonElement) {
             const correctAnswer = getCorrectAnswer();
             const isCorrect = selectedOption === correctAnswer;
             const allButtons = document.querySelectorAll('.option-btn');
@@ -1745,7 +1716,7 @@
                 timer = null;
             }
 
-            // Disable all buttons
+            // Disable all buttons to prevent multiple clicks
             allButtons.forEach(btn => {
                 btn.disabled = true;
                 if (btn.dataset.value === correctAnswer) {
@@ -1754,6 +1725,11 @@
                     btn.classList.add('incorrect');
                 }
             });
+
+            // Play animal pronunciation sound when answer is selected
+            if (currentQuestionType === 'name' && window.realAnimalSounds && window.realAnimalSounds.playAnimalSound) {
+                window.realAnimalSounds.playAnimalSound(selectedOption);
+            }
 
             // Update score and streak
             if (isCorrect && selectedOption !== 'TIME_UP') {
@@ -1798,33 +1774,12 @@
             }
 
             updateScoreBoard();
-            document.getElementById('nextBtn').disabled = false;
         }
 
-        // Modified next question function to process the selected answer
+        // Simplified next question function - now only used by power-ups like skip
         function nextQuestion() {
-            const selectedOption = window.realAnimalSounds && window.realAnimalSounds.getCurrentSelection ?
-                window.realAnimalSounds.getCurrentSelection() : null;
-
-            if (selectedOption) {
-                // Process the answer when next is clicked
-                selectOption(selectedOption, null);
-
-                // Clear the selection for next question
-                if (window.realAnimalSounds && window.realAnimalSounds.clearSelection) {
-                    window.realAnimalSounds.clearSelection();
-                }
-
-                // Move to next question after a short delay to show feedback
-                setTimeout(() => {
-                    currentQuestionIndex++;
-                    loadQuestion();
-                }, 1500);
-            } else {
-                // If no option selected, just move to next question
-                currentQuestionIndex++;
-                loadQuestion();
-            }
+            currentQuestionIndex++;
+            loadQuestion();
         }
 
         function getCorrectAnswer() {
