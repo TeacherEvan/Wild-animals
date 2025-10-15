@@ -5,6 +5,7 @@ class RealAnimalSounds {
         this.currentAudio = null;
         this.audioCache = {};
         this.isLoading = false;
+        this.currentSelection = null; // Track user's selected option
         
         // Initialize audio context for better control
         this.initAudioContext();
@@ -148,6 +149,34 @@ class RealAnimalSounds {
 
     isSoundEnabled() {
         return this.isEnabled;
+    }
+
+    // Selection management methods for game logic
+    selectOption(option) {
+        this.currentSelection = option;
+        
+        // Add visual feedback to selected option
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+        
+        const buttons = document.querySelectorAll('.option-btn');
+        buttons.forEach(btn => {
+            if (btn.dataset.value === option) {
+                btn.classList.add('selected');
+            }
+        });
+    }
+
+    getCurrentSelection() {
+        return this.currentSelection;
+    }
+
+    clearSelection() {
+        this.currentSelection = null;
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.classList.remove('selected');
+        });
     }
 }
 
