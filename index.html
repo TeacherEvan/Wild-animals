@@ -23,40 +23,45 @@
         }
 
         .game-container {
-            max-width: 800px;
+            max-width: 900px;
             width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            padding: 30px;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.3);
+            padding: 40px;
             text-align: center;
+            backdrop-filter: blur(10px);
         }
 
         h1 {
             color: #2E8B57;
-            font-size: 2.5em;
+            font-size: 2.8em;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+            font-weight: 800;
+            letter-spacing: -0.5px;
         }
 
         .subtitle {
             color: #FF6347;
-            font-size: 1.2em;
+            font-size: 1.3em;
             margin-bottom: 30px;
+            font-weight: 600;
         }
 
         .score-board {
             display: flex;
             justify-content: space-around;
             margin-bottom: 30px;
-            padding: 15px;
-            background: #F0F8FF;
-            border-radius: 15px;
+            padding: 20px;
+            background: linear-gradient(135deg, #F0F8FF 0%, #E6F3FF 100%);
+            border-radius: 20px;
             border: 3px solid #4169E1;
+            box-shadow: 0 4px 15px rgba(65, 105, 225, 0.2);
         }
 
         .score-item {
-            font-size: 1.3em;
+            font-size: 1.4em;
             font-weight: bold;
             color: #2E8B57;
         }
@@ -66,24 +71,26 @@
         }
 
         .animal-display {
-            background: #FFFACD;
+            background: linear-gradient(135deg, #FFFACD 0%, #FFF8DC 100%);
             border: 5px solid #FFD700;
-            border-radius: 20px;
-            padding: 30px;
+            border-radius: 25px;
+            padding: 40px;
             margin-bottom: 30px;
-            min-height: 300px;
+            min-height: 320px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.2), inset 0 -2px 10px rgba(255, 215, 0, 0.1);
         }
 
         .animal-emoji {
-            font-size: 8em;
+            font-size: 9em;
             margin-bottom: 20px;
             animation: bounce 2s infinite;
             cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s ease;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.2));
         }
 
         @keyframes bounce {
@@ -153,31 +160,54 @@
         }
 
         .option-btn {
-            padding: 15px 25px;
-            font-size: 1.2em;
-            font-weight: bold;
+            padding: 18px 30px;
+            font-size: 1.25em;
+            font-weight: 700;
             border: none;
-            border-radius: 15px;
+            border-radius: 18px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            background: linear-gradient(45deg, #FF69B4, #FFB6C1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(135deg, #FF69B4, #FFB6C1);
             color: white;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 6px 20px rgba(255, 105, 180, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .option-btn:hover::after {
+            width: 300px;
+            height: 300px;
         }
 
         .option-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.4);
         }
 
         .option-btn.correct {
-            background: linear-gradient(45deg, #32CD32, #90EE90);
+            background: linear-gradient(135deg, #32CD32, #90EE90);
             animation: correct 0.6s ease;
+            box-shadow: 0 6px 20px rgba(50, 205, 50, 0.4);
         }
 
         .option-btn.incorrect {
-            background: linear-gradient(45deg, #FF6347, #FFA07A);
+            background: linear-gradient(135deg, #FF6347, #FFA07A);
             animation: shake 0.5s ease;
+            box-shadow: 0 6px 20px rgba(255, 99, 71, 0.4);
         }
 
         @keyframes correct {
@@ -320,24 +350,43 @@
         }
 
         .mode-btn {
-            padding: 20px;
-            background: linear-gradient(45deg, #9370DB, #BA55D3);
+            padding: 25px 20px;
+            background: linear-gradient(135deg, #9370DB, #BA55D3);
             color: white;
             border: none;
-            border-radius: 15px;
+            border-radius: 20px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1.1em;
-            font-weight: bold;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 1.15em;
+            font-weight: 700;
+            box-shadow: 0 8px 20px rgba(147, 112, 219, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .mode-btn:hover::before {
+            left: 100%;
         }
 
         .mode-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 12px 30px rgba(147, 112, 219, 0.4);
         }
 
         .mode-btn.active {
-            background: linear-gradient(45deg, #32CD32, #90EE90);
+            background: linear-gradient(135deg, #32CD32, #90EE90);
+            box-shadow: 0 8px 20px rgba(50, 205, 50, 0.4);
         }
 
         /* Timer */
@@ -879,24 +928,83 @@
         .habitat-bg {
             position: absolute;
             inset: 0;
-            opacity: 0.2;
+            opacity: 0.4;
             z-index: -1;
+            border-radius: 15px;
         }
 
         .habitat-savanna {
-            background: linear-gradient(to bottom, #87CEEB, #F0E68C);
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(255, 215, 0, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 30%, rgba(255, 165, 0, 0.2) 0%, transparent 40%),
+                linear-gradient(180deg, 
+                    #87CEEB 0%,
+                    #B0E0E6 20%,
+                    #F4A460 40%,
+                    #DEB887 60%,
+                    #D2B48C 80%,
+                    #C19A6B 100%
+                );
+            background-size: cover;
+            background-position: center;
         }
 
         .habitat-forest {
-            background: linear-gradient(to bottom, #228B22, #8B4513);
+            background:
+                radial-gradient(ellipse at 15% 25%, rgba(34, 139, 34, 0.6) 0%, transparent 35%),
+                radial-gradient(ellipse at 45% 15%, rgba(46, 125, 50, 0.5) 0%, transparent 40%),
+                radial-gradient(ellipse at 75% 20%, rgba(27, 94, 32, 0.7) 0%, transparent 38%),
+                radial-gradient(ellipse at 30% 60%, rgba(56, 142, 60, 0.4) 0%, transparent 45%),
+                radial-gradient(ellipse at 65% 70%, rgba(76, 175, 80, 0.3) 0%, transparent 35%),
+                linear-gradient(180deg,
+                    #2E7D32 0%,
+                    #388E3C 20%,
+                    #43A047 40%,
+                    #66BB6A 60%,
+                    #8D6E63 80%,
+                    #6D4C41 100%
+                );
+            background-size: cover;
+            background-position: center;
         }
 
         .habitat-ocean {
-            background: linear-gradient(to bottom, #4682B4, #000080);
+            background:
+                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.4) 0%, transparent 8%),
+                radial-gradient(circle at 60% 45%, rgba(255, 255, 255, 0.3) 0%, transparent 6%),
+                radial-gradient(circle at 80% 25%, rgba(255, 255, 255, 0.35) 0%, transparent 7%),
+                radial-gradient(circle at 45% 60%, rgba(255, 255, 255, 0.25) 0%, transparent 5%),
+                radial-gradient(ellipse at 20% 80%, rgba(30, 144, 255, 0.3) 0%, transparent 40%),
+                linear-gradient(180deg,
+                    #4FC3F7 0%,
+                    #29B6F6 20%,
+                    #03A9F4 40%,
+                    #039BE5 60%,
+                    #0277BD 80%,
+                    #01579B 100%
+                );
+            background-size: cover;
+            background-position: center;
         }
 
         .habitat-jungle {
-            background: linear-gradient(to bottom, #228B22, #006400);
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(46, 125, 50, 0.7) 0%, transparent 30%),
+                radial-gradient(ellipse at 60% 15%, rgba(27, 94, 32, 0.6) 0%, transparent 35%),
+                radial-gradient(ellipse at 80% 30%, rgba(56, 142, 60, 0.5) 0%, transparent 32%),
+                radial-gradient(ellipse at 35% 50%, rgba(76, 175, 80, 0.4) 0%, transparent 38%),
+                radial-gradient(ellipse at 70% 65%, rgba(102, 187, 106, 0.3) 0%, transparent 30%),
+                radial-gradient(ellipse at 15% 75%, rgba(129, 199, 132, 0.2) 0%, transparent 25%),
+                linear-gradient(180deg,
+                    #1B5E20 0%,
+                    #2E7D32 20%,
+                    #388E3C 40%,
+                    #43A047 60%,
+                    #4CAF50 80%,
+                    #66BB6A 100%
+                );
+            background-size: cover;
+            background-position: center;
         }
 
         .animals-pool {
@@ -1326,26 +1434,36 @@
 
     <script>        // Enhanced game data with visual symbols and categories for non-reading kids
         const animals = [
-            { emoji: '🦁', name: 'Lion', sound: 'roar', habitat: 'Savanna', diet: 'Carnivore', fact: 'Lives in prides', symbol: '👑', color: '#FFD700', category: 'Big Cats' },
-            { emoji: '🐯', name: 'Tiger', sound: 'roar', habitat: 'Jungle', diet: 'Carnivore', fact: 'Excellent swimmer', symbol: '🐅', color: '#FF6347', category: 'Big Cats' },
-            { emoji: '🐘', name: 'Elephant', sound: 'trumpet', habitat: 'Savanna', diet: 'Herbivore', fact: 'Never forgets', symbol: '🐽', color: '#808080', category: 'Giants' },
-            { emoji: '🦒', name: 'Giraffe', sound: 'hum', habitat: 'Savanna', diet: 'Herbivore', fact: 'Tallest animal', symbol: '📏', color: '#DEB887', category: 'Giants' },
-            { emoji: '🐻', name: 'Bear', sound: 'growl', habitat: 'Forest', diet: 'Omnivore', fact: 'Hibernates in winter', symbol: '🍯', color: '#8B4513', category: 'Forest Friends' },
-            { emoji: '🦓', name: 'Zebra', sound: 'neigh', habitat: 'Savanna', diet: 'Herbivore', fact: 'Unique stripes', symbol: '⚫⚪', color: '#000000', category: 'Striped' },
-            { emoji: '🦏', name: 'Rhino', sound: 'snort', habitat: 'Savanna', diet: 'Herbivore', fact: 'Horn made of keratin', symbol: '🔺', color: '#696969', category: 'Giants' },
-            { emoji: '🐺', name: 'Wolf', sound: 'howl', habitat: 'Forest', diet: 'Carnivore', fact: 'Hunts in packs', symbol: '🌙', color: '#708090', category: 'Wild Dogs' },
-            { emoji: '🦊', name: 'Fox', sound: 'bark', habitat: 'Forest', diet: 'Omnivore', fact: 'Very intelligent', symbol: '🧠', color: '#FF4500', category: 'Smart Animals' },
-            { emoji: '🐆', name: 'Leopard', sound: 'roar', habitat: 'Forest', diet: 'Carnivore', fact: 'Excellent climber', symbol: '🌳', color: '#DAA520', category: 'Big Cats' },
-            { emoji: '🦘', name: 'Kangaroo', sound: 'grunt', habitat: 'Grassland', diet: 'Herbivore', fact: 'Carries babies in pouch', symbol: '👶', color: '#CD853F', category: 'Hoppers' },
-            { emoji: '🐨', name: 'Koala', sound: 'grunt', habitat: 'Forest', diet: 'Herbivore', fact: 'Sleeps 20 hours a day', symbol: '😴', color: '#A9A9A9', category: 'Sleepy Animals' },
-            { emoji: '🐵', name: 'Monkey', sound: 'chatter', habitat: 'Jungle', diet: 'Omnivore', fact: 'Very social animal', symbol: '🍌', color: '#F4A460', category: 'Primates' },
-            { emoji: '🦍', name: 'Gorilla', sound: 'grunt', habitat: 'Jungle', diet: 'Herbivore', fact: 'Strongest primate', symbol: '💪', color: '#2F4F4F', category: 'Primates' },
-            { emoji: '🐧', name: 'Penguin', sound: 'squawk', habitat: 'Antarctica', diet: 'Carnivore', fact: 'Cannot fly but swims', symbol: '🏊', color: '#000080', category: 'Ocean Birds' },
-            { emoji: '🦅', name: 'Eagle', sound: 'screech', habitat: 'Mountains', diet: 'Carnivore', fact: 'Excellent eyesight', symbol: '👁️', color: '#8B4513', category: 'Flying Hunters' },
-            { emoji: '🐙', name: 'Octopus', sound: 'silent', habitat: 'Ocean', diet: 'Carnivore', fact: 'Has eight arms', symbol: '8️⃣', color: '#800080', category: 'Ocean Creatures' },
-            { emoji: '🐬', name: 'Dolphin', sound: 'click', habitat: 'Ocean', diet: 'Carnivore', fact: 'Very intelligent', symbol: '🧠', color: '#4682B4', category: 'Smart Ocean' },
-            { emoji: '🦈', name: 'Shark', sound: 'silent', habitat: 'Ocean', diet: 'Carnivore', fact: 'Ancient predator', symbol: '⚡', color: '#708090', category: 'Ocean Hunters' },
-            { emoji: '🐸', name: 'Frog', sound: 'croak', habitat: 'Pond', diet: 'Carnivore', fact: 'Starts as tadpole', symbol: '🌊', color: '#32CD32', category: 'Water Hoppers' }
+            { emoji: '🦁', name: 'Lion', sound: 'roar', habitat: 'Savanna', diet: 'Carnivore', fact: 'A lion is the king of the jungle', symbol: '👑', color: '#FFD700', category: 'Big Cats' },
+            { emoji: '🐯', name: 'Tiger', sound: 'roar', habitat: 'Jungle', diet: 'Carnivore', fact: 'A tiger has orange fur with black stripes', symbol: '🐅', color: '#FF6347', category: 'Big Cats' },
+            { emoji: '🐘', name: 'Elephant', sound: 'trumpet', habitat: 'Savanna', diet: 'Herbivore', fact: 'An elephant is the biggest land animal', symbol: '🐽', color: '#808080', category: 'Giants' },
+            { emoji: '🦒', name: 'Giraffe', sound: 'hum', habitat: 'Savanna', diet: 'Herbivore', fact: 'A giraffe has a very long neck', symbol: '📏', color: '#DEB887', category: 'Giants' },
+            { emoji: '🐻', name: 'Bear', sound: 'growl', habitat: 'Forest', diet: 'Omnivore', fact: 'A bear sleeps all winter long', symbol: '🍯', color: '#8B4513', category: 'Forest Friends' },
+            { emoji: '🦓', name: 'Zebra', sound: 'neigh', habitat: 'Savanna', diet: 'Herbivore', fact: 'A zebra has black and white stripes', symbol: '⚫⚪', color: '#000000', category: 'Striped' },
+            { emoji: '🦏', name: 'Rhino', sound: 'snort', habitat: 'Savanna', diet: 'Herbivore', fact: 'A rhino has a big horn on its nose', symbol: '🔺', color: '#696969', category: 'Giants' },
+            { emoji: '🐺', name: 'Wolf', sound: 'howl', habitat: 'Forest', diet: 'Carnivore', fact: 'A wolf howls at the moon', symbol: '🌙', color: '#708090', category: 'Wild Dogs' },
+            { emoji: '🦊', name: 'Fox', sound: 'bark', habitat: 'Forest', diet: 'Omnivore', fact: 'A fox has a fluffy tail', symbol: '🧠', color: '#FF4500', category: 'Smart Animals' },
+            { emoji: '🐆', name: 'Leopard', sound: 'roar', habitat: 'Forest', diet: 'Carnivore', fact: 'A leopard can climb trees very well', symbol: '🌳', color: '#DAA520', category: 'Big Cats' },
+            { emoji: '🦘', name: 'Kangaroo', sound: 'grunt', habitat: 'Grassland', diet: 'Herbivore', fact: 'A kangaroo carries its baby in a pouch', symbol: '👶', color: '#CD853F', category: 'Hoppers' },
+            { emoji: '🐨', name: 'Koala', sound: 'grunt', habitat: 'Forest', diet: 'Herbivore', fact: 'A koala sleeps most of the day', symbol: '😴', color: '#A9A9A9', category: 'Sleepy Animals' },
+            { emoji: '🐵', name: 'Monkey', sound: 'chatter', habitat: 'Jungle', diet: 'Omnivore', fact: 'A monkey loves to eat bananas', symbol: '🍌', color: '#F4A460', category: 'Primates' },
+            { emoji: '🦍', name: 'Gorilla', sound: 'grunt', habitat: 'Jungle', diet: 'Herbivore', fact: 'A gorilla is very strong', symbol: '💪', color: '#2F4F4F', category: 'Primates' },
+            { emoji: '🐧', name: 'Penguin', sound: 'squawk', habitat: 'Antarctica', diet: 'Carnivore', fact: 'A penguin cannot fly but can swim', symbol: '🏊', color: '#000080', category: 'Ocean Birds' },
+            { emoji: '🦅', name: 'Eagle', sound: 'screech', habitat: 'Mountains', diet: 'Carnivore', fact: 'An eagle can see very far away', symbol: '👁️', color: '#8B4513', category: 'Flying Hunters' },
+            { emoji: '🐙', name: 'Octopus', sound: 'silent', habitat: 'Ocean', diet: 'Carnivore', fact: 'An octopus has eight legs', symbol: '8️⃣', color: '#800080', category: 'Ocean Creatures' },
+            { emoji: '🐬', name: 'Dolphin', sound: 'click', habitat: 'Ocean', diet: 'Carnivore', fact: 'A dolphin is very smart and friendly', symbol: '🧠', color: '#4682B4', category: 'Smart Ocean' },
+            { emoji: '🦈', name: 'Shark', sound: 'silent', habitat: 'Ocean', diet: 'Carnivore', fact: 'A shark has many sharp teeth', symbol: '⚡', color: '#708090', category: 'Ocean Hunters' },
+            { emoji: '🐸', name: 'Frog', sound: 'croak', habitat: 'Pond', diet: 'Carnivore', fact: 'A frog can jump very high', symbol: '🌊', color: '#32CD32', category: 'Water Hoppers' },
+            { emoji: '🦒', name: 'Camel', sound: 'grunt', habitat: 'Desert', diet: 'Herbivore', fact: 'A camel can go without water for days', symbol: '💧', color: '#C19A6B', category: 'Desert Animals' },
+            { emoji: '🐊', name: 'Crocodile', sound: 'hiss', habitat: 'River', diet: 'Carnivore', fact: 'A crocodile has very strong jaws', symbol: '💪', color: '#556B2F', category: 'Reptiles' },
+            { emoji: '🦛', name: 'Hippo', sound: 'grunt', habitat: 'River', diet: 'Herbivore', fact: 'A hippo spends most of its day in water', symbol: '💦', color: '#696969', category: 'River Giants' },
+            { emoji: '🐆', name: 'Cheetah', sound: 'chirp', habitat: 'Savanna', diet: 'Carnivore', fact: 'A cheetah is the fastest land animal', symbol: '⚡', color: '#F4A460', category: 'Fast Cats' },
+            { emoji: '🦜', name: 'Parrot', sound: 'squawk', habitat: 'Jungle', diet: 'Omnivore', fact: 'A parrot can learn to talk', symbol: '🗣️', color: '#FF1493', category: 'Tropical Birds' },
+            { emoji: '🐢', name: 'Turtle', sound: 'silent', habitat: 'Ocean', diet: 'Omnivore', fact: 'A turtle can live for over 100 years', symbol: '⏰', color: '#228B22', category: 'Slow Movers' },
+            { emoji: '🦉', name: 'Owl', sound: 'hoot', habitat: 'Forest', diet: 'Carnivore', fact: 'An owl can turn its head almost all the way around', symbol: '🔄', color: '#8B4513', category: 'Night Birds' },
+            { emoji: '🐿️', name: 'Squirrel', sound: 'chatter', habitat: 'Forest', diet: 'Omnivore', fact: 'A squirrel stores nuts for winter', symbol: '🌰', color: '#A0522D', category: 'Tree Climbers' },
+            { emoji: '🦔', name: 'Hedgehog', sound: 'snuffle', habitat: 'Forest', diet: 'Omnivore', fact: 'A hedgehog has spiky quills for protection', symbol: '🛡️', color: '#8B7355', category: 'Spiky Animals' },
+            { emoji: '🐝', name: 'Bee', sound: 'buzz', habitat: 'Garden', diet: 'Herbivore', fact: 'A bee makes honey from flower nectar', symbol: '🍯', color: '#FFD700', category: 'Insects' }
         ];
 
         // DOM element cache for better performance
@@ -1391,7 +1509,7 @@
         let gameQuestions = [];
         let soundEnabled = true;
         let gameMode = 'classic';
-        let questionTypes = ['name', 'sound', 'habitat', 'diet'];
+        let questionTypes = ['name', 'fact', 'habitat', 'diet'];
         let currentQuestionType = 'name';
         let timer = null;
         let timeLeft = 10;
@@ -1550,9 +1668,9 @@
                     animalEmoji.textContent = currentAnimal.emoji;
                     questionElement.textContent = 'What animal is this?';
                     break;
-                case 'sound':
+                case 'fact':
                     animalEmoji.textContent = currentAnimal.emoji;
-                    questionElement.textContent = 'What sound does this animal make?';
+                    questionElement.textContent = 'Learn about this animal!';
                     break;
                 case 'habitat':
                     animalEmoji.textContent = currentAnimal.emoji;
@@ -1630,13 +1748,13 @@
                         return acc;
                     }, []);
                     break;
-                case 'sound':
-                    correctAnswer = currentAnimal.sound;
-                    const soundSet = new Set();
+                case 'fact':
+                    correctAnswer = currentAnimal.fact;
+                    const factSet = new Set();
                     for (const a of animals) {
-                        if (a.sound !== correctAnswer) soundSet.add(a.sound);
+                        if (a.fact !== correctAnswer) factSet.add(a.fact);
                     }
-                    wrongAnswers = Array.from(soundSet);
+                    wrongAnswers = Array.from(factSet);
                     break;
                 case 'habitat':
                     correctAnswer = currentAnimal.habitat;
@@ -1785,7 +1903,7 @@
         function getCorrectAnswer() {
             switch (currentQuestionType) {
                 case 'name': return currentAnimal.name;
-                case 'sound': return currentAnimal.sound;
+                case 'fact': return currentAnimal.fact;
                 case 'habitat': return currentAnimal.habitat;
                 case 'diet': return currentAnimal.diet;
                 default: return currentAnimal.name;
@@ -1795,7 +1913,7 @@
         function getFeedbackMessage() {
             switch (currentQuestionType) {
                 case 'name': return `It's a ${currentAnimal.name}`;
-                case 'sound': return `${currentAnimal.name}s make a "${currentAnimal.sound}" sound`;
+                case 'fact': return currentAnimal.fact;
                 case 'habitat': return `${currentAnimal.name}s live in the ${currentAnimal.habitat}`;
                 case 'diet': return `${currentAnimal.name}s are ${currentAnimal.diet}s`;
                 default: return `It's a ${currentAnimal.name}`;
