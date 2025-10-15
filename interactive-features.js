@@ -314,10 +314,10 @@ class InteractiveFeatures {
 class HabitatMatchingGame {
     constructor() {
         this.habitats = {
-            'savanna': ['Lion', 'Elephant', 'Giraffe', 'Zebra', 'Rhino'],
-            'forest': ['Bear', 'Wolf', 'Fox', 'Leopard', 'Koala'],
-            'ocean': ['Dolphin', 'Shark', 'Octopus', 'Penguin'],
-            'jungle': ['Monkey', 'Gorilla', 'Tiger', 'Frog']
+            'savanna': ['Lion', 'Elephant', 'Giraffe', 'Zebra', 'Rhino', 'Cheetah'],
+            'forest': ['Bear', 'Wolf', 'Fox', 'Leopard', 'Koala', 'Owl', 'Squirrel', 'Hedgehog'],
+            'ocean': ['Dolphin', 'Shark', 'Octopus', 'Penguin', 'Turtle'],
+            'jungle': ['Monkey', 'Gorilla', 'Tiger', 'Parrot']
         };
         this.completed = 0;
         this.total = 0;
@@ -364,7 +364,10 @@ class HabitatMatchingGame {
             'Bear': '🐻', 'Zebra': '🦓', 'Rhino': '🦏', 'Wolf': '🐺',
             'Fox': '🦊', 'Leopard': '🐆', 'Kangaroo': '🦘', 'Koala': '🐨',
             'Monkey': '🐵', 'Gorilla': '🦍', 'Penguin': '🐧', 'Eagle': '🦅',
-            'Octopus': '🐙', 'Dolphin': '🐬', 'Shark': '🦈', 'Frog': '🐸'
+            'Octopus': '🐙', 'Dolphin': '🐬', 'Shark': '🦈', 'Frog': '🐸',
+            'Camel': '🐪', 'Crocodile': '🐊', 'Hippo': '🦛', 'Cheetah': '🐆',
+            'Parrot': '🦜', 'Turtle': '🐢', 'Owl': '🦉', 'Squirrel': '🐿️',
+            'Hedgehog': '🦔', 'Bee': '🐝'
         };
         return emojis[animal] || '🐾';
     }
