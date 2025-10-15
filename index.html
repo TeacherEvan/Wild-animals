@@ -879,24 +879,40 @@
         .habitat-bg {
             position: absolute;
             inset: 0;
-            opacity: 0.2;
+            opacity: 0.3;
             z-index: -1;
+            border-radius: 15px;
         }
 
         .habitat-savanna {
-            background: linear-gradient(to bottom, #87CEEB, #F0E68C);
+            background: 
+                radial-gradient(circle at 80% 20%, #FFD700 5%, transparent 10%),
+                radial-gradient(circle at 20% 80%, #F4A460 3%, transparent 8%),
+                linear-gradient(to bottom, #87CEEB 0%, #F0E68C 60%, #DEB887 100%);
         }
 
         .habitat-forest {
-            background: linear-gradient(to bottom, #228B22, #8B4513);
+            background:
+                radial-gradient(ellipse at 30% 20%, #2F4F2F 15%, transparent 30%),
+                radial-gradient(ellipse at 70% 30%, #228B22 20%, transparent 40%),
+                radial-gradient(ellipse at 50% 50%, #1B4D1B 10%, transparent 25%),
+                linear-gradient(to bottom, #4A7C59 0%, #228B22 40%, #8B4513 100%);
         }
 
         .habitat-ocean {
-            background: linear-gradient(to bottom, #4682B4, #000080);
+            background:
+                radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.3) 2%, transparent 5%),
+                radial-gradient(circle at 60% 60%, rgba(255, 255, 255, 0.2) 3%, transparent 6%),
+                radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.25) 2%, transparent 5%),
+                linear-gradient(to bottom, #4682B4 0%, #1E90FF 50%, #000080 100%);
         }
 
         .habitat-jungle {
-            background: linear-gradient(to bottom, #228B22, #006400);
+            background:
+                radial-gradient(ellipse at 20% 30%, #2F8B2F 18%, transparent 35%),
+                radial-gradient(ellipse at 80% 20%, #228B22 15%, transparent 30%),
+                radial-gradient(ellipse at 60% 60%, #1B5E20 12%, transparent 28%),
+                linear-gradient(to bottom, #3CB371 0%, #228B22 40%, #006400 100%);
         }
 
         .animals-pool {
@@ -1326,26 +1342,26 @@
 
     <script>        // Enhanced game data with visual symbols and categories for non-reading kids
         const animals = [
-            { emoji: '🦁', name: 'Lion', sound: 'roar', habitat: 'Savanna', diet: 'Carnivore', fact: 'Lives in prides', symbol: '👑', color: '#FFD700', category: 'Big Cats' },
-            { emoji: '🐯', name: 'Tiger', sound: 'roar', habitat: 'Jungle', diet: 'Carnivore', fact: 'Excellent swimmer', symbol: '🐅', color: '#FF6347', category: 'Big Cats' },
-            { emoji: '🐘', name: 'Elephant', sound: 'trumpet', habitat: 'Savanna', diet: 'Herbivore', fact: 'Never forgets', symbol: '🐽', color: '#808080', category: 'Giants' },
-            { emoji: '🦒', name: 'Giraffe', sound: 'hum', habitat: 'Savanna', diet: 'Herbivore', fact: 'Tallest animal', symbol: '📏', color: '#DEB887', category: 'Giants' },
-            { emoji: '🐻', name: 'Bear', sound: 'growl', habitat: 'Forest', diet: 'Omnivore', fact: 'Hibernates in winter', symbol: '🍯', color: '#8B4513', category: 'Forest Friends' },
-            { emoji: '🦓', name: 'Zebra', sound: 'neigh', habitat: 'Savanna', diet: 'Herbivore', fact: 'Unique stripes', symbol: '⚫⚪', color: '#000000', category: 'Striped' },
-            { emoji: '🦏', name: 'Rhino', sound: 'snort', habitat: 'Savanna', diet: 'Herbivore', fact: 'Horn made of keratin', symbol: '🔺', color: '#696969', category: 'Giants' },
-            { emoji: '🐺', name: 'Wolf', sound: 'howl', habitat: 'Forest', diet: 'Carnivore', fact: 'Hunts in packs', symbol: '🌙', color: '#708090', category: 'Wild Dogs' },
-            { emoji: '🦊', name: 'Fox', sound: 'bark', habitat: 'Forest', diet: 'Omnivore', fact: 'Very intelligent', symbol: '🧠', color: '#FF4500', category: 'Smart Animals' },
-            { emoji: '🐆', name: 'Leopard', sound: 'roar', habitat: 'Forest', diet: 'Carnivore', fact: 'Excellent climber', symbol: '🌳', color: '#DAA520', category: 'Big Cats' },
-            { emoji: '🦘', name: 'Kangaroo', sound: 'grunt', habitat: 'Grassland', diet: 'Herbivore', fact: 'Carries babies in pouch', symbol: '👶', color: '#CD853F', category: 'Hoppers' },
-            { emoji: '🐨', name: 'Koala', sound: 'grunt', habitat: 'Forest', diet: 'Herbivore', fact: 'Sleeps 20 hours a day', symbol: '😴', color: '#A9A9A9', category: 'Sleepy Animals' },
-            { emoji: '🐵', name: 'Monkey', sound: 'chatter', habitat: 'Jungle', diet: 'Omnivore', fact: 'Very social animal', symbol: '🍌', color: '#F4A460', category: 'Primates' },
-            { emoji: '🦍', name: 'Gorilla', sound: 'grunt', habitat: 'Jungle', diet: 'Herbivore', fact: 'Strongest primate', symbol: '💪', color: '#2F4F4F', category: 'Primates' },
-            { emoji: '🐧', name: 'Penguin', sound: 'squawk', habitat: 'Antarctica', diet: 'Carnivore', fact: 'Cannot fly but swims', symbol: '🏊', color: '#000080', category: 'Ocean Birds' },
-            { emoji: '🦅', name: 'Eagle', sound: 'screech', habitat: 'Mountains', diet: 'Carnivore', fact: 'Excellent eyesight', symbol: '👁️', color: '#8B4513', category: 'Flying Hunters' },
-            { emoji: '🐙', name: 'Octopus', sound: 'silent', habitat: 'Ocean', diet: 'Carnivore', fact: 'Has eight arms', symbol: '8️⃣', color: '#800080', category: 'Ocean Creatures' },
-            { emoji: '🐬', name: 'Dolphin', sound: 'click', habitat: 'Ocean', diet: 'Carnivore', fact: 'Very intelligent', symbol: '🧠', color: '#4682B4', category: 'Smart Ocean' },
-            { emoji: '🦈', name: 'Shark', sound: 'silent', habitat: 'Ocean', diet: 'Carnivore', fact: 'Ancient predator', symbol: '⚡', color: '#708090', category: 'Ocean Hunters' },
-            { emoji: '🐸', name: 'Frog', sound: 'croak', habitat: 'Pond', diet: 'Carnivore', fact: 'Starts as tadpole', symbol: '🌊', color: '#32CD32', category: 'Water Hoppers' }
+            { emoji: '🦁', name: 'Lion', sound: 'roar', habitat: 'Savanna', diet: 'Carnivore', fact: 'A lion is the king of the jungle', symbol: '👑', color: '#FFD700', category: 'Big Cats' },
+            { emoji: '🐯', name: 'Tiger', sound: 'roar', habitat: 'Jungle', diet: 'Carnivore', fact: 'A tiger has orange fur with black stripes', symbol: '🐅', color: '#FF6347', category: 'Big Cats' },
+            { emoji: '🐘', name: 'Elephant', sound: 'trumpet', habitat: 'Savanna', diet: 'Herbivore', fact: 'An elephant is the biggest land animal', symbol: '🐽', color: '#808080', category: 'Giants' },
+            { emoji: '🦒', name: 'Giraffe', sound: 'hum', habitat: 'Savanna', diet: 'Herbivore', fact: 'A giraffe has a very long neck', symbol: '📏', color: '#DEB887', category: 'Giants' },
+            { emoji: '🐻', name: 'Bear', sound: 'growl', habitat: 'Forest', diet: 'Omnivore', fact: 'A bear sleeps all winter long', symbol: '🍯', color: '#8B4513', category: 'Forest Friends' },
+            { emoji: '🦓', name: 'Zebra', sound: 'neigh', habitat: 'Savanna', diet: 'Herbivore', fact: 'A zebra has black and white stripes', symbol: '⚫⚪', color: '#000000', category: 'Striped' },
+            { emoji: '🦏', name: 'Rhino', sound: 'snort', habitat: 'Savanna', diet: 'Herbivore', fact: 'A rhino has a big horn on its nose', symbol: '🔺', color: '#696969', category: 'Giants' },
+            { emoji: '🐺', name: 'Wolf', sound: 'howl', habitat: 'Forest', diet: 'Carnivore', fact: 'A wolf howls at the moon', symbol: '🌙', color: '#708090', category: 'Wild Dogs' },
+            { emoji: '🦊', name: 'Fox', sound: 'bark', habitat: 'Forest', diet: 'Omnivore', fact: 'A fox has a fluffy tail', symbol: '🧠', color: '#FF4500', category: 'Smart Animals' },
+            { emoji: '🐆', name: 'Leopard', sound: 'roar', habitat: 'Forest', diet: 'Carnivore', fact: 'A leopard can climb trees very well', symbol: '🌳', color: '#DAA520', category: 'Big Cats' },
+            { emoji: '🦘', name: 'Kangaroo', sound: 'grunt', habitat: 'Grassland', diet: 'Herbivore', fact: 'A kangaroo carries its baby in a pouch', symbol: '👶', color: '#CD853F', category: 'Hoppers' },
+            { emoji: '🐨', name: 'Koala', sound: 'grunt', habitat: 'Forest', diet: 'Herbivore', fact: 'A koala sleeps most of the day', symbol: '😴', color: '#A9A9A9', category: 'Sleepy Animals' },
+            { emoji: '🐵', name: 'Monkey', sound: 'chatter', habitat: 'Jungle', diet: 'Omnivore', fact: 'A monkey loves to eat bananas', symbol: '🍌', color: '#F4A460', category: 'Primates' },
+            { emoji: '🦍', name: 'Gorilla', sound: 'grunt', habitat: 'Jungle', diet: 'Herbivore', fact: 'A gorilla is very strong', symbol: '💪', color: '#2F4F4F', category: 'Primates' },
+            { emoji: '🐧', name: 'Penguin', sound: 'squawk', habitat: 'Antarctica', diet: 'Carnivore', fact: 'A penguin cannot fly but can swim', symbol: '🏊', color: '#000080', category: 'Ocean Birds' },
+            { emoji: '🦅', name: 'Eagle', sound: 'screech', habitat: 'Mountains', diet: 'Carnivore', fact: 'An eagle can see very far away', symbol: '👁️', color: '#8B4513', category: 'Flying Hunters' },
+            { emoji: '🐙', name: 'Octopus', sound: 'silent', habitat: 'Ocean', diet: 'Carnivore', fact: 'An octopus has eight legs', symbol: '8️⃣', color: '#800080', category: 'Ocean Creatures' },
+            { emoji: '🐬', name: 'Dolphin', sound: 'click', habitat: 'Ocean', diet: 'Carnivore', fact: 'A dolphin is very smart and friendly', symbol: '🧠', color: '#4682B4', category: 'Smart Ocean' },
+            { emoji: '🦈', name: 'Shark', sound: 'silent', habitat: 'Ocean', diet: 'Carnivore', fact: 'A shark has many sharp teeth', symbol: '⚡', color: '#708090', category: 'Ocean Hunters' },
+            { emoji: '🐸', name: 'Frog', sound: 'croak', habitat: 'Pond', diet: 'Carnivore', fact: 'A frog can jump very high', symbol: '🌊', color: '#32CD32', category: 'Water Hoppers' }
         ];
 
         // DOM element cache for better performance
@@ -1391,7 +1407,7 @@
         let gameQuestions = [];
         let soundEnabled = true;
         let gameMode = 'classic';
-        let questionTypes = ['name', 'sound', 'habitat', 'diet'];
+        let questionTypes = ['name', 'fact', 'habitat', 'diet'];
         let currentQuestionType = 'name';
         let timer = null;
         let timeLeft = 10;
@@ -1550,9 +1566,9 @@
                     animalEmoji.textContent = currentAnimal.emoji;
                     questionElement.textContent = 'What animal is this?';
                     break;
-                case 'sound':
+                case 'fact':
                     animalEmoji.textContent = currentAnimal.emoji;
-                    questionElement.textContent = 'What sound does this animal make?';
+                    questionElement.textContent = 'Learn about this animal!';
                     break;
                 case 'habitat':
                     animalEmoji.textContent = currentAnimal.emoji;
@@ -1630,13 +1646,13 @@
                         return acc;
                     }, []);
                     break;
-                case 'sound':
-                    correctAnswer = currentAnimal.sound;
-                    const soundSet = new Set();
+                case 'fact':
+                    correctAnswer = currentAnimal.fact;
+                    const factSet = new Set();
                     for (const a of animals) {
-                        if (a.sound !== correctAnswer) soundSet.add(a.sound);
+                        if (a.fact !== correctAnswer) factSet.add(a.fact);
                     }
-                    wrongAnswers = Array.from(soundSet);
+                    wrongAnswers = Array.from(factSet);
                     break;
                 case 'habitat':
                     correctAnswer = currentAnimal.habitat;
@@ -1785,7 +1801,7 @@
         function getCorrectAnswer() {
             switch (currentQuestionType) {
                 case 'name': return currentAnimal.name;
-                case 'sound': return currentAnimal.sound;
+                case 'fact': return currentAnimal.fact;
                 case 'habitat': return currentAnimal.habitat;
                 case 'diet': return currentAnimal.diet;
                 default: return currentAnimal.name;
@@ -1795,7 +1811,7 @@
         function getFeedbackMessage() {
             switch (currentQuestionType) {
                 case 'name': return `It's a ${currentAnimal.name}`;
-                case 'sound': return `${currentAnimal.name}s make a "${currentAnimal.sound}" sound`;
+                case 'fact': return currentAnimal.fact;
                 case 'habitat': return `${currentAnimal.name}s live in the ${currentAnimal.habitat}`;
                 case 'diet': return `${currentAnimal.name}s are ${currentAnimal.diet}s`;
                 default: return `It's a ${currentAnimal.name}`;
