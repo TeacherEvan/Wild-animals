@@ -918,19 +918,27 @@
         }
 
         .habitat-zone {
-            background: rgba(255, 255, 255, 0.9);
             min-height: 200px;
             text-align: center;
             position: relative;
             overflow: hidden;
         }
 
-        .habitat-bg {
-            position: absolute;
-            inset: 0;
-            opacity: 0.4;
-            z-index: -1;
-            border-radius: 15px;
+        .habitat-zone h3 {
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.9);
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin: 15px;
+            font-size: 1.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .habitat-zone .dropped-animals {
+            position: relative;
+            z-index: 1;
         }
 
         .habitat-savanna {
