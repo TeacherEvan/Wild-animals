@@ -178,6 +178,53 @@ class RealAnimalSounds {
             btn.classList.remove('selected');
         });
     }
+
+    // Additional methods for API compatibility with AnimalSounds class
+    pronounceAnimal(animalName) {
+        // Delegate to playAnimalSound for consistency
+        this.fallbackToSpeech(animalName);
+    }
+
+    playSuccessSound() {
+        console.log('Success sound disabled - only pronunciation allowed');
+    }
+
+    playErrorSound() {
+        console.log('Error sound disabled - only pronunciation allowed');
+    }
+
+    playVictorySound() {
+        console.log('Victory sound disabled - only pronunciation allowed');
+    }
+
+    playPowerupSound() {
+        console.log('Powerup sound disabled - only pronunciation allowed');
+    }
+
+    addAnimalReaction(animalName) {
+        // Add visual feedback when animal is pronounced
+        const animalEmoji = document.getElementById('animalEmoji');
+        if (!animalEmoji) return;
+
+        animalEmoji.style.transform = 'scale(1.1)';
+        animalEmoji.style.transition = 'transform 0.2s ease';
+        
+        setTimeout(() => {
+            animalEmoji.style.transform = 'scale(1)';
+        }, 200);
+    }
+
+    addScreenShake() {
+        console.log('Screen shake disabled - only pronunciation allowed');
+    }
+
+    createSoundParticles() {
+        console.log('Sound particles disabled - only pronunciation allowed');
+    }
+
+    isReady() {
+        return true; // Always ready for text-to-speech
+    }
 }
 
 // Create global instance

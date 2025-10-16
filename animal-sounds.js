@@ -223,44 +223,28 @@ class AnimalSounds {
         // No sound generation - silently ignore
     }
 
-    // Play success sound (correct answer)
+    // Play success sound (correct answer) - DISABLED
     playSuccessSound() {
-        const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
-        notes.forEach((freq, index) => {
-            setTimeout(() => {
-                this.playEnhancedTone(freq, 0.3);
-            }, index * 100);
-        });
+        console.log('Success sound disabled - only pronunciation allowed');
+        // No sound generation - silently ignore
     }
 
-    // Play error sound (incorrect answer)
+    // Play error sound (incorrect answer) - DISABLED
     playErrorSound() {
-        const notes = [220, 196]; // A3, G3
-        notes.forEach((freq, index) => {
-            setTimeout(() => {
-                this.playEnhancedTone(freq, 0.4);
-            }, index * 200);
-        });
+        console.log('Error sound disabled - only pronunciation allowed');
+        // No sound generation - silently ignore
     }
 
-    // Play victory sound (game complete)
+    // Play victory sound (game complete) - DISABLED
     playVictorySound() {
-        const melody = [523.25, 659.25, 783.99, 1046.5, 1318.51]; // C5, E5, G5, C6, E6
-        melody.forEach((freq, index) => {
-            setTimeout(() => {
-                this.playEnhancedTone(freq, 0.25);
-            }, index * 120);
-        });
+        console.log('Victory sound disabled - only pronunciation allowed');
+        // No sound generation - silently ignore
     }
 
-    // Play powerup sound
+    // Play powerup sound - DISABLED
     playPowerupSound() {
-        const notes = [440, 554.37, 659.25]; // A4, C#5, E5
-        notes.forEach((freq, index) => {
-            setTimeout(() => {
-                this.playEnhancedTone(freq, 0.2);
-            }, index * 80);
-        });
+        console.log('Powerup sound disabled - only pronunciation allowed');
+        // No sound generation - silently ignore
     }
 
     // Toggle sound on/off
@@ -290,16 +274,7 @@ class AnimalSounds {
     }
 }
 
-// Create global instance and expose under the new namespace
-window.realAnimalSounds = new AnimalSounds();
-
-// ---------------------------------------------------------------------------
-// Backward-compatibility shim
-// ---------------------------------------------------------------------------
-// Older game logic (or cached versions) may still reference "window.animalSounds".
-// To avoid breaking those calls during/after the migration, alias the new
-// implementation to the legacy name **only if it isn't already defined**.
-// This keeps a single shared instance and prevents duplicate objects.
-if (!window.animalSounds) {
-    window.animalSounds = window.realAnimalSounds;
-}
+// Create global instance - legacy namespace only
+// Note: real-animal-sounds.js creates window.realAnimalSounds
+// This file maintains window.animalSounds for backward compatibility
+window.animalSounds = new AnimalSounds();
