@@ -138,10 +138,10 @@ class AnimalSounds {
         if (!this.isEnabled) return;
 
         console.log(`Playing pronunciation for: ${animalName}`);
-        
+
         // Only play pronunciation - no animal sound effects
         this.pronounceAnimal(animalName);
-        
+
         // Add minimal visual feedback
         this.addAnimalReaction(animalName);
     }
@@ -154,7 +154,7 @@ class AnimalSounds {
         // Add gentle bounce effect only
         animalEmoji.style.transform = 'scale(1.1)';
         animalEmoji.style.transition = 'transform 0.2s ease';
-        
+
         // Reset after animation
         setTimeout(() => {
             animalEmoji.style.transform = 'scale(1)';
@@ -200,7 +200,7 @@ class AnimalSounds {
     // UI feedback sounds - DISABLED (only pronunciation allowed)
     playUISound(type) {
         if (!this.isEnabled) return;
-        
+
         console.log(`UI sound disabled: ${type} - only pronunciation sounds allowed`);
         // No UI sounds - silently ignore
     }
@@ -250,7 +250,7 @@ class AnimalSounds {
     // Toggle sound on/off
     toggleSound() {
         this.isEnabled = !this.isEnabled;
-        
+
         // Visual feedback
         const soundBtn = document.getElementById('soundBtn');
         if (soundBtn) {
@@ -259,7 +259,7 @@ class AnimalSounds {
                 soundBtn.style.transform = 'scale(1)';
             }, 200);
         }
-        
+
         return this.isEnabled;
     }
 

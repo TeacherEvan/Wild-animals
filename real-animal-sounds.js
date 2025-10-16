@@ -6,10 +6,10 @@ class RealAnimalSounds {
         this.audioCache = {};
         this.isLoading = false;
         this.currentSelection = null; // Track user's selected option
-        
+
         // Initialize audio context for better control
         this.initAudioContext();
-        
+
         // Note: Real animal sound CDN URLs removed to avoid blocking issues
         // Using text-to-speech with animal sound descriptions instead
         console.log('Real animal sounds module initialized with text-to-speech fallback');
@@ -25,7 +25,7 @@ class RealAnimalSounds {
         if (!this.isEnabled) return;
 
         console.log(`Playing pronunciation for: ${animalName}`);
-        
+
         // Only play pronunciation - no real animal sounds or CDN audio
         this.fallbackToSpeech(animalName);
     }
@@ -36,10 +36,10 @@ class RealAnimalSounds {
             utterance.rate = 0.8;
             utterance.pitch = 1.1;
             utterance.volume = 0.8;
-            
+
             utterance.onstart = () => this.onSoundStart(animalName);
             utterance.onend = () => this.onSoundEnd(animalName);
-            
+
             window.speechSynthesis.speak(utterance);
         }
     }
@@ -75,14 +75,14 @@ class RealAnimalSounds {
         const animalEmoji = document.getElementById('animalEmoji');
         if (animalEmoji) {
             animalEmoji.classList.add('sound-playing');
-            
+
             // Add sound waves animation
             this.createSoundWaves(animalEmoji);
         }
-        
+
         // Trigger custom event
-        document.dispatchEvent(new CustomEvent('animalSoundStart', { 
-            detail: { animal: animalName } 
+        document.dispatchEvent(new CustomEvent('animalSoundStart', {
+            detail: { animal: animalName }
         }));
     }
 
@@ -91,15 +91,15 @@ class RealAnimalSounds {
         const animalEmoji = document.getElementById('animalEmoji');
         if (animalEmoji) {
             animalEmoji.classList.remove('sound-playing');
-            
+
             // Remove sound waves
             const waves = document.querySelectorAll('.sound-wave');
             waves.forEach(wave => wave.remove());
         }
-        
+
         // Trigger custom event
-        document.dispatchEvent(new CustomEvent('animalSoundEnd', { 
-            detail: { animal: animalName } 
+        document.dispatchEvent(new CustomEvent('animalSoundEnd', {
+            detail: { animal: animalName }
         }));
     }
 
@@ -118,7 +118,7 @@ class RealAnimalSounds {
             this.currentAudio.currentTime = 0;
             this.currentAudio = null;
         }
-        
+
         if (window.speechSynthesis) {
             window.speechSynthesis.cancel();
         }
@@ -127,7 +127,7 @@ class RealAnimalSounds {
     // Play UI feedback sounds - DISABLED (only pronunciation allowed)
     playUISound(type) {
         if (!this.isEnabled) return;
-        
+
         console.log(`UI sound disabled: ${type} - only pronunciation sounds allowed`);
         // No UI sounds - silently ignore
     }
@@ -139,11 +139,11 @@ class RealAnimalSounds {
 
     toggleSound() {
         this.isEnabled = !this.isEnabled;
-        
+
         if (!this.isEnabled) {
             this.stopCurrentSound();
         }
-        
+
         return this.isEnabled;
     }
 
@@ -154,12 +154,12 @@ class RealAnimalSounds {
     // Selection management methods for game logic
     selectOption(option) {
         this.currentSelection = option;
-        
+
         // Add visual feedback to selected option
         document.querySelectorAll('.option-btn').forEach(btn => {
             btn.classList.remove('selected');
         });
-        
+
         const buttons = document.querySelectorAll('.option-btn');
         buttons.forEach(btn => {
             if (btn.dataset.value === option) {
@@ -208,7 +208,7 @@ class RealAnimalSounds {
 
         animalEmoji.style.transform = 'scale(1.1)';
         animalEmoji.style.transition = 'transform 0.2s ease';
-        
+
         setTimeout(() => {
             animalEmoji.style.transform = 'scale(1)';
         }, 200);

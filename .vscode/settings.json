@@ -1,12 +1,12 @@
 {
-  "cSpell.words": [
-    "clickability",
-    "powerup",
-    "powerups",
-    "Powerup",
-    "Powerups",
-    "ribbit"
-  ],
-  "html.validate.scripts": false,
-  "javascript.validate.enable": true
+    "cSpell.words": [
+        "clickability",
+        "powerup",
+        "powerups",
+        "Powerup",
+        "Powerups",
+        "ribbit"
+    ],
+    "html.validate.scripts": false,
+    "javascript.validate.enable": true
 }
