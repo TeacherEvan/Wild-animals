@@ -918,19 +918,27 @@
         }
 
         .habitat-zone {
-            background: rgba(255, 255, 255, 0.9);
             min-height: 200px;
             text-align: center;
             position: relative;
             overflow: hidden;
         }
 
-        .habitat-bg {
-            position: absolute;
-            inset: 0;
-            opacity: 0.4;
-            z-index: -1;
-            border-radius: 15px;
+        .habitat-zone h3 {
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.9);
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin: 15px;
+            font-size: 1.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .habitat-zone .dropped-animals {
+            position: relative;
+            z-index: 1;
         }
 
         .habitat-savanna {
@@ -1454,7 +1462,7 @@
             { emoji: '🐬', name: 'Dolphin', sound: 'click', habitat: 'Ocean', diet: 'Carnivore', fact: 'A dolphin is very smart and friendly', symbol: '🧠', color: '#4682B4', category: 'Smart Ocean' },
             { emoji: '🦈', name: 'Shark', sound: 'silent', habitat: 'Ocean', diet: 'Carnivore', fact: 'A shark has many sharp teeth', symbol: '⚡', color: '#708090', category: 'Ocean Hunters' },
             { emoji: '🐸', name: 'Frog', sound: 'croak', habitat: 'Pond', diet: 'Carnivore', fact: 'A frog can jump very high', symbol: '🌊', color: '#32CD32', category: 'Water Hoppers' },
-            { emoji: '🦒', name: 'Camel', sound: 'grunt', habitat: 'Desert', diet: 'Herbivore', fact: 'A camel can go without water for days', symbol: '💧', color: '#C19A6B', category: 'Desert Animals' },
+            { emoji: '🐪', name: 'Camel', sound: 'grunt', habitat: 'Desert', diet: 'Herbivore', fact: 'A camel can go without water for days', symbol: '💧', color: '#C19A6B', category: 'Desert Animals' },
             { emoji: '🐊', name: 'Crocodile', sound: 'hiss', habitat: 'River', diet: 'Carnivore', fact: 'A crocodile has very strong jaws', symbol: '💪', color: '#556B2F', category: 'Reptiles' },
             { emoji: '🦛', name: 'Hippo', sound: 'grunt', habitat: 'River', diet: 'Herbivore', fact: 'A hippo spends most of its day in water', symbol: '💦', color: '#696969', category: 'River Giants' },
             { emoji: '🐆', name: 'Cheetah', sound: 'chirp', habitat: 'Savanna', diet: 'Carnivore', fact: 'A cheetah is the fastest land animal', symbol: '⚡', color: '#F4A460', category: 'Fast Cats' },

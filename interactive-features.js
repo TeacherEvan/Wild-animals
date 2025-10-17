@@ -330,8 +330,7 @@ class HabitatMatchingGame {
             <h2 class="game-title">🏠 Match Animals to Their Homes! 🏠</h2>
             <div class="habitats-grid">
                 ${Object.keys(this.habitats).map(habitat => `
-                    <div class="habitat-zone drop-zone" data-accepts="${habitat}">
-                        <div class="habitat-bg habitat-${habitat}"></div>
+                    <div class="habitat-zone drop-zone habitat-${habitat}" data-accepts="${habitat}">
                         <h3>${habitat.charAt(0).toUpperCase() + habitat.slice(1)}</h3>
                         <div class="dropped-animals"></div>
                     </div>
