@@ -23,6 +23,7 @@
     "url": "https://github.com/TeacherEvan/Wild-animals.git"
   },
   "homepage": "https://github.com/TeacherEvan/Wild-animals",
-  "devDependencies": {},
-  "dependencies": {}
+  "devDependencies": {
+    "eslint": "^8.57.1"
+  }
 }

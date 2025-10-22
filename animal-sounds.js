@@ -1,5 +1,15 @@
-// Enhanced Animal Sounds Module - Real Animal Sounds & Interactive Features
+/**
+ * Enhanced Animal Sounds Module - Text-to-Speech Pronunciation System
+ * Provides audio feedback for animal names using browser's speech synthesis API.
+ * Note: Audio context and sound effects are disabled - only pronunciation is allowed.
+ * 
+ * @class AnimalSounds
+ */
 class AnimalSounds {
+    /**
+     * Initialize the Animal Sounds module
+     * Sets up speech synthesis and touch gesture handlers
+     */
     constructor() {
         this.isEnabled = true;
         this.currentSelection = null;
@@ -18,6 +28,9 @@ class AnimalSounds {
         this.initTouchGestures();
     }
 
+    /**
+     * Initialize audio system (disabled - only text-to-speech allowed)
+     */
     initAudio() {
         // Audio context disabled - only text-to-speech pronunciation allowed
         this.audioContext = null;
@@ -25,6 +38,9 @@ class AnimalSounds {
         console.log('Audio context disabled - only pronunciation sounds enabled');
     }
 
+    /**
+     * Initialize speech synthesis voices
+     */
     initVoices() {
         if (this.speechSupported) {
             this.loadVoices();
@@ -34,6 +50,9 @@ class AnimalSounds {
         }
     }
 
+    /**
+     * Load available speech synthesis voices
+     */
     loadVoices() {
         if (this.speechSupported) {
             this.voices = this.speechSynthesis.getVoices();
@@ -41,6 +60,10 @@ class AnimalSounds {
         }
     }
 
+    /**
+     * Initialize touch gesture support for mobile devices
+     * Handles swipe gestures for replay and skip functionality
+     */
     initTouchGestures() {
         // Add touch gesture support for mobile devices
         document.addEventListener('touchstart', (e) => {
@@ -71,6 +94,9 @@ class AnimalSounds {
         });
     }
 
+    /**
+     * Handle swipe right gesture - replay animal sound
+     */
     handleSwipeRight() {
         // Swipe right to hear animal sound again
         const currentAnimalEmoji = document.getElementById('animalEmoji');
@@ -80,6 +106,9 @@ class AnimalSounds {
         }
     }
 
+    /**
+     * Handle swipe left gesture - skip to next question
+     */
     handleSwipeLeft() {
         // Swipe left to skip to next question (if available)
         const nextBtn = document.getElementById('nextBtn');
@@ -133,7 +162,10 @@ class AnimalSounds {
 
     // Create whale sound (Whale)
 
-    // Enhanced animal sound player - ONLY pronunciation allowed
+    /**
+     * Enhanced animal sound player - ONLY pronunciation allowed
+     * @param {string} animalName - Name of the animal to pronounce
+     */
     playAnimalSound(animalName) {
         if (!this.isEnabled) return;
 
@@ -146,8 +178,11 @@ class AnimalSounds {
         this.addAnimalReaction(animalName);
     }
 
-    // Add minimal visual reaction when animal pronunciation is played
-    addAnimalReaction(animalName) {
+    /**
+     * Add minimal visual reaction when animal pronunciation is played
+     * @param {string} animalName - Name of the animal (unused but kept for API compatibility)
+     */
+    addAnimalReaction(animalName) { // eslint-disable-line no-unused-vars
         const animalEmoji = document.getElementById('animalEmoji');
         if (!animalEmoji) return;
 
@@ -161,19 +196,24 @@ class AnimalSounds {
         }, 200);
     }
 
-    // Screen shake effect - DISABLED (only pronunciation allowed)
+    /**
+     * Screen shake effect - DISABLED (only pronunciation allowed)
+     */
     addScreenShake() {
-        console.log('Screen shake disabled - only pronunciation allowed');
         // No screen shake - silently ignore
     }
 
-    // Create particle effects for sound - DISABLED (only pronunciation allowed)
+    /**
+     * Create particle effects for sound - DISABLED (only pronunciation allowed)
+     */
     createSoundParticles() {
-        console.log('Sound particles disabled - only pronunciation allowed');
         // No sound particles - silently ignore
     }
 
-    // Pronounce animal name using text-to-speech
+    /**
+     * Pronounce animal name using text-to-speech
+     * @param {string} animalName - Name of the animal to pronounce
+     */
     pronounceAnimal(animalName) {
         if (!this.isEnabled || !this.speechSynthesis) {
             console.log('Speech synthesis not available or disabled');
@@ -205,21 +245,30 @@ class AnimalSounds {
         // No UI sounds - silently ignore
     }
 
-    // Play a simple tone for UI feedback - DISABLED
-    playSimpleTone(frequency, duration) {
-        console.log(`Simple tone disabled - only pronunciation allowed`);
+    /**
+     * Play a simple tone for UI feedback - DISABLED
+     * @param {number} _frequency - Frequency parameter (unused)
+     * @param {number} _duration - Duration parameter (unused)
+     */
+    playSimpleTone(_frequency, _duration) {
         // No sound generation - silently ignore
     }
 
-    // Play enhanced tone with better sound quality - DISABLED
-    playEnhancedTone(frequency, duration) {
-        console.log(`Enhanced tone disabled - only pronunciation allowed`);
+    /**
+     * Play enhanced tone with better sound quality - DISABLED
+     * @param {number} _frequency - Frequency parameter (unused)
+     * @param {number} _duration - Duration parameter (unused)
+     */
+    playEnhancedTone(_frequency, _duration) {
         // No sound generation - silently ignore
     }
 
-    // Play a melody for UI feedback - DISABLED
-    playMelody(frequencies, noteDuration) {
-        console.log(`Melody disabled - only pronunciation allowed`);
+    /**
+     * Play a melody for UI feedback - DISABLED
+     * @param {Array<number>} _frequencies - Frequencies array (unused)
+     * @param {number} _noteDuration - Note duration parameter (unused)
+     */
+    playMelody(_frequencies, _noteDuration) {
         // No sound generation - silently ignore
     }
 
@@ -247,7 +296,10 @@ class AnimalSounds {
         // No sound generation - silently ignore
     }
 
-    // Toggle sound on/off
+    /**
+     * Toggle sound on/off
+     * @returns {boolean} New sound enabled state
+     */
     toggleSound() {
         this.isEnabled = !this.isEnabled;
 
@@ -263,12 +315,18 @@ class AnimalSounds {
         return this.isEnabled;
     }
 
-    // Check if sound is enabled
+    /**
+     * Check if sound is enabled
+     * @returns {boolean} Sound enabled state
+     */
     isSoundEnabled() {
         return this.isEnabled;
     }
 
-    // Method to check if the module is properly initialized
+    /**
+     * Method to check if the module is properly initialized
+     * @returns {boolean} Initialization state
+     */
     isReady() {
         return this.isInitialized;
     }
