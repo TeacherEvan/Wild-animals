@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# Temporary files
+*.tmp
+*.log
+.DS_Store
+
+# IDE files
+.vscode/
+.idea/
+
+# Build outputs
+dist/
+build/
