@@ -1,5 +1,13 @@
-// Interactive Features Module for Kindergarten Students
+/**
+ * Interactive Features Module for Kindergarten Students
+ * Provides drag-and-drop functionality and interactive games
+ * 
+ * @class InteractiveFeatures
+ */
 class InteractiveFeatures {
+    /**
+     * Initialize Interactive Features module
+     */
     constructor() {
         this.draggedElement = null;
         this.currentGame = null;
@@ -11,6 +19,9 @@ class InteractiveFeatures {
         this.initializeFeatures();
     }
 
+    /**
+     * Initialize all interactive features and games
+     */
     initializeFeatures() {
         // Add touch/mouse event listeners for drag and drop
         this.setupDragAndDrop();
@@ -24,6 +35,9 @@ class InteractiveFeatures {
         };
     }
 
+    /**
+     * Setup drag and drop functionality
+     */
     setupDragAndDrop() {
         // Setup drag and drop for existing elements
         this.initializeDragAndDrop();
@@ -34,6 +48,9 @@ class InteractiveFeatures {
         }
     }
 
+    /**
+     * Initialize drag and drop for all draggable elements
+     */
     initializeDragAndDrop() {
         const draggables = document.querySelectorAll('.draggable');
         const dropZones = document.querySelectorAll('.drop-zone');
@@ -92,6 +109,11 @@ class InteractiveFeatures {
         document.addEventListener('touchend', this._handleTouchDragEnd);
     }
 
+    /**
+     * Handle drag start event
+     * @param {MouseEvent|TouchEvent} e - The drag event
+     * @param {HTMLElement} element - The element being dragged
+     */
     handleDragStart(e, element) {
         this.draggedElement = element;
         element.classList.add('dragging');
@@ -121,6 +143,10 @@ class InteractiveFeatures {
         e.preventDefault();
     }
 
+    /**
+     * Handle drag move event
+     * @param {MouseEvent|TouchEvent} e - The drag event
+     */
     handleDragMove(e) {
         if (!this.dragClone) return;
         
@@ -153,6 +179,10 @@ class InteractiveFeatures {
         }
     }
 
+    /**
+     * Handle drag end event
+     * @param {MouseEvent|TouchEvent} e - The drag event
+     */
     handleDragEnd(e) {
         if (!this.draggedElement) return;
         
@@ -230,6 +260,12 @@ class InteractiveFeatures {
         this.handleDragEnd(e);
     }
 
+    /**
+     * Check if drop is valid
+     * @param {HTMLElement} draggable - The draggable element
+     * @param {HTMLElement} dropZone - The drop zone element
+     * @returns {boolean} True if drop is valid
+     */
     isValidDrop(draggable, dropZone) {
         // Check if the drop is valid based on data attributes
         const dragType = draggable.dataset.type;
@@ -238,6 +274,11 @@ class InteractiveFeatures {
         return dropType === 'any' || dropType === dragType;
     }
 
+    /**
+     * Handle successful drop
+     * @param {HTMLElement} draggable - The draggable element
+     * @param {HTMLElement} dropZone - The drop zone element
+     */
     handleSuccessfulDrop(draggable, dropZone) {
         // Visual feedback
         dropZone.classList.add('drop-success');
@@ -268,6 +309,9 @@ class InteractiveFeatures {
         }
     }
 
+    /**
+     * Handle failed drop
+     */
     handleFailedDrop() {
         // Play error sound - DISABLED (only pronunciation allowed)
         // window.realAnimalSounds?.playUISound('incorrect');
@@ -281,6 +325,10 @@ class InteractiveFeatures {
         }
     }
 
+    /**
+     * Create celebration particle effects
+     * @param {HTMLElement} element - Element to create particles around
+     */
     createCelebrationParticles(element) {
         const rect = element.getBoundingClientRect();
         const particles = 20;
@@ -300,6 +348,10 @@ class InteractiveFeatures {
         }
     }
 
+    /**
+     * Update score
+     * @param {number} points - Points to add
+     */
     updateScore(points) {
         this.score += points;
         
@@ -320,6 +372,10 @@ class InteractiveFeatures {
         }
     }
 
+    /**
+     * Start a specific game
+     * @param {string} gameType - Type of game to start ('habitat', 'feeding', 'sounds', 'puzzle')
+     */
     startGame(gameType) {
         if (this.games[gameType]) {
             this.currentGame = this.games[gameType];
@@ -328,8 +384,16 @@ class InteractiveFeatures {
     }
 }
 
-// Habitat Matching Game
+/**
+ * Habitat Matching Game
+ * Drag and drop animals to their correct habitats
+ * 
+ * @class HabitatMatchingGame
+ */
 class HabitatMatchingGame {
+    /**
+     * Initialize Habitat Matching Game
+     */
     constructor() {
         this.habitats = {
             'savanna': ['Lion', 'Elephant', 'Giraffe', 'Zebra', 'Rhino', 'Cheetah'],
@@ -389,6 +453,9 @@ class HabitatMatchingGame {
         return emojis[animal] || '🐾';
     }
 
+    /**
+     * Check if game is complete
+     */
     checkCompletion() {
         this.completed++;
         if (this.completed >= this.total) {
@@ -413,8 +480,16 @@ class HabitatMatchingGame {
     }
 }
 
-// Animal Feeding Game
+/**
+ * Animal Feeding Game
+ * Feed animals their correct food
+ * 
+ * @class AnimalFeedingGame
+ */
 class AnimalFeedingGame {
+    /**
+     * Initialize Animal Feeding Game
+     */
     constructor() {
         this.feedingData = {
             'Lion': { foods: ['🥩', '🍖'], type: 'carnivore' },
@@ -444,6 +519,9 @@ class AnimalFeedingGame {
         this.nextAnimal();
     }
 
+    /**
+     * Show next animal to feed
+     */
     nextAnimal() {
         const animals = Object.keys(this.feedingData);
         const randomAnimal = animals[Math.floor(Math.random() * animals.length)];
@@ -459,8 +537,16 @@ class AnimalFeedingGame {
     }
 }
 
-// Sound Matching Game
+/**
+ * Sound Matching Game
+ * Listen and guess the animal sound
+ * 
+ * @class SoundMatchingGame
+ */
 class SoundMatchingGame {
+    /**
+     * Initialize Sound Matching Game
+     */
     constructor() {
         this.rounds = 0;
         this.correctAnswers = 0;
@@ -488,6 +574,9 @@ class SoundMatchingGame {
         this.nextRound();
     }
 
+    /**
+     * Play random animal sound
+     */
     playRandomSound() {
         // Play a random animal sound - KEEP (pronunciation only)
         const animals = ['Lion', 'Tiger', 'Elephant', 'Monkey', 'Wolf', 'Dolphin'];
@@ -498,6 +587,9 @@ class SoundMatchingGame {
         this.showAnimalOptions();
     }
 
+    /**
+     * Show animal options for current round
+     */
     showAnimalOptions() {
         // Create options for the current round
         const options = this.generateSoundGameOptions();
@@ -518,6 +610,10 @@ class SoundMatchingGame {
         });
     }
 
+    /**
+     * Generate random options for sound game
+     * @returns {Array<string>} Array of animal names
+     */
     generateSoundGameOptions() {
         // Get 3 wrong answers + 1 correct answer
         const allAnimals = ['Lion', 'Tiger', 'Elephant', 'Monkey', 'Wolf', 'Dolphin', 'Bear', 'Fox', 'Frog', 'Eagle'];
@@ -529,6 +625,10 @@ class SoundMatchingGame {
         return options.sort(() => Math.random() - 0.5);
     }
 
+    /**
+     * Check if answer is correct
+     * @param {string} selectedAnimal - Selected animal name
+     */
     checkAnswer(selectedAnimal) {
         const isCorrect = selectedAnimal === this.currentAnimal;
         
@@ -557,6 +657,11 @@ class SoundMatchingGame {
         }, 2000);
     }
 
+    /**
+     * Show feedback message
+     * @param {string} message - Feedback message
+     * @param {string} type - Feedback type ('correct' or 'incorrect')
+     */
     showFeedback(message, type) {
         let feedback = document.querySelector('.sound-feedback');
         if (!feedback) {
@@ -578,6 +683,9 @@ class SoundMatchingGame {
         return emojis[animal] || '🐾';
     }
 
+    /**
+     * Move to next round
+     */
     nextRound() {
         this.rounds++;
         

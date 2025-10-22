@@ -1,5 +1,14 @@
-// Real Animal Sounds Module - Enhanced for Kindergarten Students
+/**
+ * Real Animal Sounds Module - Enhanced for Kindergarten Students
+ * Provides text-to-speech pronunciation with animal sound descriptions
+ * Note: Real animal sound CDN URLs removed to avoid blocking issues
+ * 
+ * @class RealAnimalSounds
+ */
 class RealAnimalSounds {
+    /**
+     * Initialize the Real Animal Sounds module
+     */
     constructor() {
         this.isEnabled = true;
         this.currentAudio = null;
@@ -15,6 +24,9 @@ class RealAnimalSounds {
         console.log('Real animal sounds module initialized with text-to-speech fallback');
     }
 
+    /**
+     * Initialize audio context (disabled - only text-to-speech allowed)
+     */
     initAudioContext() {
         // Audio context disabled - only text-to-speech pronunciation allowed
         this.audioContext = null;
@@ -35,6 +47,10 @@ class RealAnimalSounds {
         this.fallbackToSpeech(animalName);
     }
 
+    /**
+     * Fallback to speech synthesis for animal sounds
+     * @param {string} animalName - Name of the animal
+     */
     fallbackToSpeech(animalName) {
         if ('speechSynthesis' in window) {
             const utterance = new SpeechSynthesisUtterance(`${animalName} says ${this.getAnimalOnomatopoeia(animalName)}`);
@@ -49,6 +65,11 @@ class RealAnimalSounds {
         }
     }
 
+    /**
+     * Get animal sound onomatopoeia
+     * @param {string} animalName - Name of the animal
+     * @returns {string} Sound description
+     */
     getAnimalOnomatopoeia(animalName) {
         const sounds = {
             'Lion': 'roar',
@@ -75,6 +96,10 @@ class RealAnimalSounds {
         return sounds[animalName] || 'sound';
     }
 
+    /**
+     * Handle sound start event
+     * @param {string} animalName - Name of the animal
+     */
     onSoundStart(animalName) {
         // Add visual feedback when sound starts
         const animalEmoji = document.getElementById('animalEmoji');
@@ -91,6 +116,10 @@ class RealAnimalSounds {
         }));
     }
 
+    /**
+     * Handle sound end event
+     * @param {string} animalName - Name of the animal
+     */
     onSoundEnd(animalName) {
         // Remove visual feedback when sound ends
         const animalEmoji = document.getElementById('animalEmoji');
@@ -108,6 +137,10 @@ class RealAnimalSounds {
         }));
     }
 
+    /**
+     * Create sound wave visual effects
+     * @param {HTMLElement} element - Element to attach waves to
+     */
     createSoundWaves(element) {
         for (let i = 0; i < 3; i++) {
             const wave = document.createElement('div');
@@ -117,6 +150,9 @@ class RealAnimalSounds {
         }
     }
 
+    /**
+     * Stop currently playing sound
+     */
     stopCurrentSound() {
         if (this.currentAudio) {
             this.currentAudio.pause();
@@ -146,6 +182,10 @@ class RealAnimalSounds {
         // No sound generation - silently ignore
     }
 
+    /**
+     * Toggle sound on/off
+     * @returns {boolean} New sound enabled state
+     */
     toggleSound() {
         this.isEnabled = !this.isEnabled;
 
@@ -156,11 +196,18 @@ class RealAnimalSounds {
         return this.isEnabled;
     }
 
+    /**
+     * Check if sound is enabled
+     * @returns {boolean} Sound enabled state
+     */
     isSoundEnabled() {
         return this.isEnabled;
     }
 
-    // Selection management methods for game logic
+    /**
+     * Select an option in the game
+     * @param {string} option - Selected option value
+     */
     selectOption(option) {
         this.currentSelection = option;
 
@@ -177,10 +224,17 @@ class RealAnimalSounds {
         });
     }
 
+    /**
+     * Get current selection
+     * @returns {string|null} Current selected option
+     */
     getCurrentSelection() {
         return this.currentSelection;
     }
 
+    /**
+     * Clear current selection
+     */
     clearSelection() {
         this.currentSelection = null;
         document.querySelectorAll('.option-btn').forEach(btn => {
@@ -188,7 +242,11 @@ class RealAnimalSounds {
         });
     }
 
-    // Additional methods for API compatibility with AnimalSounds class
+    /**
+     * Additional methods for API compatibility with AnimalSounds class
+     * Pronounce animal name
+     * @param {string} animalName - Name of the animal
+     */
     pronounceAnimal(animalName) {
         // Delegate to playAnimalSound for consistency
         this.fallbackToSpeech(animalName);
@@ -253,6 +311,10 @@ class RealAnimalSounds {
         // No sound particles - silently ignore
     }
 
+    /**
+     * Check if module is ready
+     * @returns {boolean} Always true for text-to-speech
+     */
     isReady() {
         return true; // Always ready for text-to-speech
     }
