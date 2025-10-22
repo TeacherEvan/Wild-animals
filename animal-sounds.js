@@ -146,8 +146,11 @@ class AnimalSounds {
         this.addAnimalReaction(animalName);
     }
 
-    // Add minimal visual reaction when animal pronunciation is played
-    addAnimalReaction(animalName) {
+    /**
+     * Add minimal visual reaction when animal pronunciation is played
+     * @param {string} animalName - Name of the animal (unused but kept for API compatibility)
+     */
+    addAnimalReaction(animalName) { // eslint-disable-line no-unused-vars
         const animalEmoji = document.getElementById('animalEmoji');
         if (!animalEmoji) return;
 
@@ -161,15 +164,17 @@ class AnimalSounds {
         }, 200);
     }
 
-    // Screen shake effect - DISABLED (only pronunciation allowed)
+    /**
+     * Screen shake effect - DISABLED (only pronunciation allowed)
+     */
     addScreenShake() {
-        console.log('Screen shake disabled - only pronunciation allowed');
         // No screen shake - silently ignore
     }
 
-    // Create particle effects for sound - DISABLED (only pronunciation allowed)
+    /**
+     * Create particle effects for sound - DISABLED (only pronunciation allowed)
+     */
     createSoundParticles() {
-        console.log('Sound particles disabled - only pronunciation allowed');
         // No sound particles - silently ignore
     }
 
@@ -205,21 +210,30 @@ class AnimalSounds {
         // No UI sounds - silently ignore
     }
 
-    // Play a simple tone for UI feedback - DISABLED
-    playSimpleTone(frequency, duration) {
-        console.log(`Simple tone disabled - only pronunciation allowed`);
+    /**
+     * Play a simple tone for UI feedback - DISABLED
+     * @param {number} _frequency - Frequency parameter (unused)
+     * @param {number} _duration - Duration parameter (unused)
+     */
+    playSimpleTone(_frequency, _duration) {
         // No sound generation - silently ignore
     }
 
-    // Play enhanced tone with better sound quality - DISABLED
-    playEnhancedTone(frequency, duration) {
-        console.log(`Enhanced tone disabled - only pronunciation allowed`);
+    /**
+     * Play enhanced tone with better sound quality - DISABLED
+     * @param {number} _frequency - Frequency parameter (unused)
+     * @param {number} _duration - Duration parameter (unused)
+     */
+    playEnhancedTone(_frequency, _duration) {
         // No sound generation - silently ignore
     }
 
-    // Play a melody for UI feedback - DISABLED
-    playMelody(frequencies, noteDuration) {
-        console.log(`Melody disabled - only pronunciation allowed`);
+    /**
+     * Play a melody for UI feedback - DISABLED
+     * @param {Array<number>} _frequencies - Frequencies array (unused)
+     * @param {number} _noteDuration - Note duration parameter (unused)
+     */
+    playMelody(_frequencies, _noteDuration) {
         // No sound generation - silently ignore
     }
 

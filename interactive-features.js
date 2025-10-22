@@ -194,21 +194,39 @@ class InteractiveFeatures {
         this.lastHighlightCheck = null;
     }
 
+    /**
+     * Handle drag over event
+     * @param {DragEvent} e - The drag event
+     */
     handleDragOver(e) {
         e.preventDefault();
     }
 
-    handleDrop(e, dropZone) {
+    /**
+     * Handle drop event
+     * @param {DragEvent} e - The drop event
+     * @param {HTMLElement} _dropZone - The drop zone element (unused, handled by handleDragEnd)
+     */
+    handleDrop(e, _dropZone) {
         e.preventDefault();
     }
 
+    /**
+     * Handle touch move event
+     * @param {TouchEvent} e - The touch event
+     */
     handleTouchMove(e) {
         if (this.draggedElement) {
             e.preventDefault();
         }
     }
 
-    handleTouchEnd(e, dropZone) {
+    /**
+     * Handle touch end event
+     * @param {TouchEvent} e - The touch event
+     * @param {HTMLElement} _dropZone - The drop zone element (unused, handled by handleDragEnd)
+     */
+    handleTouchEnd(e, _dropZone) {
         this.handleDragEnd(e);
     }
 
@@ -432,7 +450,11 @@ class AnimalFeedingGame {
         this.showAnimalToFeed(randomAnimal);
     }
 
-    showAnimalToFeed(animalName) {
+    /**
+     * Show animal to feed
+     * @param {string} _animalName - Name of the animal (unused - method stub)
+     */
+    showAnimalToFeed(_animalName) {
         // Implementation details...
     }
 }

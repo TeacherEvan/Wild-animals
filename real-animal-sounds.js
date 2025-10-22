@@ -21,7 +21,12 @@ class RealAnimalSounds {
         console.log('Audio context disabled - only pronunciation sounds enabled');
     }
 
-    async playAnimalSound(animalName, options = {}) {
+    /**
+     * Play animal sound with options
+     * @param {string} animalName - Name of the animal
+     * @param {Object} _options - Options object (unused)
+     */
+    async playAnimalSound(animalName, _options = {}) {
         if (!this.isEnabled) return;
 
         console.log(`Playing pronunciation for: ${animalName}`);
@@ -124,16 +129,20 @@ class RealAnimalSounds {
         }
     }
 
-    // Play UI feedback sounds - DISABLED (only pronunciation allowed)
-    playUISound(type) {
-        if (!this.isEnabled) return;
-
-        console.log(`UI sound disabled: ${type} - only pronunciation sounds allowed`);
+    /**
+     * Play UI feedback sounds - DISABLED (only pronunciation allowed)
+     * @param {string} _type - Sound type (unused)
+     */
+    playUISound(_type) {
         // No UI sounds - silently ignore
     }
 
-    playMelody(frequencies, duration) {
-        console.log(`Melody disabled - only pronunciation sounds allowed`);
+    /**
+     * Play melody - DISABLED (only pronunciation sounds allowed)
+     * @param {Array<number>} _frequencies - Frequencies array (unused)
+     * @param {number} _duration - Duration parameter (unused)
+     */
+    playMelody(_frequencies, _duration) {
         // No sound generation - silently ignore
     }
 
@@ -185,23 +194,39 @@ class RealAnimalSounds {
         this.fallbackToSpeech(animalName);
     }
 
+    /**
+     * Play success sound - DISABLED
+     */
     playSuccessSound() {
-        console.log('Success sound disabled - only pronunciation allowed');
+        // No sound generation - silently ignore
     }
 
+    /**
+     * Play error sound - DISABLED
+     */
     playErrorSound() {
-        console.log('Error sound disabled - only pronunciation allowed');
+        // No sound generation - silently ignore
     }
 
+    /**
+     * Play victory sound - DISABLED
+     */
     playVictorySound() {
-        console.log('Victory sound disabled - only pronunciation allowed');
+        // No sound generation - silently ignore
     }
 
+    /**
+     * Play powerup sound - DISABLED
+     */
     playPowerupSound() {
-        console.log('Powerup sound disabled - only pronunciation allowed');
+        // No sound generation - silently ignore
     }
 
-    addAnimalReaction(animalName) {
+    /**
+     * Add animal reaction visual effect
+     * @param {string} _animalName - Name of the animal (unused but kept for API compatibility)
+     */
+    addAnimalReaction(_animalName) {
         // Add visual feedback when animal is pronounced
         const animalEmoji = document.getElementById('animalEmoji');
         if (!animalEmoji) return;
@@ -214,12 +239,18 @@ class RealAnimalSounds {
         }, 200);
     }
 
+    /**
+     * Add screen shake - DISABLED
+     */
     addScreenShake() {
-        console.log('Screen shake disabled - only pronunciation allowed');
+        // No screen shake - silently ignore
     }
 
+    /**
+     * Create sound particles - DISABLED
+     */
     createSoundParticles() {
-        console.log('Sound particles disabled - only pronunciation allowed');
+        // No sound particles - silently ignore
     }
 
     isReady() {
