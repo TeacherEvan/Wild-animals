@@ -15,6 +15,7 @@ class InteractiveFeatures {
         this.touchSupported = 'ontouchstart' in window;
         this.dropZonesCache = null;
         this.lastHighlightCheck = null;
+        this.debugMode = false; // Set to true for verbose logging
         
         this.initializeFeatures();
     }
@@ -55,7 +56,9 @@ class InteractiveFeatures {
         const draggables = document.querySelectorAll('.draggable');
         const dropZones = document.querySelectorAll('.drop-zone');
 
-        console.log(`Initializing drag and drop: ${draggables.length} draggables, ${dropZones.length} drop zones`);
+        if (this.debugMode) {
+            console.log(`Initializing drag and drop: ${draggables.length} draggables, ${dropZones.length} drop zones`);
+        }
 
         draggables.forEach(draggable => {
             // Remove existing listeners to avoid duplicates

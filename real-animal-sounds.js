@@ -15,13 +15,16 @@ class RealAnimalSounds {
         this.audioCache = {};
         this.isLoading = false;
         this.currentSelection = null; // Track user's selected option
+        this.debugMode = false; // Set to true for verbose logging
 
         // Initialize audio context for better control
         this.initAudioContext();
 
         // Note: Real animal sound CDN URLs removed to avoid blocking issues
         // Using text-to-speech with animal sound descriptions instead
-        console.log('Real animal sounds module initialized with text-to-speech fallback');
+        if (this.debugMode) {
+            console.log('Real animal sounds module initialized with text-to-speech fallback');
+        }
     }
 
     /**
@@ -30,7 +33,9 @@ class RealAnimalSounds {
     initAudioContext() {
         // Audio context disabled - only text-to-speech pronunciation allowed
         this.audioContext = null;
-        console.log('Audio context disabled - only pronunciation sounds enabled');
+        if (this.debugMode) {
+            console.log('Audio context disabled - only pronunciation sounds enabled');
+        }
     }
 
     /**
@@ -41,7 +46,9 @@ class RealAnimalSounds {
     async playAnimalSound(animalName, _options = {}) {
         if (!this.isEnabled) return;
 
-        console.log(`Playing pronunciation for: ${animalName}`);
+        if (this.debugMode) {
+            console.log(`Playing pronunciation for: ${animalName}`);
+        }
 
         // Only play pronunciation - no real animal sounds or CDN audio
         this.fallbackToSpeech(animalName);

@@ -15,6 +15,7 @@ class AnimalSounds {
         this.currentSelection = null;
         this.speechSynthesis = window.speechSynthesis;
         this.voices = [];
+        this.debugMode = false; // Set to true for verbose logging
         // Fallback flag for TTS availability
         this.speechSupported = !!this.speechSynthesis;
 
@@ -35,7 +36,9 @@ class AnimalSounds {
         // Audio context disabled - only text-to-speech pronunciation allowed
         this.audioContext = null;
         this.isInitialized = false;
-        console.log('Audio context disabled - only pronunciation sounds enabled');
+        if (this.debugMode) {
+            console.log('Audio context disabled - only pronunciation sounds enabled');
+        }
     }
 
     /**
@@ -56,7 +59,9 @@ class AnimalSounds {
     loadVoices() {
         if (this.speechSupported) {
             this.voices = this.speechSynthesis.getVoices();
-            console.log(`Loaded ${this.voices.length} speech synthesis voices`);
+            if (this.debugMode) {
+                console.log(`Loaded ${this.voices.length} speech synthesis voices`);
+            }
         }
     }
 
@@ -169,7 +174,9 @@ class AnimalSounds {
     playAnimalSound(animalName) {
         if (!this.isEnabled) return;
 
-        console.log(`Playing pronunciation for: ${animalName}`);
+        if (this.debugMode) {
+            console.log(`Playing pronunciation for: ${animalName}`);
+        }
 
         // Only play pronunciation - no animal sound effects
         this.pronounceAnimal(animalName);
@@ -216,7 +223,9 @@ class AnimalSounds {
      */
     pronounceAnimal(animalName) {
         if (!this.isEnabled || !this.speechSynthesis) {
-            console.log('Speech synthesis not available or disabled');
+            if (this.debugMode) {
+                console.log('Speech synthesis not available or disabled');
+            }
             return;
         }
 
@@ -241,7 +250,9 @@ class AnimalSounds {
     playUISound(type) {
         if (!this.isEnabled) return;
 
-        console.log(`UI sound disabled: ${type} - only pronunciation sounds allowed`);
+        if (this.debugMode) {
+            console.log(`UI sound disabled: ${type} - only pronunciation sounds allowed`);
+        }
         // No UI sounds - silently ignore
     }
 
@@ -274,25 +285,33 @@ class AnimalSounds {
 
     // Play success sound (correct answer) - DISABLED
     playSuccessSound() {
-        console.log('Success sound disabled - only pronunciation allowed');
+        if (this.debugMode) {
+            console.log('Success sound disabled - only pronunciation allowed');
+        }
         // No sound generation - silently ignore
     }
 
     // Play error sound (incorrect answer) - DISABLED
     playErrorSound() {
-        console.log('Error sound disabled - only pronunciation allowed');
+        if (this.debugMode) {
+            console.log('Error sound disabled - only pronunciation allowed');
+        }
         // No sound generation - silently ignore
     }
 
     // Play victory sound (game complete) - DISABLED
     playVictorySound() {
-        console.log('Victory sound disabled - only pronunciation allowed');
+        if (this.debugMode) {
+            console.log('Victory sound disabled - only pronunciation allowed');
+        }
         // No sound generation - silently ignore
     }
 
     // Play powerup sound - DISABLED
     playPowerupSound() {
-        console.log('Powerup sound disabled - only pronunciation allowed');
+        if (this.debugMode) {
+            console.log('Powerup sound disabled - only pronunciation allowed');
+        }
         // No sound generation - silently ignore
     }
 
