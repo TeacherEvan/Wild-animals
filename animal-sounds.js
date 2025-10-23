@@ -11,6 +11,11 @@ class AnimalSounds {
      * Sets up speech synthesis and touch gesture handlers
      */
     constructor() {
+        // Configuration constants
+        this.SWIPE_THRESHOLD = 50; // Minimum distance in pixels for swipe gesture
+        this.ANIMATION_DURATION = 200; // Duration of animations in milliseconds
+        this.SCALE_FACTOR = 1.1; // Scale factor for emoji bounce animation
+        
         this.isEnabled = true;
         this.currentSelection = null;
         this.speechSynthesis = window.speechSynthesis;
@@ -87,9 +92,9 @@ class AnimalSounds {
 
             // Handle swipe gestures
             if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                if (deltaX > 50) {
+                if (deltaX > this.SWIPE_THRESHOLD) {
                     this.handleSwipeRight();
-                } else if (deltaX < -50) {
+                } else if (deltaX < -this.SWIPE_THRESHOLD) {
                     this.handleSwipeLeft();
                 }
             }
@@ -194,13 +199,13 @@ class AnimalSounds {
         if (!animalEmoji) return;
 
         // Add gentle bounce effect only
-        animalEmoji.style.transform = 'scale(1.1)';
-        animalEmoji.style.transition = 'transform 0.2s ease';
+        animalEmoji.style.transform = `scale(${this.SCALE_FACTOR})`;
+        animalEmoji.style.transition = `transform ${this.ANIMATION_DURATION / 1000}s ease`;
 
         // Reset after animation
         setTimeout(() => {
             animalEmoji.style.transform = 'scale(1)';
-        }, 200);
+        }, this.ANIMATION_DURATION);
     }
 
     /**

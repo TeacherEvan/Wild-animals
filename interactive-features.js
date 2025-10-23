@@ -9,6 +9,19 @@ class InteractiveFeatures {
      * Initialize Interactive Features module
      */
     constructor() {
+        // Configuration constants
+        this.DRAG_Z_INDEX = 1000; // Z-index for dragged elements
+        this.HIGHLIGHT_THROTTLE = 100; // Throttle highlight checks (ms)
+        this.SCORE_INCREMENT = 10; // Points per correct answer
+        this.SUCCESS_DELAY = 1000; // Delay before next question (ms)
+        this.FEEDBACK_DURATION = 500; // Duration of feedback animations (ms)
+        this.PARTICLE_COUNT = 20; // Number of celebration particles
+        this.PARTICLE_SPREAD = 200; // Spread distance for particles (px)
+        this.SCORE_ANIMATION_DURATION = 300; // Score bump animation (ms)
+        this.GAME_COMPLETE_DELAY = 2000; // Delay before showing results (ms)
+        this.PASSING_SCORE_PERCENTAGE = 80; // Minimum percentage to pass
+        this.TOTAL_QUESTIONS = 5; // Total questions per game
+        
         this.draggedElement = null;
         this.currentGame = null;
         this.score = 0;
@@ -126,7 +139,7 @@ class InteractiveFeatures {
         clone.classList.add('drag-clone');
         clone.style.position = 'fixed';
         clone.style.pointerEvents = 'none';
-        clone.style.zIndex = '1000';
+        clone.style.zIndex = this.DRAG_Z_INDEX.toString();
         
         const rect = element.getBoundingClientRect();
         if (e.type.includes('touch')) {
@@ -160,7 +173,7 @@ class InteractiveFeatures {
         this.dragClone.style.top = (clientY - this.dragClone.offsetHeight / 2) + 'px';
         
         // Throttle drop zone highlight checks for better performance
-        if (!this.lastHighlightCheck || Date.now() - this.lastHighlightCheck > 100) {
+        if (!this.lastHighlightCheck || Date.now() - this.lastHighlightCheck > this.HIGHLIGHT_THROTTLE) {
             this.lastHighlightCheck = Date.now();
             
             // Highlight drop zones when dragging over them
@@ -299,12 +312,12 @@ class InteractiveFeatures {
         this.createCelebrationParticles(dropZone);
         
         // Update score
-        this.updateScore(10);
+        this.updateScore(this.SCORE_INCREMENT);
         
         // Remove success class after animation
         setTimeout(() => {
             dropZone.classList.remove('drop-success');
-        }, 1000);
+        }, this.SUCCESS_DELAY);
         
         // Check if game is complete
         if (this.currentGame) {
@@ -324,7 +337,7 @@ class InteractiveFeatures {
             this.draggedElement.classList.add('shake-animation');
             setTimeout(() => {
                 this.draggedElement.classList.remove('shake-animation');
-            }, 500);
+            }, this.FEEDBACK_DURATION);
         }
     }
 
@@ -334,20 +347,20 @@ class InteractiveFeatures {
      */
     createCelebrationParticles(element) {
         const rect = element.getBoundingClientRect();
-        const particles = 20;
+        const particles = this.PARTICLE_COUNT;
         
         for (let i = 0; i < particles; i++) {
             const particle = document.createElement('div');
             particle.className = 'celebration-particle';
             particle.style.left = (rect.left + rect.width / 2) + 'px';
             particle.style.top = (rect.top + rect.height / 2) + 'px';
-            particle.style.setProperty('--random-x', (Math.random() - 0.5) * 200 + 'px');
-            particle.style.setProperty('--random-y', (Math.random() - 0.5) * 200 + 'px');
+            particle.style.setProperty('--random-x', (Math.random() - 0.5) * this.PARTICLE_SPREAD + 'px');
+            particle.style.setProperty('--random-y', (Math.random() - 0.5) * this.PARTICLE_SPREAD + 'px');
             particle.style.backgroundColor = ['#FFD700', '#FF69B4', '#87CEEB', '#98FB98'][Math.floor(Math.random() * 4)];
             
             document.body.appendChild(particle);
             
-            setTimeout(() => particle.remove(), 1000);
+            setTimeout(() => particle.remove(), this.SUCCESS_DELAY);
         }
     }
 
@@ -363,7 +376,7 @@ class InteractiveFeatures {
         if (scoreElement) {
             scoreElement.textContent = this.score;
             scoreElement.classList.add('score-bump');
-            setTimeout(() => scoreElement.classList.remove('score-bump'), 300);
+            setTimeout(() => scoreElement.classList.remove('score-bump'), this.SCORE_ANIMATION_DURATION);
         }
         
         // Update sound game score
@@ -371,7 +384,7 @@ class InteractiveFeatures {
         if (soundScoreElement) {
             soundScoreElement.textContent = this.currentGame?.correctAnswers || 0;
             soundScoreElement.classList.add('score-bump');
-            setTimeout(() => soundScoreElement.classList.remove('score-bump'), 300);
+            setTimeout(() => soundScoreElement.classList.remove('score-bump'), this.SCORE_ANIMATION_DURATION);
         }
     }
 
@@ -638,7 +651,7 @@ class SoundMatchingGame {
         // Update score
         if (isCorrect) {
             this.correctAnswers++;
-            window.interactiveFeatures.updateScore(10);
+            window.interactiveFeatures.updateScore(window.interactiveFeatures.SCORE_INCREMENT);
             this.showFeedback('Correct! 🎉', 'correct');
         } else {
             this.showFeedback(`Oops! It was a ${this.currentAnimal} 😊`, 'incorrect');
@@ -657,7 +670,7 @@ class SoundMatchingGame {
         // Next round after delay
         setTimeout(() => {
             this.nextRound();
-        }, 2000);
+        }, window.interactiveFeatures.GAME_COMPLETE_DELAY);
     }
 
     /**
@@ -713,10 +726,10 @@ class SoundMatchingGame {
 
     showCompletionScreen() {
         const gameArea = document.querySelector('.sound-game-container');
-        const percentage = Math.round((this.correctAnswers / 5) * 100);
+        const percentage = Math.round((this.correctAnswers / window.interactiveFeatures.TOTAL_QUESTIONS) * 100);
         
         let message = '';
-        if (percentage >= 80) {
+        if (percentage >= window.interactiveFeatures.PASSING_SCORE_PERCENTAGE) {
             message = '🌟 Amazing! You know your animal sounds!';
         } else if (percentage >= 60) {
             message = '👏 Good job! Keep listening!';
