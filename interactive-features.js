@@ -17,6 +17,7 @@ class InteractiveFeatures {
         this.FEEDBACK_DURATION = 500; // Duration of feedback animations (ms)
         this.PARTICLE_COUNT = 20; // Number of celebration particles
         this.PARTICLE_SPREAD = 200; // Spread distance for particles (px)
+        this.PARTICLE_ANIMATION_DURATION = 1000; // Duration of particle animation (ms)
         this.SCORE_ANIMATION_DURATION = 300; // Score bump animation (ms)
         this.GAME_COMPLETE_DELAY = 2000; // Delay before showing results (ms)
         this.PASSING_SCORE_PERCENTAGE = 80; // Minimum percentage to pass
@@ -360,7 +361,7 @@ class InteractiveFeatures {
             
             document.body.appendChild(particle);
             
-            setTimeout(() => particle.remove(), this.SUCCESS_DELAY);
+            setTimeout(() => particle.remove(), this.PARTICLE_ANIMATION_DURATION);
         }
     }
 
