@@ -1440,7 +1440,62 @@
 
     <div class="celebration" id="celebration"></div>
 
-    <script>        // Enhanced game data with visual symbols and categories for non-reading kids
+    <script>        /**
+         * Game Configuration Constants
+         * All magic numbers and configurable values are centralized here for easy maintenance
+         */
+        const GAME_CONFIG = {
+            // Scoring configuration
+            POINTS_PER_CORRECT: 10,
+            POINTS_FOR_SKIP: 5,
+            SPEED_BONUS_THRESHOLD: 5,   // Time left in seconds to get bonus
+            SPEED_BONUS_MULTIPLIER: 2,  // Points per second over threshold
+            
+            // Timer configuration
+            TIMER_SECONDS: 10,
+            
+            // Questions configuration
+            TOTAL_QUESTIONS: 10,
+            SURVIVAL_INITIAL_QUESTIONS: 20,
+            SURVIVAL_BATCH_SIZE: 10,
+            WRONG_OPTIONS_COUNT: 3,
+            
+            // Powerup configuration
+            INITIAL_HINTS: 3,
+            INITIAL_ELIMINATES: 2,
+            INITIAL_SKIPS: 1,
+            ELIMINATE_COUNT: 2,
+            
+            // Visual effects configuration
+            PARTICLE_COUNT: 15,
+            CONFETTI_COUNT: 50,
+            
+            // Timing delays (in milliseconds)
+            AUTO_ADVANCE_DELAY: 2000,
+            PARTICLE_LIFETIME: 2000,
+            INDICATOR_LIFETIME: 2000,
+            ACHIEVEMENT_LIFETIME: 3000,
+            SKIP_DELAY: 1000,
+            CONFETTI_LIFETIME: 3000,
+            ANIMATION_DURATION: 1000,
+            SCALE_RESET_DELAY: 200,
+            
+            // Achievement thresholds
+            STREAK_ACHIEVEMENT_5: 5,
+            STREAK_ACHIEVEMENT_10: 10,
+            SCORE_ACHIEVEMENT_100: 100,
+            COMBO_THRESHOLD: 3,
+            
+            // Percentage thresholds
+            EXCELLENT_THRESHOLD: 90,
+            GREAT_THRESHOLD: 70,
+            GOOD_THRESHOLD: 50,
+            
+            // Storage keys
+            HIGH_SCORE_KEY: 'wildAnimalsHighScore'
+        };
+
+        // Enhanced game data with visual symbols and categories for non-reading kids
         const animals = [
             { emoji: '🦁', name: 'Lion', sound: 'roar', habitat: 'Savanna', diet: 'Carnivore', fact: 'A lion is the king of the jungle', symbol: '👑', color: '#FFD700', category: 'Big Cats' },
             { emoji: '🐯', name: 'Tiger', sound: 'roar', habitat: 'Jungle', diet: 'Carnivore', fact: 'A tiger has orange fur with black stripes', symbol: '🐅', color: '#FF6347', category: 'Big Cats' },
@@ -1520,11 +1575,16 @@
         let questionTypes = ['name', 'fact', 'habitat', 'diet'];
         let currentQuestionType = 'name';
         let timer = null;
-        let timeLeft = 10;
-        let powerups = { hints: 3, eliminate: 2, skip: 1 };
-        let highScore = parseInt(localStorage.getItem('wildAnimalsHighScore') || '0');
+        let timeLeft = GAME_CONFIG.TIMER_SECONDS;
+        let powerups = { 
+            hints: GAME_CONFIG.INITIAL_HINTS, 
+            eliminate: GAME_CONFIG.INITIAL_ELIMINATES, 
+            skip: GAME_CONFIG.INITIAL_SKIPS 
+        };
+        let highScore = parseInt(localStorage.getItem(GAME_CONFIG.HIGH_SCORE_KEY) || '0');
         let achievements = [];
-        const totalQuestions = 10;        // Initialize game
+
+        // Initialize game
         function initGame() {
             updateHighScore();
             resetPowerups();
@@ -1534,7 +1594,7 @@
 
             // Shuffle and select random animals for this game
             const shuffledAnimals = [...animals].sort(() => Math.random() - 0.5);
-            let questionsCount = gameMode === 'survival' ? 20 : totalQuestions;
+            let questionsCount = gameMode === 'survival' ? GAME_CONFIG.SURVIVAL_INITIAL_QUESTIONS : GAME_CONFIG.TOTAL_QUESTIONS;
             gameQuestions = shuffledAnimals.slice(0, questionsCount);
 
             currentQuestionIndex = 0;
@@ -1573,7 +1633,7 @@
             if (mode === 'survival') {
                 totalQuestionsSpan.textContent = '∞';
             } else {
-                totalQuestionsSpan.textContent = totalQuestions;
+                totalQuestionsSpan.textContent = GAME_CONFIG.TOTAL_QUESTIONS;
             }
 
             // Show/hide timer based on mode
@@ -1592,7 +1652,11 @@
         }
 
         function resetPowerups() {
-            powerups = { hints: 3, eliminate: 2, skip: 1 };
+            powerups = { 
+                hints: GAME_CONFIG.INITIAL_HINTS, 
+                eliminate: GAME_CONFIG.INITIAL_ELIMINATES, 
+                skip: GAME_CONFIG.INITIAL_SKIPS 
+            };
             updatePowerupButtons();
         }
 
@@ -1610,14 +1674,16 @@
                 domCache.skipBtn.textContent = `⏭️ Skip (${powerups.skip})`;
                 domCache.skipBtn.disabled = powerups.skip <= 0;
             }
-        } function loadQuestion() {
+        }
+
+        function loadQuestion() {
             if (gameMode === 'survival') {
                 if (currentQuestionIndex >= gameQuestions.length) {
                     // Add more animals for survival mode
-                    const moreAnimals = [...animals].sort(() => Math.random() - 0.5).slice(0, 10);
+                    const moreAnimals = [...animals].sort(() => Math.random() - 0.5).slice(0, GAME_CONFIG.SURVIVAL_BATCH_SIZE);
                     gameQuestions.push(...moreAnimals);
                 }
-            } else if (currentQuestionIndex >= totalQuestions) {
+            } else if (currentQuestionIndex >= GAME_CONFIG.TOTAL_QUESTIONS) {
                 endGame();
                 return;
             }
@@ -1706,11 +1772,11 @@
             animalEmoji.className = 'animal-emoji ' + randomAnimation;
             setTimeout(() => {
                 animalEmoji.className = 'animal-emoji';
-            }, 1000);
+            }, GAME_CONFIG.ANIMATION_DURATION);
         }
 
         function startTimer() {
-            timeLeft = 10;
+            timeLeft = GAME_CONFIG.TIMER_SECONDS;
             // Use cached DOM elements for better performance
             if (!domCache.timerFill || !domCache.timerText) {
                 initDOMCache();
@@ -1721,7 +1787,7 @@
 
             timer = setInterval(() => {
                 timeLeft--;
-                const percentage = (timeLeft / 10) * 100;
+                const percentage = (timeLeft / GAME_CONFIG.TIMER_SECONDS) * 100;
                 if (timerFill) timerFill.style.width = percentage + '%';
                 if (timerText) timerText.textContent = `Time: ${timeLeft}s`;
                 if (timeLeft <= 0) {
@@ -1733,7 +1799,9 @@
                     if (domCache.nextBtn) domCache.nextBtn.disabled = false;
                 }
             }, 1000);
-        } function generateOptions() {
+        }
+
+        function generateOptions() {
             // Use cached DOM element for better performance
             if (!domCache.optionsContainer) {
                 initDOMCache();
@@ -1787,7 +1855,7 @@
                 const j = Math.floor(Math.random() * (i + 1));
                 [wrongAnswers[i], wrongAnswers[j]] = [wrongAnswers[j], wrongAnswers[i]];
             }
-            wrongAnswers = wrongAnswers.slice(0, 3);
+            wrongAnswers = wrongAnswers.slice(0, GAME_CONFIG.WRONG_OPTIONS_COUNT);
 
             // Combine and shuffle all options using Fisher-Yates
             const allOptions = [correctAnswer, ...wrongAnswers];
@@ -1828,7 +1896,7 @@
             setTimeout(() => {
                 currentQuestionIndex++;
                 loadQuestion();
-            }, 2000); // 2 second delay to show feedback and let user see the result
+            }, GAME_CONFIG.AUTO_ADVANCE_DELAY);
         }
         
         function selectOption(selectedOption, buttonElement) {
@@ -1859,11 +1927,11 @@
 
             // Update score and streak
             if (isCorrect && selectedOption !== 'TIME_UP') {
-                let points = 10;
+                let points = GAME_CONFIG.POINTS_PER_CORRECT;
 
                 // Time bonus for speed mode
-                if (gameMode === 'speed' && timeLeft > 5) {
-                    points += (timeLeft - 5) * 2;
+                if (gameMode === 'speed' && timeLeft > GAME_CONFIG.SPEED_BONUS_THRESHOLD) {
+                    points += (timeLeft - GAME_CONFIG.SPEED_BONUS_THRESHOLD) * GAME_CONFIG.SPEED_BONUS_MULTIPLIER;
                 }
 
                 score += points;
@@ -1879,7 +1947,7 @@
                 createParticles();
 
                 // Show combo indicator for streaks
-                if (streak >= 3) {
+                if (streak >= GAME_CONFIG.COMBO_THRESHOLD) {
                     showComboIndicator();
                     showConfetti();
                 }
@@ -1930,15 +1998,16 @@
 
         function createParticles() {
             const animalDisplay = document.querySelector('.animal-display');
-            for (let i = 0; i < 15; i++) {
+            const particleColors = ['#FFD700', '#FF69B4', '#87CEEB', '#98FB98', '#FFA500'];
+            for (let i = 0; i < GAME_CONFIG.PARTICLE_COUNT; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
                 particle.style.left = Math.random() * 100 + '%';
-                particle.style.backgroundColor = ['#FFD700', '#FF69B4', '#87CEEB', '#98FB98', '#FFA500'][Math.floor(Math.random() * 5)];
+                particle.style.backgroundColor = particleColors[Math.floor(Math.random() * particleColors.length)];
                 particle.style.width = particle.style.height = Math.random() * 10 + 5 + 'px';
                 animalDisplay.appendChild(particle);
 
-                setTimeout(() => particle.remove(), 2000);
+                setTimeout(() => particle.remove(), GAME_CONFIG.PARTICLE_LIFETIME);
             }
         }
 
@@ -1948,19 +2017,19 @@
             indicator.textContent = `🔥 ${streak} COMBO! 🔥`;
             document.body.appendChild(indicator);
 
-            setTimeout(() => indicator.remove(), 2000);
+            setTimeout(() => indicator.remove(), GAME_CONFIG.INDICATOR_LIFETIME);
         }
 
         function checkAchievements() {
             const newAchievements = [];
 
-            if (streak === 5 && !achievements.includes('streak5')) {
+            if (streak === GAME_CONFIG.STREAK_ACHIEVEMENT_5 && !achievements.includes('streak5')) {
                 newAchievements.push({ text: '🔥 5 Streak Master!', id: 'streak5' });
             }
-            if (streak === 10 && !achievements.includes('streak10')) {
+            if (streak === GAME_CONFIG.STREAK_ACHIEVEMENT_10 && !achievements.includes('streak10')) {
                 newAchievements.push({ text: '🌟 Perfect Streak!', id: 'streak10' });
             }
-            if (score >= 100 && !achievements.includes('score100')) {
+            if (score >= GAME_CONFIG.SCORE_ACHIEVEMENT_100 && !achievements.includes('score100')) {
                 newAchievements.push({ text: '💯 Century Club!', id: 'score100' });
             }
 
@@ -1976,7 +2045,7 @@
             achievement.textContent = text;
             document.body.appendChild(achievement);
 
-            setTimeout(() => achievement.remove(), 3000);
+            setTimeout(() => achievement.remove(), GAME_CONFIG.ACHIEVEMENT_LIFETIME);
         }
 
         function showFeedback(message, type) {
@@ -1995,29 +2064,31 @@
             // Use cached DOM elements for better performance
             if (domCache.score) domCache.score.textContent = score;
             if (domCache.streak) domCache.streak.textContent = streak;
-        } function endGame() {
+        }
+
+        function endGame() {
             // Save high score
             if (score > highScore) {
                 highScore = score;
-                localStorage.setItem('wildAnimalsHighScore', highScore.toString());
+                localStorage.setItem(GAME_CONFIG.HIGH_SCORE_KEY, highScore.toString());
                 showAchievement('🏆 NEW HIGH SCORE! 🏆');
             }
 
             const gameArea = document.getElementById('gameArea');
-            const questionsAnswered = gameMode === 'survival' ? currentQuestionIndex : totalQuestions;
-            const percentage = Math.round((score / (questionsAnswered * 10)) * 100);
+            const questionsAnswered = gameMode === 'survival' ? currentQuestionIndex : GAME_CONFIG.TOTAL_QUESTIONS;
+            const percentage = Math.round((score / (questionsAnswered * GAME_CONFIG.POINTS_PER_CORRECT)) * 100);
 
             let message = '';
             let emoji = '';
 
-            if (percentage >= 90) {
+            if (percentage >= GAME_CONFIG.EXCELLENT_THRESHOLD) {
                 message = 'Amazing! You\'re a Wild Animal Expert! 🌟';
                 emoji = '🏆';
                 showConfetti();
-            } else if (percentage >= 70) {
+            } else if (percentage >= GAME_CONFIG.GREAT_THRESHOLD) {
                 message = 'Great job! You know your animals well! 👏';
                 emoji = '🥈';
-            } else if (percentage >= 50) {
+            } else if (percentage >= GAME_CONFIG.GOOD_THRESHOLD) {
                 message = 'Good effort! Keep learning about animals! 👍';
                 emoji = '🥉';
             } else {
@@ -2090,8 +2161,8 @@
             const buttons = Array.from(document.querySelectorAll('.option-btn'));
             const wrongButtons = buttons.filter(btn => btn.dataset.value !== correctAnswer);
 
-            // Remove 2 wrong answers
-            for (let i = 0; i < 2 && i < wrongButtons.length; i++) {
+            // Remove wrong answers based on config
+            for (let i = 0; i < GAME_CONFIG.ELIMINATE_COUNT && i < wrongButtons.length; i++) {
                 wrongButtons[i].style.opacity = '0.3';
                 wrongButtons[i].disabled = true;
             }
@@ -2115,18 +2186,20 @@
             }
 
             showFeedback('⏭️ Question skipped!', 'correct');
-            score += 5; // Half points for skipping
+            score += GAME_CONFIG.POINTS_FOR_SKIP;
             updateScoreBoard();
 
             setTimeout(() => {
                 currentQuestionIndex++;
                 loadQuestion();
-            }, 1000);
+            }, GAME_CONFIG.SKIP_DELAY);
 
             if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
                 window.realAnimalSounds.playUISound('powerup');
             }
-        } function restartGame() {
+        }
+
+        function restartGame() {
             // Reset all buttons styles
             document.querySelectorAll('.option-btn').forEach(btn => {
                 btn.classList.remove('correct', 'incorrect');
@@ -2195,22 +2268,22 @@
             const colors = ['#FFD700', '#FF69B4', '#87CEEB', '#98FB98', '#FFA500'];
             const confettiElements = [];
 
-            for (let i = 0; i < 50; i++) {
+            for (let i = 0; i < GAME_CONFIG.CONFETTI_COUNT; i++) {
                 const confetti = document.createElement('div');
                 confetti.className = 'confetti';
                 confetti.style.left = Math.random() * 100 + '%';
                 confetti.style.animationDelay = Math.random() * 3 + 's';
-                confetti.style.backgroundColor = colors[Math.floor(Math.random() * 5)];
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
                 fragment.appendChild(confetti);
                 confettiElements.push(confetti);
             }
 
             celebration.appendChild(fragment);
 
-            // Remove all confetti at once after 3 seconds
+            // Remove all confetti at once after configured delay
             setTimeout(() => {
                 confettiElements.forEach(c => c.remove());
-            }, 3000);
+            }, GAME_CONFIG.CONFETTI_LIFETIME);
         }
 
         function toggleSound() {
@@ -2241,7 +2314,7 @@
                     animalEmoji.style.transition = 'transform 0.2s ease';
                     setTimeout(() => {
                         animalEmoji.style.transform = 'scale(1)';
-                    }, 200);
+                    }, GAME_CONFIG.SCALE_RESET_DELAY);
                 }
             }
         }
