@@ -2,6 +2,12 @@
  * Interactive Features Module for Kindergarten Students
  * Provides drag-and-drop functionality and interactive games
  * 
+ * TODO: Implement virtual scrolling for large animal lists (performance)
+ * TODO: Add touch gesture support (pinch-to-zoom, rotate) for enhanced interactivity
+ * TODO: Consider using Intersection Observer API for lazy loading game modes
+ * TODO: Add haptic feedback API for mobile devices on correct answers
+ * TODO: Implement undo/redo functionality for drag and drop
+ * 
  * @class InteractiveFeatures
  */
 class InteractiveFeatures {
