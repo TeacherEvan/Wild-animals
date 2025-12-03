@@ -10,6 +10,10 @@ class RealAnimalSounds {
      * Initialize the Real Animal Sounds module
      */
     constructor() {
+        // Configuration constants
+        this.SOUND_WAVE_COUNT = 3; // Number of visual sound waves to display
+        this.SOUND_WAVE_DELAY_SECONDS = 0.2; // Delay between each wave animation
+        
         this.isEnabled = true;
         this.currentAudio = null;
         this.audioCache = {};
@@ -149,13 +153,10 @@ class RealAnimalSounds {
      * @param {HTMLElement} parentElement - Element to attach waves to
      */
     createSoundWaves(parentElement) {
-        const numberOfWaves = 3;
-        const waveDelayIncrement = 0.2; // seconds between each wave
-        
-        for (let waveIndex = 0; waveIndex < numberOfWaves; waveIndex++) {
+        for (let waveIndex = 0; waveIndex < this.SOUND_WAVE_COUNT; waveIndex++) {
             const waveElement = document.createElement('div');
             waveElement.className = 'sound-wave';
-            waveElement.style.animationDelay = `${waveIndex * waveDelayIncrement}s`;
+            waveElement.style.animationDelay = `${waveIndex * this.SOUND_WAVE_DELAY_SECONDS}s`;
             parentElement.parentElement.appendChild(waveElement);
         }
     }

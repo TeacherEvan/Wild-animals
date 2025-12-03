@@ -22,6 +22,7 @@ class InteractiveFeatures {
         this.GAME_COMPLETE_DELAY = 2000; // Delay before showing results (ms)
         this.PASSING_SCORE_PERCENTAGE = 80; // Minimum percentage to pass
         this.TOTAL_QUESTIONS = 5; // Total questions per game
+        this.CELEBRATION_PARTICLE_COLORS = ['#FFD700', '#FF69B4', '#87CEEB', '#98FB98']; // Gold, Pink, Sky Blue, Pale Green
         
         this.draggedElement = null;
         this.currentGame = null;
@@ -350,7 +351,6 @@ class InteractiveFeatures {
     createCelebrationParticles(targetElement) {
         const elementRect = targetElement.getBoundingClientRect();
         const totalParticles = this.PARTICLE_COUNT;
-        const particleColors = ['#FFD700', '#FF69B4', '#87CEEB', '#98FB98'];
         
         for (let particleIndex = 0; particleIndex < totalParticles; particleIndex++) {
             const particleElement = document.createElement('div');
@@ -359,7 +359,7 @@ class InteractiveFeatures {
             particleElement.style.top = (elementRect.top + elementRect.height / 2) + 'px';
             particleElement.style.setProperty('--random-x', (Math.random() - 0.5) * this.PARTICLE_SPREAD + 'px');
             particleElement.style.setProperty('--random-y', (Math.random() - 0.5) * this.PARTICLE_SPREAD + 'px');
-            particleElement.style.backgroundColor = particleColors[Math.floor(Math.random() * particleColors.length)];
+            particleElement.style.backgroundColor = this.CELEBRATION_PARTICLE_COLORS[Math.floor(Math.random() * this.CELEBRATION_PARTICLE_COLORS.length)];
             
             document.body.appendChild(particleElement);
             
