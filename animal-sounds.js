@@ -76,25 +76,25 @@ class AnimalSounds {
      */
     initTouchGestures() {
         // Add touch gesture support for mobile devices
-        document.addEventListener('touchstart', (e) => {
-            this.touchStartX = e.touches[0].clientX;
-            this.touchStartY = e.touches[0].clientY;
+        document.addEventListener('touchstart', (touchStartEvent) => {
+            this.touchStartX = touchStartEvent.touches[0].clientX;
+            this.touchStartY = touchStartEvent.touches[0].clientY;
         });
 
-        document.addEventListener('touchend', (e) => {
+        document.addEventListener('touchend', (touchEndEvent) => {
             if (!this.touchStartX || !this.touchStartY) return;
 
-            const touchEndX = e.changedTouches[0].clientX;
-            const touchEndY = e.changedTouches[0].clientY;
+            const touchEndX = touchEndEvent.changedTouches[0].clientX;
+            const touchEndY = touchEndEvent.changedTouches[0].clientY;
 
-            const deltaX = touchEndX - this.touchStartX;
-            const deltaY = touchEndY - this.touchStartY;
+            const horizontalSwipeDistance = touchEndX - this.touchStartX;
+            const verticalSwipeDistance = touchEndY - this.touchStartY;
 
-            // Handle swipe gestures
-            if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                if (deltaX > this.SWIPE_THRESHOLD) {
+            // Handle swipe gestures - prioritize horizontal swipes over vertical
+            if (Math.abs(horizontalSwipeDistance) > Math.abs(verticalSwipeDistance)) {
+                if (horizontalSwipeDistance > this.SWIPE_THRESHOLD) {
                     this.handleSwipeRight();
-                } else if (deltaX < -this.SWIPE_THRESHOLD) {
+                } else if (horizontalSwipeDistance < -this.SWIPE_THRESHOLD) {
                     this.handleSwipeLeft();
                 }
             }

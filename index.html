@@ -1349,13 +1349,13 @@
         // If the real sound module failed to load, create a no-op fallback so that
         // game logic doesn't crash when trying to call its methods.
         if (!window.realAnimalSounds) {
-            const noop = () => { };
+            const emptyFunction = () => { };
             window.realAnimalSounds = {
-                playAnimalSound: noop,
-                playUISound: noop,
-                selectOption: noop,
+                playAnimalSound: emptyFunction,
+                playUISound: emptyFunction,
+                selectOption: emptyFunction,
                 getCurrentSelection: () => null,
-                clearSelection: noop,
+                clearSelection: emptyFunction,
                 toggleSound: () => false,
                 isSoundEnabled: () => false
             };
@@ -1531,7 +1531,7 @@
         ];
 
         // DOM element cache for better performance
-        const domCache = {
+        const cachedDOMElements = {
             animalEmoji: null,
             questionElement: null,
             optionsContainer: null,
@@ -1547,21 +1547,21 @@
             skipBtn: null
         };
 
-        // Initialize DOM cache
-        function initDOMCache() {
-            domCache.animalEmoji = document.getElementById('animalEmoji');
-            domCache.questionElement = document.getElementById('question');
-            domCache.optionsContainer = document.getElementById('options');
-            domCache.feedback = document.getElementById('feedback');
-            domCache.nextBtn = document.getElementById('nextBtn');
-            domCache.timerFill = document.getElementById('timerFill');
-            domCache.timerText = document.getElementById('timerText');
-            domCache.score = document.getElementById('score');
-            domCache.currentQuestion = document.getElementById('currentQuestion');
-            domCache.streak = document.getElementById('streak');
-            domCache.hintBtn = document.getElementById('hintBtn');
-            domCache.eliminateBtn = document.getElementById('eliminateBtn');
-            domCache.skipBtn = document.getElementById('skipBtn');
+        // Initialize DOM element cache for performance optimization
+        function initializeDOMElementCache() {
+            cachedDOMElements.animalEmoji = document.getElementById('animalEmoji');
+            cachedDOMElements.questionElement = document.getElementById('question');
+            cachedDOMElements.optionsContainer = document.getElementById('options');
+            cachedDOMElements.feedback = document.getElementById('feedback');
+            cachedDOMElements.nextBtn = document.getElementById('nextBtn');
+            cachedDOMElements.timerFill = document.getElementById('timerFill');
+            cachedDOMElements.timerText = document.getElementById('timerText');
+            cachedDOMElements.score = document.getElementById('score');
+            cachedDOMElements.currentQuestion = document.getElementById('currentQuestion');
+            cachedDOMElements.streak = document.getElementById('streak');
+            cachedDOMElements.hintBtn = document.getElementById('hintBtn');
+            cachedDOMElements.eliminateBtn = document.getElementById('eliminateBtn');
+            cachedDOMElements.skipBtn = document.getElementById('skipBtn');
         }
 
         // Game state variables
@@ -1591,7 +1591,7 @@
             resetPowerups();
 
             // Initialize DOM cache
-            initDOMCache();
+            initializeDOMElementCache();
 
             // Shuffle and select random animals for this game
             const shuffledAnimals = [...animals].sort(() => Math.random() - 0.5);
@@ -1663,17 +1663,17 @@
 
         function updatePowerupButtons() {
             // Use cached DOM elements for better performance
-            if (domCache.hintBtn) {
-                domCache.hintBtn.textContent = `💡 Hint (${powerups.hints})`;
-                domCache.hintBtn.disabled = powerups.hints <= 0;
+            if (cachedDOMElements.hintBtn) {
+                cachedDOMElements.hintBtn.textContent = `💡 Hint (${powerups.hints})`;
+                cachedDOMElements.hintBtn.disabled = powerups.hints <= 0;
             }
-            if (domCache.eliminateBtn) {
-                domCache.eliminateBtn.textContent = `❌ Eliminate (${powerups.eliminate})`;
-                domCache.eliminateBtn.disabled = powerups.eliminate <= 0;
+            if (cachedDOMElements.eliminateBtn) {
+                cachedDOMElements.eliminateBtn.textContent = `❌ Eliminate (${powerups.eliminate})`;
+                cachedDOMElements.eliminateBtn.disabled = powerups.eliminate <= 0;
             }
-            if (domCache.skipBtn) {
-                domCache.skipBtn.textContent = `⏭️ Skip (${powerups.skip})`;
-                domCache.skipBtn.disabled = powerups.skip <= 0;
+            if (cachedDOMElements.skipBtn) {
+                cachedDOMElements.skipBtn.textContent = `⏭️ Skip (${powerups.skip})`;
+                cachedDOMElements.skipBtn.disabled = powerups.skip <= 0;
             }
         }
 
@@ -1681,8 +1681,8 @@
             if (gameMode === 'survival') {
                 if (currentQuestionIndex >= gameQuestions.length) {
                     // Add more animals for survival mode
-                    const moreAnimals = [...animals].sort(() => Math.random() - 0.5).slice(0, GAME_CONFIG.SURVIVAL_BATCH_SIZE);
-                    gameQuestions.push(...moreAnimals);
+                    const additionalAnimalsForSurvival = [...animals].sort(() => Math.random() - 0.5).slice(0, GAME_CONFIG.SURVIVAL_BATCH_SIZE);
+                    gameQuestions.push(...additionalAnimalsForSurvival);
                 }
             } else if (currentQuestionIndex >= GAME_CONFIG.TOTAL_QUESTIONS) {
                 endGame();
@@ -1712,8 +1712,8 @@
             // Generate options
             generateOptions();
             // Clear feedback and disable next button using cached elements
-            if (domCache.feedback) domCache.feedback.textContent = '';
-            if (domCache.nextBtn) domCache.nextBtn.disabled = true;
+            if (cachedDOMElements.feedback) cachedDOMElements.feedback.textContent = '';
+            if (cachedDOMElements.nextBtn) cachedDOMElements.nextBtn.disabled = true;
 
             // Clear any previous selection
             if (window.realAnimalSounds && window.realAnimalSounds.clearSelection) {
@@ -1721,8 +1721,8 @@
             }
 
             // Update question counter using cached element
-            if (domCache.currentQuestion) {
-                domCache.currentQuestion.textContent = currentQuestionIndex + 1;
+            if (cachedDOMElements.currentQuestion) {
+                cachedDOMElements.currentQuestion.textContent = currentQuestionIndex + 1;
             }
 
             // Add animal animation
@@ -1731,12 +1731,12 @@
 
         function setupQuestion() {
             // Use cached DOM elements for better performance
-            if (!domCache.animalEmoji || !domCache.questionElement) {
-                initDOMCache();
+            if (!cachedDOMElements.animalEmoji || !cachedDOMElements.questionElement) {
+                initializeDOMElementCache();
             }
 
-            const animalEmoji = domCache.animalEmoji;
-            const questionElement = domCache.questionElement;
+            const animalEmoji = cachedDOMElements.animalEmoji;
+            const questionElement = cachedDOMElements.questionElement;
 
             switch (currentQuestionType) {
                 case 'name':
@@ -1760,11 +1760,11 @@
 
         function addAnimalAnimation() {
             // Use cached DOM element for better performance
-            if (!domCache.animalEmoji) {
-                initDOMCache();
+            if (!cachedDOMElements.animalEmoji) {
+                initializeDOMElementCache();
             }
 
-            const animalEmoji = domCache.animalEmoji;
+            const animalEmoji = cachedDOMElements.animalEmoji;
             if (!animalEmoji) return;
 
             const animations = ['roar', 'jump', 'shake'];
@@ -1779,12 +1779,12 @@
         function startTimer() {
             timeLeft = GAME_CONFIG.TIMER_SECONDS;
             // Use cached DOM elements for better performance
-            if (!domCache.timerFill || !domCache.timerText) {
-                initDOMCache();
+            if (!cachedDOMElements.timerFill || !cachedDOMElements.timerText) {
+                initializeDOMElementCache();
             }
 
-            const timerFill = domCache.timerFill;
-            const timerText = domCache.timerText;
+            const timerFill = cachedDOMElements.timerFill;
+            const timerText = cachedDOMElements.timerText;
 
             timer = setInterval(() => {
                 timeLeft--;
@@ -1797,17 +1797,17 @@
                     if (window.realAnimalSounds && window.realAnimalSounds.selectOption) {
                         window.realAnimalSounds.selectOption('TIME_UP');
                     }
-                    if (domCache.nextBtn) domCache.nextBtn.disabled = false;
+                    if (cachedDOMElements.nextBtn) cachedDOMElements.nextBtn.disabled = false;
                 }
             }, 1000);
         }
 
         function generateOptions() {
             // Use cached DOM element for better performance
-            if (!domCache.optionsContainer) {
-                initDOMCache();
+            if (!cachedDOMElements.optionsContainer) {
+                initializeDOMElementCache();
             }
-            const optionsContainer = domCache.optionsContainer;
+            const optionsContainer = cachedDOMElements.optionsContainer;
             if (!optionsContainer) return;
 
             optionsContainer.innerHTML = '';
@@ -1827,65 +1827,65 @@
                     break;
                 case 'fact':
                     correctAnswer = currentAnimal.fact;
-                    const factSet = new Set();
-                    for (const a of animals) {
-                        if (a.fact !== correctAnswer) factSet.add(a.fact);
+                    const uniqueAnimalFacts = new Set();
+                    for (const animalData of animals) {
+                        if (animalData.fact !== correctAnswer) uniqueAnimalFacts.add(animalData.fact);
                     }
-                    wrongAnswers = Array.from(factSet);
+                    wrongAnswers = Array.from(uniqueAnimalFacts);
                     break;
                 case 'habitat':
                     correctAnswer = currentAnimal.habitat;
-                    const habitatSet = new Set();
-                    for (const a of animals) {
-                        if (a.habitat !== correctAnswer) habitatSet.add(a.habitat);
+                    const uniqueAnimalHabitats = new Set();
+                    for (const animalData of animals) {
+                        if (animalData.habitat !== correctAnswer) uniqueAnimalHabitats.add(animalData.habitat);
                     }
-                    wrongAnswers = Array.from(habitatSet);
+                    wrongAnswers = Array.from(uniqueAnimalHabitats);
                     break;
                 case 'diet':
                     correctAnswer = currentAnimal.diet;
-                    const dietSet = new Set();
-                    for (const a of animals) {
-                        if (a.diet !== correctAnswer) dietSet.add(a.diet);
+                    const uniqueAnimalDiets = new Set();
+                    for (const animalData of animals) {
+                        if (animalData.diet !== correctAnswer) uniqueAnimalDiets.add(animalData.diet);
                     }
-                    wrongAnswers = Array.from(dietSet);
+                    wrongAnswers = Array.from(uniqueAnimalDiets);
                     break;
             }
 
             // Get 3 random wrong answers using Fisher-Yates shuffle (more efficient than sort)
-            for (let i = wrongAnswers.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [wrongAnswers[i], wrongAnswers[j]] = [wrongAnswers[j], wrongAnswers[i]];
+            for (let currentIndex = wrongAnswers.length - 1; currentIndex > 0; currentIndex--) {
+                const randomIndex = Math.floor(Math.random() * (currentIndex + 1));
+                [wrongAnswers[currentIndex], wrongAnswers[randomIndex]] = [wrongAnswers[randomIndex], wrongAnswers[currentIndex]];
             }
             wrongAnswers = wrongAnswers.slice(0, GAME_CONFIG.WRONG_OPTIONS_COUNT);
 
             // Combine and shuffle all options using Fisher-Yates
             const allOptions = [correctAnswer, ...wrongAnswers];
-            for (let i = allOptions.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [allOptions[i], allOptions[j]] = [allOptions[j], allOptions[i]];
+            for (let currentIndex = allOptions.length - 1; currentIndex > 0; currentIndex--) {
+                const randomIndex = Math.floor(Math.random() * (currentIndex + 1));
+                [allOptions[currentIndex], allOptions[randomIndex]] = [allOptions[randomIndex], allOptions[currentIndex]];
             }
 
             // Create option buttons using DocumentFragment for better performance
-            const fragment = document.createDocumentFragment();
-            allOptions.forEach(option => {
-                const button = document.createElement('button');
-                button.className = 'option-btn';
+            const optionsFragment = document.createDocumentFragment();
+            allOptions.forEach(answerOption => {
+                const optionButton = document.createElement('button');
+                optionButton.className = 'option-btn';
                 // Store the raw option value for internal logic
-                button.dataset.value = option;
+                optionButton.dataset.value = answerOption;
 
                 // Prepare display text with an identifying symbol for kids
-                let displayText = option;
+                let displayText = answerOption;
                 if (currentQuestionType === 'name') {
-                    const animalObj = animals.find(a => a.name === option);
-                    if (animalObj) {
-                        displayText = `${animalObj.emoji} ${option}`;
+                    const matchingAnimal = animals.find(animalData => animalData.name === answerOption);
+                    if (matchingAnimal) {
+                        displayText = `${matchingAnimal.emoji} ${answerOption}`;
                     }
                 }
-                button.textContent = displayText;
-                button.onclick = () => handleOptionClick(option, button);
-                fragment.appendChild(button);
+                optionButton.textContent = displayText;
+                optionButton.onclick = () => handleOptionClick(answerOption, optionButton);
+                optionsFragment.appendChild(optionButton);
             });
-            optionsContainer.appendChild(fragment);
+            optionsContainer.appendChild(optionsFragment);
         }
 
         // Modified function to handle option clicks - now immediately processes answer
@@ -1998,27 +1998,27 @@
         }
 
         function createParticles() {
-            const animalDisplay = document.querySelector('.animal-display');
+            const animalDisplayContainer = document.querySelector('.animal-display');
             const particleColors = ['#FFD700', '#FF69B4', '#87CEEB', '#98FB98', '#FFA500'];
-            for (let i = 0; i < GAME_CONFIG.PARTICLE_COUNT; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.backgroundColor = particleColors[Math.floor(Math.random() * particleColors.length)];
-                particle.style.width = particle.style.height = Math.random() * 10 + 5 + 'px';
-                animalDisplay.appendChild(particle);
+            for (let particleIndex = 0; particleIndex < GAME_CONFIG.PARTICLE_COUNT; particleIndex++) {
+                const particleElement = document.createElement('div');
+                particleElement.className = 'particle';
+                particleElement.style.left = Math.random() * 100 + '%';
+                particleElement.style.backgroundColor = particleColors[Math.floor(Math.random() * particleColors.length)];
+                particleElement.style.width = particleElement.style.height = Math.random() * 10 + 5 + 'px';
+                animalDisplayContainer.appendChild(particleElement);
 
-                setTimeout(() => particle.remove(), GAME_CONFIG.PARTICLE_LIFETIME);
+                setTimeout(() => particleElement.remove(), GAME_CONFIG.PARTICLE_LIFETIME);
             }
         }
 
         function showComboIndicator() {
-            const indicator = document.createElement('div');
-            indicator.className = 'combo-indicator';
-            indicator.textContent = `🔥 ${streak} COMBO! 🔥`;
-            document.body.appendChild(indicator);
+            const comboIndicatorElement = document.createElement('div');
+            comboIndicatorElement.className = 'combo-indicator';
+            comboIndicatorElement.textContent = `🔥 ${streak} COMBO! 🔥`;
+            document.body.appendChild(comboIndicatorElement);
 
-            setTimeout(() => indicator.remove(), GAME_CONFIG.INDICATOR_LIFETIME);
+            setTimeout(() => comboIndicatorElement.remove(), GAME_CONFIG.INDICATOR_LIFETIME);
         }
 
         function checkAchievements() {
@@ -2040,31 +2040,31 @@
             });
         }
 
-        function showAchievement(text) {
-            const achievement = document.createElement('div');
-            achievement.className = 'achievement';
-            achievement.textContent = text;
-            document.body.appendChild(achievement);
+        function showAchievement(achievementText) {
+            const achievementElement = document.createElement('div');
+            achievementElement.className = 'achievement';
+            achievementElement.textContent = achievementText;
+            document.body.appendChild(achievementElement);
 
-            setTimeout(() => achievement.remove(), GAME_CONFIG.ACHIEVEMENT_LIFETIME);
+            setTimeout(() => achievementElement.remove(), GAME_CONFIG.ACHIEVEMENT_LIFETIME);
         }
 
-        function showFeedback(message, type) {
+        function showFeedback(feedbackMessage, feedbackType) {
             // Use cached DOM element for better performance
-            if (!domCache.feedback) {
-                initDOMCache();
+            if (!cachedDOMElements.feedback) {
+                initializeDOMElementCache();
             }
-            const feedback = domCache.feedback;
-            if (feedback) {
-                feedback.textContent = message;
-                feedback.className = `feedback ${type}-feedback`;
+            const feedbackElement = cachedDOMElements.feedback;
+            if (feedbackElement) {
+                feedbackElement.textContent = feedbackMessage;
+                feedbackElement.className = `feedback ${feedbackType}-feedback`;
             }
         }
 
         function updateScoreBoard() {
             // Use cached DOM elements for better performance
-            if (domCache.score) domCache.score.textContent = score;
-            if (domCache.streak) domCache.streak.textContent = streak;
+            if (cachedDOMElements.score) cachedDOMElements.score.textContent = score;
+            if (cachedDOMElements.streak) cachedDOMElements.streak.textContent = streak;
         }
 
         function endGame() {
@@ -2159,13 +2159,13 @@
             updatePowerupButtons();
 
             const correctAnswer = getCorrectAnswer();
-            const buttons = Array.from(document.querySelectorAll('.option-btn'));
-            const wrongButtons = buttons.filter(btn => btn.dataset.value !== correctAnswer);
+            const allOptionButtons = Array.from(document.querySelectorAll('.option-btn'));
+            const incorrectOptionButtons = allOptionButtons.filter(optionButton => optionButton.dataset.value !== correctAnswer);
 
             // Remove wrong answers based on config
-            for (let i = 0; i < GAME_CONFIG.ELIMINATE_COUNT && i < wrongButtons.length; i++) {
-                wrongButtons[i].style.opacity = '0.3';
-                wrongButtons[i].disabled = true;
+            for (let eliminateIndex = 0; eliminateIndex < GAME_CONFIG.ELIMINATE_COUNT && eliminateIndex < incorrectOptionButtons.length; eliminateIndex++) {
+                incorrectOptionButtons[eliminateIndex].style.opacity = '0.3';
+                incorrectOptionButtons[eliminateIndex].disabled = true;
             }
 
             if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
@@ -2243,12 +2243,12 @@
             `;
 
             // Reinitialize DOM cache after innerHTML change
-            initDOMCache();
+            initializeDOMElementCache();
 
             // Reattach click listener for the new emoji element
-            if (domCache.animalEmoji) {
-                domCache.animalEmoji.onclick = playCurrentAnimalSound;
-                domCache.animalEmoji.classList.add('clickable');
+            if (cachedDOMElements.animalEmoji) {
+                cachedDOMElements.animalEmoji.onclick = playCurrentAnimalSound;
+                cachedDOMElements.animalEmoji.classList.add('clickable');
             }
 
             // Show/hide timer based on current mode
@@ -2261,29 +2261,29 @@
         }
 
         function showConfetti() {
-            const celebration = document.getElementById('celebration');
-            celebration.innerHTML = '';
+            const celebrationContainer = document.getElementById('celebration');
+            celebrationContainer.innerHTML = '';
 
             // Use DocumentFragment for better performance
-            const fragment = document.createDocumentFragment();
-            const colors = ['#FFD700', '#FF69B4', '#87CEEB', '#98FB98', '#FFA500'];
-            const confettiElements = [];
+            const confettiFragment = document.createDocumentFragment();
+            const confettiColors = ['#FFD700', '#FF69B4', '#87CEEB', '#98FB98', '#FFA500'];
+            const createdConfettiElements = [];
 
-            for (let i = 0; i < GAME_CONFIG.CONFETTI_COUNT; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = Math.random() * 100 + '%';
-                confetti.style.animationDelay = Math.random() * 3 + 's';
-                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                fragment.appendChild(confetti);
-                confettiElements.push(confetti);
+            for (let confettiIndex = 0; confettiIndex < GAME_CONFIG.CONFETTI_COUNT; confettiIndex++) {
+                const confettiElement = document.createElement('div');
+                confettiElement.className = 'confetti';
+                confettiElement.style.left = Math.random() * 100 + '%';
+                confettiElement.style.animationDelay = Math.random() * 3 + 's';
+                confettiElement.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                confettiFragment.appendChild(confettiElement);
+                createdConfettiElements.push(confettiElement);
             }
 
-            celebration.appendChild(fragment);
+            celebrationContainer.appendChild(confettiFragment);
 
             // Remove all confetti at once after configured delay
             setTimeout(() => {
-                confettiElements.forEach(c => c.remove());
+                createdConfettiElements.forEach(confettiElement => confettiElement.remove());
             }, GAME_CONFIG.CONFETTI_LIFETIME);
         }
 

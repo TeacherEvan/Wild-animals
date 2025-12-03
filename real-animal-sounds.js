@@ -10,6 +10,10 @@ class RealAnimalSounds {
      * Initialize the Real Animal Sounds module
      */
     constructor() {
+        // Configuration constants
+        this.SOUND_WAVE_COUNT = 3; // Number of visual sound waves to display
+        this.SOUND_WAVE_DELAY_SECONDS = 0.2; // Delay between each wave animation
+        
         this.isEnabled = true;
         this.currentAudio = null;
         this.audioCache = {};
@@ -41,9 +45,9 @@ class RealAnimalSounds {
     /**
      * Play animal sound with options
      * @param {string} animalName - Name of the animal
-     * @param {Object} _options - Options object (unused)
+     * @param {Object} _soundOptions - Options object (unused, kept for API compatibility)
      */
-    async playAnimalSound(animalName, _options = {}) {
+    async playAnimalSound(animalName, _soundOptions = {}) {
         if (!this.isEnabled) return;
 
         if (this.debugMode) {
@@ -146,14 +150,14 @@ class RealAnimalSounds {
 
     /**
      * Create sound wave visual effects
-     * @param {HTMLElement} element - Element to attach waves to
+     * @param {HTMLElement} parentElement - Element to attach waves to
      */
-    createSoundWaves(element) {
-        for (let i = 0; i < 3; i++) {
-            const wave = document.createElement('div');
-            wave.className = 'sound-wave';
-            wave.style.animationDelay = `${i * 0.2}s`;
-            element.parentElement.appendChild(wave);
+    createSoundWaves(parentElement) {
+        for (let waveIndex = 0; waveIndex < this.SOUND_WAVE_COUNT; waveIndex++) {
+            const waveElement = document.createElement('div');
+            waveElement.className = 'sound-wave';
+            waveElement.style.animationDelay = `${waveIndex * this.SOUND_WAVE_DELAY_SECONDS}s`;
+            parentElement.parentElement.appendChild(waveElement);
         }
     }
 
@@ -174,18 +178,18 @@ class RealAnimalSounds {
 
     /**
      * Play UI feedback sounds - DISABLED (only pronunciation allowed)
-     * @param {string} _type - Sound type (unused)
+     * @param {string} _soundType - Sound type (unused, kept for API compatibility)
      */
-    playUISound(_type) {
+    playUISound(_soundType) {
         // No UI sounds - silently ignore
     }
 
     /**
      * Play melody - DISABLED (only pronunciation sounds allowed)
-     * @param {Array<number>} _frequencies - Frequencies array (unused)
-     * @param {number} _duration - Duration parameter (unused)
+     * @param {Array<number>} _melodyFrequencies - Frequencies array (unused, kept for API compatibility)
+     * @param {number} _noteDuration - Duration parameter (unused, kept for API compatibility)
      */
-    playMelody(_frequencies, _duration) {
+    playMelody(_melodyFrequencies, _noteDuration) {
         // No sound generation - silently ignore
     }
 
