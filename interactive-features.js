@@ -128,89 +128,90 @@ class InteractiveFeatures {
 
     /**
      * Handle drag start event
-     * @param {MouseEvent|TouchEvent} e - The drag event
-     * @param {HTMLElement} element - The element being dragged
+     * @param {MouseEvent|TouchEvent} dragEvent - The drag event
+     * @param {HTMLElement} draggableElement - The element being dragged
      */
-    handleDragStart(e, element) {
-        this.draggedElement = element;
-        element.classList.add('dragging');
+    handleDragStart(dragEvent, draggableElement) {
+        this.draggedElement = draggableElement;
+        draggableElement.classList.add('dragging');
         
         // Create a visual clone for dragging
-        const clone = element.cloneNode(true);
-        clone.classList.add('drag-clone');
-        clone.style.position = 'fixed';
-        clone.style.pointerEvents = 'none';
-        clone.style.zIndex = this.DRAG_Z_INDEX.toString();
+        const cloneElement = draggableElement.cloneNode(true);
+        cloneElement.classList.add('drag-clone');
+        cloneElement.style.position = 'fixed';
+        cloneElement.style.pointerEvents = 'none';
+        cloneElement.style.zIndex = this.DRAG_Z_INDEX.toString();
         
-        const rect = element.getBoundingClientRect();
-        if (e.type.includes('touch')) {
-            clone.style.left = (e.touches[0].clientX - rect.width / 2) + 'px';
-            clone.style.top = (e.touches[0].clientY - rect.height / 2) + 'px';
+        const elementBoundingRect = draggableElement.getBoundingClientRect();
+        if (dragEvent.type.includes('touch')) {
+            cloneElement.style.left = (dragEvent.touches[0].clientX - elementBoundingRect.width / 2) + 'px';
+            cloneElement.style.top = (dragEvent.touches[0].clientY - elementBoundingRect.height / 2) + 'px';
         } else {
-            clone.style.left = (e.clientX - rect.width / 2) + 'px';
-            clone.style.top = (e.clientY - rect.height / 2) + 'px';
+            cloneElement.style.left = (dragEvent.clientX - elementBoundingRect.width / 2) + 'px';
+            cloneElement.style.top = (dragEvent.clientY - elementBoundingRect.height / 2) + 'px';
         }
         
-        document.body.appendChild(clone);
-        this.dragClone = clone;
+        document.body.appendChild(cloneElement);
+        this.dragClone = cloneElement;
         
         // Play pickup sound - DISABLED (only pronunciation allowed)
         // window.realAnimalSounds?.playUISound('select');
         
-        e.preventDefault();
+        dragEvent.preventDefault();
     }
 
     /**
      * Handle drag move event
-     * @param {MouseEvent|TouchEvent} e - The drag event
+     * @param {MouseEvent|TouchEvent} dragEvent - The drag event
      */
-    handleDragMove(e) {
+    handleDragMove(dragEvent) {
         if (!this.dragClone) return;
         
-        const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-        const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+        const cursorX = dragEvent.type.includes('touch') ? dragEvent.touches[0].clientX : dragEvent.clientX;
+        const cursorY = dragEvent.type.includes('touch') ? dragEvent.touches[0].clientY : dragEvent.clientY;
         
-        this.dragClone.style.left = (clientX - this.dragClone.offsetWidth / 2) + 'px';
-        this.dragClone.style.top = (clientY - this.dragClone.offsetHeight / 2) + 'px';
+        this.dragClone.style.left = (cursorX - this.dragClone.offsetWidth / 2) + 'px';
+        this.dragClone.style.top = (cursorY - this.dragClone.offsetHeight / 2) + 'px';
         
         // Throttle drop zone highlight checks for better performance
-        if (!this.lastHighlightCheck || Date.now() - this.lastHighlightCheck > this.HIGHLIGHT_THROTTLE) {
-            this.lastHighlightCheck = Date.now();
+        const currentTimestamp = Date.now();
+        if (!this.lastHighlightCheck || currentTimestamp - this.lastHighlightCheck > this.HIGHLIGHT_THROTTLE) {
+            this.lastHighlightCheck = currentTimestamp;
             
             // Highlight drop zones when dragging over them
-            const elementBelow = document.elementFromPoint(clientX, clientY);
-            const dropZone = elementBelow?.closest('.drop-zone');
+            const elementUnderCursor = document.elementFromPoint(cursorX, cursorY);
+            const targetDropZone = elementUnderCursor?.closest('.drop-zone');
             
             // Cache drop zones if not already cached
             if (!this.dropZonesCache) {
                 this.dropZonesCache = Array.from(document.querySelectorAll('.drop-zone'));
             }
             
-            this.dropZonesCache.forEach(zone => {
-                zone.classList.remove('drag-over');
+            this.dropZonesCache.forEach(dropZone => {
+                dropZone.classList.remove('drag-over');
             });
             
-            if (dropZone && this.isValidDrop(this.draggedElement, dropZone)) {
-                dropZone.classList.add('drag-over');
+            if (targetDropZone && this.isValidDrop(this.draggedElement, targetDropZone)) {
+                targetDropZone.classList.add('drag-over');
             }
         }
     }
 
     /**
      * Handle drag end event
-     * @param {MouseEvent|TouchEvent} e - The drag event
+     * @param {MouseEvent|TouchEvent} dragEvent - The drag event
      */
-    handleDragEnd(e) {
+    handleDragEnd(dragEvent) {
         if (!this.draggedElement) return;
         
-        const clientX = e.type.includes('touch') ? e.changedTouches[0].clientX : e.clientX;
-        const clientY = e.type.includes('touch') ? e.changedTouches[0].clientY : e.clientY;
+        const finalCursorX = dragEvent.type.includes('touch') ? dragEvent.changedTouches[0].clientX : dragEvent.clientX;
+        const finalCursorY = dragEvent.type.includes('touch') ? dragEvent.changedTouches[0].clientY : dragEvent.clientY;
         
-        const elementBelow = document.elementFromPoint(clientX, clientY);
-        const dropZone = elementBelow?.closest('.drop-zone');
+        const elementUnderCursor = document.elementFromPoint(finalCursorX, finalCursorY);
+        const targetDropZone = elementUnderCursor?.closest('.drop-zone');
         
-        if (dropZone && this.isValidDrop(this.draggedElement, dropZone)) {
-            this.handleSuccessfulDrop(this.draggedElement, dropZone);
+        if (targetDropZone && this.isValidDrop(this.draggedElement, targetDropZone)) {
+            this.handleSuccessfulDrop(this.draggedElement, targetDropZone);
         } else {
             this.handleFailedDrop();
         }
@@ -228,12 +229,12 @@ class InteractiveFeatures {
         
         // Use cached drop zones if available
         if (this.dropZonesCache) {
-            this.dropZonesCache.forEach(zone => {
-                zone.classList.remove('drag-over');
+            this.dropZonesCache.forEach(dropZone => {
+                dropZone.classList.remove('drag-over');
             });
         } else {
-            document.querySelectorAll('.drop-zone').forEach(zone => {
-                zone.classList.remove('drag-over');
+            document.querySelectorAll('.drop-zone').forEach(dropZone => {
+                dropZone.classList.remove('drag-over');
             });
         }
         
@@ -243,81 +244,81 @@ class InteractiveFeatures {
 
     /**
      * Handle drag over event
-     * @param {DragEvent} e - The drag event
+     * @param {DragEvent} dragOverEvent - The drag event
      */
-    handleDragOver(e) {
-        e.preventDefault();
+    handleDragOver(dragOverEvent) {
+        dragOverEvent.preventDefault();
     }
 
     /**
      * Handle drop event
-     * @param {DragEvent} e - The drop event
-     * @param {HTMLElement} _dropZone - The drop zone element (unused, handled by handleDragEnd)
+     * @param {DragEvent} dropEvent - The drop event
+     * @param {HTMLElement} _targetDropZone - The drop zone element (unused, handled by handleDragEnd)
      */
-    handleDrop(e, _dropZone) {
-        e.preventDefault();
+    handleDrop(dropEvent, _targetDropZone) {
+        dropEvent.preventDefault();
     }
 
     /**
      * Handle touch move event
-     * @param {TouchEvent} e - The touch event
+     * @param {TouchEvent} touchMoveEvent - The touch event
      */
-    handleTouchMove(e) {
+    handleTouchMove(touchMoveEvent) {
         if (this.draggedElement) {
-            e.preventDefault();
+            touchMoveEvent.preventDefault();
         }
     }
 
     /**
      * Handle touch end event
-     * @param {TouchEvent} e - The touch event
-     * @param {HTMLElement} _dropZone - The drop zone element (unused, handled by handleDragEnd)
+     * @param {TouchEvent} touchEndEvent - The touch event
+     * @param {HTMLElement} _targetDropZone - The drop zone element (unused, handled by handleDragEnd)
      */
-    handleTouchEnd(e, _dropZone) {
-        this.handleDragEnd(e);
+    handleTouchEnd(touchEndEvent, _targetDropZone) {
+        this.handleDragEnd(touchEndEvent);
     }
 
     /**
      * Check if drop is valid
-     * @param {HTMLElement} draggable - The draggable element
-     * @param {HTMLElement} dropZone - The drop zone element
+     * @param {HTMLElement} draggableElement - The draggable element
+     * @param {HTMLElement} targetDropZone - The drop zone element
      * @returns {boolean} True if drop is valid
      */
-    isValidDrop(draggable, dropZone) {
+    isValidDrop(draggableElement, targetDropZone) {
         // Check if the drop is valid based on data attributes
-        const dragType = draggable.dataset.type;
-        const dropType = dropZone.dataset.accepts;
+        const draggableType = draggableElement.dataset.type;
+        const acceptedDropType = targetDropZone.dataset.accepts;
         
-        return dropType === 'any' || dropType === dragType;
+        return acceptedDropType === 'any' || acceptedDropType === draggableType;
     }
 
     /**
      * Handle successful drop
-     * @param {HTMLElement} draggable - The draggable element
-     * @param {HTMLElement} dropZone - The drop zone element
+     * @param {HTMLElement} draggableElement - The draggable element
+     * @param {HTMLElement} targetDropZone - The drop zone element
      */
-    handleSuccessfulDrop(draggable, dropZone) {
+    handleSuccessfulDrop(draggableElement, targetDropZone) {
         // Visual feedback
-        dropZone.classList.add('drop-success');
+        targetDropZone.classList.add('drop-success');
         
         // Add the item to the drop zone
-        const item = draggable.cloneNode(true);
-        item.classList.remove('dragging');
-        item.classList.add('dropped-item');
-        dropZone.appendChild(item);
+        const droppedItem = draggableElement.cloneNode(true);
+        droppedItem.classList.remove('dragging');
+        droppedItem.classList.add('dropped-item');
+        targetDropZone.appendChild(droppedItem);
         
         // Play success sound - DISABLED (only pronunciation allowed)
         // window.realAnimalSounds?.playUISound('correct');
         
         // Create celebration particles
-        this.createCelebrationParticles(dropZone);
+        this.createCelebrationParticles(targetDropZone);
         
         // Update score
         this.updateScore(this.SCORE_INCREMENT);
         
         // Remove success class after animation
         setTimeout(() => {
-            dropZone.classList.remove('drop-success');
+            targetDropZone.classList.remove('drop-success');
         }, this.SUCCESS_DELAY);
         
         // Check if game is complete
@@ -344,24 +345,25 @@ class InteractiveFeatures {
 
     /**
      * Create celebration particle effects
-     * @param {HTMLElement} element - Element to create particles around
+     * @param {HTMLElement} targetElement - Element to create particles around
      */
-    createCelebrationParticles(element) {
-        const rect = element.getBoundingClientRect();
-        const particles = this.PARTICLE_COUNT;
+    createCelebrationParticles(targetElement) {
+        const elementRect = targetElement.getBoundingClientRect();
+        const totalParticles = this.PARTICLE_COUNT;
+        const particleColors = ['#FFD700', '#FF69B4', '#87CEEB', '#98FB98'];
         
-        for (let i = 0; i < particles; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'celebration-particle';
-            particle.style.left = (rect.left + rect.width / 2) + 'px';
-            particle.style.top = (rect.top + rect.height / 2) + 'px';
-            particle.style.setProperty('--random-x', (Math.random() - 0.5) * this.PARTICLE_SPREAD + 'px');
-            particle.style.setProperty('--random-y', (Math.random() - 0.5) * this.PARTICLE_SPREAD + 'px');
-            particle.style.backgroundColor = ['#FFD700', '#FF69B4', '#87CEEB', '#98FB98'][Math.floor(Math.random() * 4)];
+        for (let particleIndex = 0; particleIndex < totalParticles; particleIndex++) {
+            const particleElement = document.createElement('div');
+            particleElement.className = 'celebration-particle';
+            particleElement.style.left = (elementRect.left + elementRect.width / 2) + 'px';
+            particleElement.style.top = (elementRect.top + elementRect.height / 2) + 'px';
+            particleElement.style.setProperty('--random-x', (Math.random() - 0.5) * this.PARTICLE_SPREAD + 'px');
+            particleElement.style.setProperty('--random-y', (Math.random() - 0.5) * this.PARTICLE_SPREAD + 'px');
+            particleElement.style.backgroundColor = particleColors[Math.floor(Math.random() * particleColors.length)];
             
-            document.body.appendChild(particle);
+            document.body.appendChild(particleElement);
             
-            setTimeout(() => particle.remove(), this.PARTICLE_ANIMATION_DURATION);
+            setTimeout(() => particleElement.remove(), this.PARTICLE_ANIMATION_DURATION);
         }
     }
 
@@ -428,19 +430,19 @@ class HabitatMatchingGame {
         gameContainer.innerHTML = `
             <h2 class="game-title">🏠 Match Animals to Their Homes! 🏠</h2>
             <div class="habitats-grid">
-                ${Object.keys(this.habitats).map(habitat => `
-                    <div class="habitat-zone drop-zone habitat-${habitat}" data-accepts="${habitat}">
-                        <h3>${habitat.charAt(0).toUpperCase() + habitat.slice(1)}</h3>
+                ${Object.keys(this.habitats).map(habitatName => `
+                    <div class="habitat-zone drop-zone habitat-${habitatName}" data-accepts="${habitatName}">
+                        <h3>${habitatName.charAt(0).toUpperCase() + habitatName.slice(1)}</h3>
                         <div class="dropped-animals"></div>
                     </div>
                 `).join('')}
             </div>
             <div class="animals-pool">
-                ${Object.entries(this.habitats).map(([habitat, animals]) => 
-                    animals.map(animal => `
-                        <div class="animal-card draggable" data-type="${habitat}" data-animal="${animal}">
-                            <span class="animal-emoji">${this.getAnimalEmoji(animal)}</span>
-                            <span class="animal-name">${animal}</span>
+                ${Object.entries(this.habitats).map(([habitatName, animalList]) => 
+                    animalList.map(animalName => `
+                        <div class="animal-card draggable" data-type="${habitatName}" data-animal="${animalName}">
+                            <span class="animal-emoji">${this.getAnimalEmoji(animalName)}</span>
+                            <span class="animal-name">${animalName}</span>
                         </div>
                     `).join('')
                 ).join('')}
@@ -456,8 +458,8 @@ class HabitatMatchingGame {
         this.total = document.querySelectorAll('.animal-card').length;
     }
 
-    getAnimalEmoji(animal) {
-        const emojis = {
+    getAnimalEmoji(animalName) {
+        const animalEmojiMap = {
             'Lion': '🦁', 'Tiger': '🐯', 'Elephant': '🐘', 'Giraffe': '🦒',
             'Bear': '🐻', 'Zebra': '🦓', 'Rhino': '🦏', 'Wolf': '🐺',
             'Fox': '🦊', 'Leopard': '🐆', 'Kangaroo': '🦘', 'Koala': '🐨',
@@ -467,7 +469,7 @@ class HabitatMatchingGame {
             'Parrot': '🦜', 'Turtle': '🐢', 'Owl': '🦉', 'Squirrel': '🐿️',
             'Hedgehog': '🦔', 'Bee': '🐝'
         };
-        return emojis[animal] || '🐾';
+        return animalEmojiMap[animalName] || '🐾';
     }
 
     /**
@@ -540,16 +542,16 @@ class AnimalFeedingGame {
      * Show next animal to feed
      */
     nextAnimal() {
-        const animals = Object.keys(this.feedingData);
-        const randomAnimal = animals[Math.floor(Math.random() * animals.length)];
-        this.showAnimalToFeed(randomAnimal);
+        const availableAnimals = Object.keys(this.feedingData);
+        const randomAnimalName = availableAnimals[Math.floor(Math.random() * availableAnimals.length)];
+        this.showAnimalToFeed(randomAnimalName);
     }
 
     /**
      * Show animal to feed
-     * @param {string} _animalName - Name of the animal (unused - method stub)
+     * @param {string} _selectedAnimalName - Name of the animal (unused - method stub for future implementation)
      */
-    showAnimalToFeed(_animalName) {
+    showAnimalToFeed(_selectedAnimalName) {
         // Implementation details...
     }
 }
@@ -596,8 +598,8 @@ class SoundMatchingGame {
      */
     playRandomSound() {
         // Play a random animal sound - KEEP (pronunciation only)
-        const animals = ['Lion', 'Tiger', 'Elephant', 'Monkey', 'Wolf', 'Dolphin'];
-        this.currentAnimal = animals[Math.floor(Math.random() * animals.length)];
+        const availableAnimals = ['Lion', 'Tiger', 'Elephant', 'Monkey', 'Wolf', 'Dolphin'];
+        this.currentAnimal = availableAnimals[Math.floor(Math.random() * availableAnimals.length)];
         window.realAnimalSounds?.playAnimalSound(this.currentAnimal);
         
         // Show animal options
@@ -609,21 +611,21 @@ class SoundMatchingGame {
      */
     showAnimalOptions() {
         // Create options for the current round
-        const options = this.generateSoundGameOptions();
-        const optionsGrid = document.querySelector('.animal-options-grid');
+        const animalOptions = this.generateSoundGameOptions();
+        const optionsGridElement = document.querySelector('.animal-options-grid');
         
-        if (!optionsGrid) return;
+        if (!optionsGridElement) return;
         
-        optionsGrid.innerHTML = '';
-        options.forEach(animal => {
+        optionsGridElement.innerHTML = '';
+        animalOptions.forEach(animalName => {
             const optionButton = document.createElement('button');
             optionButton.className = 'animal-option-btn';
             optionButton.innerHTML = `
-                <span class="animal-emoji">${this.getAnimalEmoji(animal)}</span>
-                <span class="animal-name">${animal}</span>
+                <span class="animal-emoji">${this.getAnimalEmoji(animalName)}</span>
+                <span class="animal-name">${animalName}</span>
             `;
-            optionButton.onclick = () => this.checkAnswer(animal);
-            optionsGrid.appendChild(optionButton);
+            optionButton.onclick = () => this.checkAnswer(animalName);
+            optionsGridElement.appendChild(optionButton);
         });
     }
 
@@ -633,24 +635,24 @@ class SoundMatchingGame {
      */
     generateSoundGameOptions() {
         // Get 3 wrong answers + 1 correct answer
-        const allAnimals = ['Lion', 'Tiger', 'Elephant', 'Monkey', 'Wolf', 'Dolphin', 'Bear', 'Fox', 'Frog', 'Eagle'];
-        const wrongAnimals = allAnimals.filter(animal => animal !== this.currentAnimal);
-        const randomWrong = wrongAnimals.sort(() => Math.random() - 0.5).slice(0, 3);
+        const allAvailableAnimals = ['Lion', 'Tiger', 'Elephant', 'Monkey', 'Wolf', 'Dolphin', 'Bear', 'Fox', 'Frog', 'Eagle'];
+        const incorrectAnimals = allAvailableAnimals.filter(animalName => animalName !== this.currentAnimal);
+        const selectedIncorrectAnimals = incorrectAnimals.sort(() => Math.random() - 0.5).slice(0, 3);
         
         // Combine and shuffle
-        const options = [this.currentAnimal, ...randomWrong];
-        return options.sort(() => Math.random() - 0.5);
+        const allOptionsForRound = [this.currentAnimal, ...selectedIncorrectAnimals];
+        return allOptionsForRound.sort(() => Math.random() - 0.5);
     }
 
     /**
      * Check if answer is correct
-     * @param {string} selectedAnimal - Selected animal name
+     * @param {string} selectedAnimalName - Selected animal name
      */
-    checkAnswer(selectedAnimal) {
-        const isCorrect = selectedAnimal === this.currentAnimal;
+    checkAnswer(selectedAnimalName) {
+        const isCorrectAnswer = selectedAnimalName === this.currentAnimal;
         
         // Update score
-        if (isCorrect) {
+        if (isCorrectAnswer) {
             this.correctAnswers++;
             window.interactiveFeatures.updateScore(window.interactiveFeatures.SCORE_INCREMENT);
             this.showFeedback('Correct! 🎉', 'correct');
@@ -658,13 +660,14 @@ class SoundMatchingGame {
             this.showFeedback(`Oops! It was a ${this.currentAnimal} 😊`, 'incorrect');
         }
         
-        // Disable all buttons
-        document.querySelectorAll('.animal-option-btn').forEach(btn => {
-            btn.disabled = true;
-            if (btn.textContent.includes(this.currentAnimal)) {
-                btn.classList.add('correct');
-            } else if (btn.textContent.includes(selectedAnimal) && !isCorrect) {
-                btn.classList.add('incorrect');
+        // Disable all buttons and show correct/incorrect states
+        const allOptionButtons = document.querySelectorAll('.animal-option-btn');
+        allOptionButtons.forEach(optionButton => {
+            optionButton.disabled = true;
+            if (optionButton.textContent.includes(this.currentAnimal)) {
+                optionButton.classList.add('correct');
+            } else if (optionButton.textContent.includes(selectedAnimalName) && !isCorrectAnswer) {
+                optionButton.classList.add('incorrect');
             }
         });
         
@@ -676,28 +679,28 @@ class SoundMatchingGame {
 
     /**
      * Show feedback message
-     * @param {string} message - Feedback message
-     * @param {string} type - Feedback type ('correct' or 'incorrect')
+     * @param {string} feedbackMessage - Feedback message
+     * @param {string} feedbackType - Feedback type ('correct' or 'incorrect')
      */
-    showFeedback(message, type) {
-        let feedback = document.querySelector('.sound-feedback');
-        if (!feedback) {
-            feedback = document.createElement('div');
-            feedback.className = 'sound-feedback';
-            document.querySelector('.sound-game-area').appendChild(feedback);
+    showFeedback(feedbackMessage, feedbackType) {
+        let feedbackElement = document.querySelector('.sound-feedback');
+        if (!feedbackElement) {
+            feedbackElement = document.createElement('div');
+            feedbackElement.className = 'sound-feedback';
+            document.querySelector('.sound-game-area').appendChild(feedbackElement);
         }
         
-        feedback.textContent = message;
-        feedback.className = `sound-feedback ${type}`;
+        feedbackElement.textContent = feedbackMessage;
+        feedbackElement.className = `sound-feedback ${feedbackType}`;
     }
 
-    getAnimalEmoji(animal) {
-        const emojis = {
+    getAnimalEmoji(animalName) {
+        const animalEmojiMap = {
             'Lion': '🦁', 'Tiger': '🐯', 'Elephant': '🐘', 'Monkey': '🐵',
             'Wolf': '🐺', 'Dolphin': '🐬', 'Bear': '🐻', 'Fox': '🦊',
             'Frog': '🐸', 'Eagle': '🦅'
         };
-        return emojis[animal] || '🐾';
+        return animalEmojiMap[animalName] || '🐾';
     }
 
     /**
@@ -706,42 +709,43 @@ class SoundMatchingGame {
     nextRound() {
         this.rounds++;
         
-        if (this.rounds > 5) {
+        const maxRounds = 5;
+        if (this.rounds > maxRounds) {
             // Game complete
             this.showCompletionScreen();
             return;
         }
         
         // Clear feedback
-        const feedback = document.querySelector('.sound-feedback');
-        if (feedback) feedback.textContent = '';
+        const feedbackElement = document.querySelector('.sound-feedback');
+        if (feedbackElement) feedbackElement.textContent = '';
         
         // Clear options
-        const optionsGrid = document.querySelector('.animal-options-grid');
-        if (optionsGrid) optionsGrid.innerHTML = '';
+        const optionsGridElement = document.querySelector('.animal-options-grid');
+        if (optionsGridElement) optionsGridElement.innerHTML = '';
         
         // Update round counter if it exists
-        const roundCounter = document.getElementById('sound-round');
-        if (roundCounter) roundCounter.textContent = this.rounds;
+        const roundCounterElement = document.getElementById('sound-round');
+        if (roundCounterElement) roundCounterElement.textContent = this.rounds;
     }
 
     showCompletionScreen() {
-        const gameArea = document.querySelector('.sound-game-container');
-        const percentage = Math.round((this.correctAnswers / window.interactiveFeatures.TOTAL_QUESTIONS) * 100);
+        const gameContainerElement = document.querySelector('.sound-game-container');
+        const scorePercentage = Math.round((this.correctAnswers / window.interactiveFeatures.TOTAL_QUESTIONS) * 100);
         
-        let message = '';
-        if (percentage >= window.interactiveFeatures.PASSING_SCORE_PERCENTAGE) {
-            message = '🌟 Amazing! You know your animal sounds!';
-        } else if (percentage >= 60) {
-            message = '👏 Good job! Keep listening!';
+        let completionMessage = '';
+        if (scorePercentage >= window.interactiveFeatures.PASSING_SCORE_PERCENTAGE) {
+            completionMessage = '🌟 Amazing! You know your animal sounds!';
+        } else if (scorePercentage >= 60) {
+            completionMessage = '👏 Good job! Keep listening!';
         } else {
-            message = '😊 Nice try! Practice makes perfect!';
+            completionMessage = '😊 Nice try! Practice makes perfect!';
         }
         
-        gameArea.innerHTML = `
+        gameContainerElement.innerHTML = `
             <div class="sound-completion">
-                <h2>${message}</h2>
-                <div class="final-score">Final Score: ${this.correctAnswers}/5 (${percentage}%)</div>
+                <h2>${completionMessage}</h2>
+                <div class="final-score">Final Score: ${this.correctAnswers}/5 (${scorePercentage}%)</div>
                 <button class="play-again-btn" onclick="window.interactiveFeatures.startGame('sounds')">
                     🎮 Play Again
                 </button>
