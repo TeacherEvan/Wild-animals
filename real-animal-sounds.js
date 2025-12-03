@@ -3,6 +3,11 @@
  * Provides text-to-speech pronunciation with animal sound descriptions
  * Note: Real animal sound CDN URLs removed to avoid blocking issues
  * 
+ * TODO: Implement proper audio caching with IndexedDB for offline support
+ * TODO: Add retry logic with exponential backoff for failed audio loads
+ * TODO: Consider using Howler.js library for better audio management
+ * TODO: Add audio quality settings (low/medium/high) based on network
+ * 
  * @class RealAnimalSounds
  */
 class RealAnimalSounds {

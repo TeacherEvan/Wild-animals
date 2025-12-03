@@ -3,6 +3,11 @@
  * Provides audio feedback for animal names using browser's speech synthesis API.
  * Note: Audio context and sound effects are disabled - only pronunciation is allowed.
  * 
+ * TODO: Consider implementing Web Audio API for UI sounds with better performance
+ * TODO: Add audio sprite sheet for faster loading and better control
+ * TODO: Implement audio preloading strategy for common animals
+ * TODO: Add audio caching with Service Worker for offline support
+ * 
  * @class AnimalSounds
  */
 class AnimalSounds {

@@ -5,7 +5,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wild Animals Adventure - TEACHER EVAN!</title>
+    <!-- TODO: Extract CSS to external stylesheet for better caching and maintainability -->
+    <!-- TODO: Add preconnect for faster DNS resolution: <link rel="preconnect" href="https://fonts.googleapis.com"> -->
+    <!-- TODO: Add manifest.json for PWA support -->
     <style>
+        /* CSS Custom Properties for better maintainability and theming */
+        :root {
+            /* Color palette */
+            --color-primary: #2E8B57;
+            --color-secondary: #FF6347;
+            --color-accent: #FFD700;
+            --color-success: #98FB98;
+            --color-warning: #FFA500;
+            --color-error: #FF6B6B;
+            
+            /* Background colors */
+            --bg-sky: #87CEEB;
+            --bg-grass: #98FB98;
+            --bg-sand: #F0E68C;
+            --bg-white: rgba(255, 255, 255, 0.98);
+            
+            /* Spacing */
+            --spacing-xs: 10px;
+            --spacing-sm: 20px;
+            --spacing-md: 30px;
+            --spacing-lg: 40px;
+            
+            /* Border radius */
+            --radius-sm: 15px;
+            --radius-md: 20px;
+            --radius-lg: 25px;
+            --radius-xl: 30px;
+            
+            /* Font sizes */
+            --font-size-sm: 1.1em;
+            --font-size-md: 1.3em;
+            --font-size-lg: 1.8em;
+            --font-size-xl: 2.8em;
+            
+            /* Animation timing */
+            --transition-fast: 0.2s;
+            --transition-normal: 0.3s;
+            --transition-slow: 0.5s;
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -14,48 +57,48 @@
 
         body {
             font-family: 'Comic Sans MS', cursive, sans-serif;
-            background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #F0E68C 100%);
+            background: linear-gradient(135deg, var(--bg-sky) 0%, var(--bg-grass) 50%, var(--bg-sand) 100%);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
+            padding: var(--spacing-sm);
         }
 
         .game-container {
             max-width: 900px;
             width: 100%;
-            background: rgba(255, 255, 255, 0.98);
-            border-radius: 30px;
+            background: var(--bg-white);
+            border-radius: var(--radius-xl);
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.3);
-            padding: 40px;
+            padding: var(--spacing-lg);
             text-align: center;
             backdrop-filter: blur(10px);
         }
 
         h1 {
-            color: #2E8B57;
-            font-size: 2.8em;
-            margin-bottom: 10px;
+            color: var(--color-primary);
+            font-size: var(--font-size-xl);
+            margin-bottom: var(--spacing-xs);
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
             font-weight: 800;
             letter-spacing: -0.5px;
         }
 
         .subtitle {
-            color: #FF6347;
-            font-size: 1.3em;
-            margin-bottom: 30px;
+            color: var(--color-secondary);
+            font-size: var(--font-size-md);
+            margin-bottom: var(--spacing-md);
             font-weight: 600;
         }
 
         .score-board {
             display: flex;
             justify-content: space-around;
-            margin-bottom: 30px;
-            padding: 20px;
+            margin-bottom: var(--spacing-md);
+            padding: var(--spacing-sm);
             background: linear-gradient(135deg, #F0F8FF 0%, #E6F3FF 100%);
-            border-radius: 20px;
+            border-radius: var(--radius-md);
             border: 3px solid #4169E1;
             box-shadow: 0 4px 15px rgba(65, 105, 225, 0.2);
         }
@@ -63,19 +106,19 @@
         .score-item {
             font-size: 1.4em;
             font-weight: bold;
-            color: #2E8B57;
+            color: var(--color-primary);
         }
 
         .game-area {
-            margin-bottom: 30px;
+            margin-bottom: var(--spacing-md);
         }
 
         .animal-display {
             background: linear-gradient(135deg, #FFFACD 0%, #FFF8DC 100%);
-            border: 5px solid #FFD700;
-            border-radius: 25px;
-            padding: 40px;
-            margin-bottom: 30px;
+            border: 5px solid var(--color-accent);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
             min-height: 320px;
             display: flex;
             flex-direction: column;
@@ -86,11 +129,14 @@
 
         .animal-emoji {
             font-size: 9em;
-            margin-bottom: 20px;
+            margin-bottom: var(--spacing-sm);
             animation: bounce 2s infinite;
             cursor: pointer;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s ease;
+            transition: transform var(--transition-normal) cubic-bezier(0.4, 0, 0.2, 1), 
+                        filter var(--transition-normal) ease;
             filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.2));
+            /* Performance optimization */
+            will-change: transform;
         }
 
         @keyframes bounce {
@@ -1441,9 +1487,14 @@
     <div class="celebration" id="celebration"></div>
 
     <script>
+        // TODO: Extract this game logic to separate module files (GameEngine.js, ScoreManager.js, QuestionGenerator.js)
+        // TODO: Implement dynamic imports for game modes to reduce initial bundle size
+        // TODO: Add TypeScript types for better development experience
+        
         /**
          * Game Configuration Constants
          * All magic numbers and configurable values are centralized here for easy maintenance
+         * TODO: Move to external config file for easier customization without code changes
          */
         const GAME_CONFIG = {
             // Scoring configuration
@@ -1548,6 +1599,7 @@
         };
 
         // Initialize DOM element cache for performance optimization
+        // TODO: Consider using WeakMap for automatic garbage collection of cached elements
         function initializeDOMElementCache() {
             cachedDOMElements.animalEmoji = document.getElementById('animalEmoji');
             cachedDOMElements.questionElement = document.getElementById('question');
@@ -1565,6 +1617,8 @@
         }
 
         // Game state variables
+        // TODO: Refactor to use a centralized state management pattern (e.g., Redux-like store)
+        // TODO: Consider using localStorage/sessionStorage for state persistence
         let currentQuestionIndex = 0;
         let score = 0;
         let streak = 0;
@@ -1998,6 +2052,9 @@
         }
 
         function createParticles() {
+            // TODO: Use DocumentFragment for batch DOM insertion (already implemented for confetti)
+            // TODO: Consider using CSS animations instead of JavaScript for better performance
+            // TODO: Use object pooling to reuse particle elements instead of creating new ones
             const animalDisplayContainer = document.querySelector('.animal-display');
             const particleColors = ['#FFD700', '#FF69B4', '#87CEEB', '#98FB98', '#FFA500'];
             for (let particleIndex = 0; particleIndex < GAME_CONFIG.PARTICLE_COUNT; particleIndex++) {
