@@ -23,14 +23,6 @@
     <link rel="preload" href="real-animal-sounds.js" as="script">
     <link rel="preload" href="interactive-features.js" as="script">
     
-    <!-- External stylesheet for better caching and maintainability -->
-    <link rel="stylesheet" href="styles.css">
-    
-    <!-- Performance optimization: defer non-critical JavaScript -->
-    <link rel="modulepreload" href="animal-sounds.js">
-    <link rel="modulepreload" href="real-animal-sounds.js">
-    <link rel="modulepreload" href="interactive-features.js">
-    
     <!-- Inline critical CSS for above-the-fold content - minimize CLS (Cumulative Layout Shift) -->
     <style>
         /* Critical CSS for initial paint - prevents layout shift and optimizes LCP (Largest Contentful Paint) */

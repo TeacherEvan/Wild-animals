@@ -49,7 +49,6 @@
     --easing-accelerate: cubic-bezier(0.4, 0, 1, 1);
 }
 
-/* TODO: [OPTIMIZATION] Consider prefers-reduced-motion for accessibility */
 /* TODO: [OPTIMIZATION] Implement dark mode using prefers-color-scheme */
 
 /* Reset and base styles with performance optimizations */
