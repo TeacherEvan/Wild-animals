@@ -16,12 +16,16 @@
     <!-- Preconnect for performance (if external resources needed in future) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     
-    <!-- External stylesheet for better caching and maintainability -->
-    <link rel="stylesheet" href="styles.css">
+    <!-- Resource hints for improved performance -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="animal-sounds.js" as="script">
+    <link rel="preload" href="real-animal-sounds.js" as="script">
+    <link rel="preload" href="interactive-features.js" as="script">
     
-    <!-- Inline critical CSS for above-the-fold content - minimize CLS -->
+    <!-- Inline critical CSS for above-the-fold content - minimize CLS (Cumulative Layout Shift) -->
     <style>
-        /* Critical CSS for initial paint - prevents layout shift */
+        /* Critical CSS for initial paint - prevents layout shift and optimizes LCP (Largest Contentful Paint) */
         body {
             font-family: 'Comic Sans MS', cursive, sans-serif;
             margin: 0;
@@ -31,6 +35,9 @@
             align-items: center;
             justify-content: center;
             background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #F0E68C 100%);
+            /* Performance: GPU-accelerated compositing */
+            contain: layout style paint;
+            will-change: auto;
         }
         .game-container {
             max-width: 900px;
@@ -39,16 +46,38 @@
             border-radius: 30px;
             padding: 40px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            /* Performance: Optimize repaints */
+            contain: layout style;
         }
-        /* Loading skeleton to prevent layout shift */
+        /* Loading skeleton to prevent layout shift - improves perceived performance */
         .game-area {
             min-height: 400px;
+            position: relative;
+        }
+        /* Loading skeleton animation */
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite;
+            border-radius: 15px;
+        }
+        /* Optimistic UI - Show loading states */
+        .loading-state {
+            opacity: 0.6;
+            pointer-events: none;
+            transition: opacity 0.3s ease-in-out;
         }
     </style>
-    <script src="animal-sounds.js"></script>
+    
+    <!-- Deferred script loading for better performance -->
+    <script defer src="animal-sounds.js"></script>
     <script>
-        // If the real sound module failed to load, create a no-op fallback so that
-        // game logic doesn't crash when trying to call its methods.
+        // Performance: Ensure graceful degradation if modules fail to load
+        // This prevents application crashes from missing dependencies
         if (!window.realAnimalSounds) {
             const emptyFunction = () => { };
             window.realAnimalSounds = {
@@ -68,8 +97,9 @@
         }
     </script>
 
-    <script src="real-animal-sounds.js"></script>
-    <script src="interactive-features.js"></script>
+    <!-- Deferred script loading - improves Time to Interactive (TTI) -->
+    <script defer src="real-animal-sounds.js"></script>
+    <script defer src="interactive-features.js"></script>
 </head>
 
 <body>
@@ -145,6 +175,72 @@
         // TODO: Extract this game logic to separate module files (GameEngine.js, ScoreManager.js, QuestionGenerator.js)
         // TODO: Implement dynamic imports for game modes to reduce initial bundle size
         // TODO: Add TypeScript types for better development experience
+        
+        /**
+         * Performance Utility Functions
+         * Implements debouncing, throttling, and requestAnimationFrame wrappers
+         */
+        const PerformanceUtils = {
+            /**
+             * Debounce function - delays execution until after wait time has elapsed
+             * @param {Function} func - Function to debounce
+             * @param {number} wait - Milliseconds to wait
+             * @returns {Function} Debounced function
+             */
+            debounce: (func, wait) => {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            },
+
+            /**
+             * Throttle function - ensures function is called at most once per interval
+             * @param {Function} func - Function to throttle
+             * @param {number} limit - Milliseconds between calls
+             * @returns {Function} Throttled function
+             */
+            throttle: (func, limit) => {
+                let inThrottle;
+                return function(...args) {
+                    if (!inThrottle) {
+                        func.apply(this, args);
+                        inThrottle = true;
+                        setTimeout(() => inThrottle = false, limit);
+                    }
+                };
+            },
+
+            /**
+             * RequestAnimationFrame wrapper for smooth animations
+             * @param {Function} callback - Animation callback
+             */
+            rafSchedule: (callback) => {
+                let rafId = null;
+                return function(...args) {
+                    if (rafId !== null) return;
+                    rafId = requestAnimationFrame(() => {
+                        callback(...args);
+                        rafId = null;
+                    });
+                };
+            },
+
+            /**
+             * Add bump animation to score display for visual feedback
+             * @param {HTMLElement} element - Element to animate
+             */
+            animateScoreBump: (element) => {
+                if (!element) return;
+                element.classList.add('bump');
+                setTimeout(() => element.classList.remove('bump'), 400);
+            }
+        };
         
         /**
          * Game Configuration Constants
@@ -511,108 +607,190 @@
             }, 1000);
         }
 
-        function generateOptions() {
+        /**
+         * Generate answer options for current question
+         * Creates interactive buttons with staggered animations
+         * Uses semantic naming for better code readability
+         * TODO: [OPTIMIZATION] Memoize options generation for repeated animals
+         */
+        function generateAnswerOptionsForCurrentQuestion() {
             // Use cached DOM element for better performance
             if (!cachedDOMElements.optionsContainer) {
                 initializeDOMElementCache();
             }
-            const optionsContainer = cachedDOMElements.optionsContainer;
-            if (!optionsContainer) return;
+            const answerOptionsContainer = cachedDOMElements.optionsContainer;
+            if (!answerOptionsContainer) return;
 
-            optionsContainer.innerHTML = '';
+            // Clear existing options with animation-friendly approach
+            answerOptionsContainer.innerHTML = '';
 
             // Get correct answer based on question type
-            let correctAnswer;
-            let wrongAnswers = [];
+            const correctAnswerText = determineCorrectAnswerForQuestionType();
+            const incorrectAnswerOptions = generateIncorrectAnswerOptionsPool();
+
+            // Randomly select wrong answers
+            const selectedIncorrectAnswers = selectRandomIncorrectAnswers(
+                incorrectAnswerOptions, 
+                GAME_CONFIG.WRONG_OPTIONS_COUNT
+            );
+
+            // Combine and shuffle all options
+            const allAnswerOptions = shuffleArray([correctAnswerText, ...selectedIncorrectAnswers]);
+
+            // Create option buttons with enhanced UX
+            allAnswerOptions.forEach((answerText, index) => {
+                const optionButton = createAnswerOptionButton(answerText, currentAnimal, index);
+                answerOptionsContainer.appendChild(optionButton);
+            });
+        }
+
+        // Legacy function name for backward compatibility
+        const generateOptions = generateAnswerOptionsForCurrentQuestion;
+
+        /**
+         * Determine correct answer based on current question type
+         * @returns {string} The correct answer text
+         */
+        function determineCorrectAnswerForQuestionType() {
+            switch (currentQuestionType) {
+                case 'name': return currentAnimal.name;
+                case 'fact': return currentAnimal.fact;
+                case 'habitat': return currentAnimal.habitat;
+                case 'diet': return currentAnimal.diet;
+                default: return currentAnimal.name;
+            }
+        }
+
+        /**
+         * Generate pool of incorrect answer options
+         * Uses Set for deduplication and better performance
+         * @returns {Array<string>} Array of incorrect answers
+         */
+        function generateIncorrectAnswerOptionsPool() {
+            const incorrectAnswersSet = new Set();
 
             // Optimize by using a single loop for each case instead of filter + map
             switch (currentQuestionType) {
                 case 'name':
-                    correctAnswer = currentAnimal.name;
-                    wrongAnswers = animals.reduce((acc, a) => {
-                        if (a.name !== correctAnswer) acc.push(a.name);
-                        return acc;
-                    }, []);
+                    for (const animalData of animals) {
+                        if (animalData.name !== currentAnimal.name) {
+                            incorrectAnswersSet.add(animalData.name);
+                        }
+                    }
                     break;
                 case 'fact':
-                    correctAnswer = currentAnimal.fact;
-                    const uniqueAnimalFacts = new Set();
                     for (const animalData of animals) {
-                        if (animalData.fact !== correctAnswer) uniqueAnimalFacts.add(animalData.fact);
+                        if (animalData.fact !== currentAnimal.fact) {
+                            incorrectAnswersSet.add(animalData.fact);
+                        }
                     }
-                    wrongAnswers = Array.from(uniqueAnimalFacts);
                     break;
                 case 'habitat':
-                    correctAnswer = currentAnimal.habitat;
-                    const uniqueAnimalHabitats = new Set();
                     for (const animalData of animals) {
-                        if (animalData.habitat !== correctAnswer) uniqueAnimalHabitats.add(animalData.habitat);
+                        if (animalData.habitat !== currentAnimal.habitat) {
+                            incorrectAnswersSet.add(animalData.habitat);
+                        }
                     }
-                    wrongAnswers = Array.from(uniqueAnimalHabitats);
                     break;
                 case 'diet':
-                    correctAnswer = currentAnimal.diet;
-                    const uniqueAnimalDiets = new Set();
                     for (const animalData of animals) {
-                        if (animalData.diet !== correctAnswer) uniqueAnimalDiets.add(animalData.diet);
+                        if (animalData.diet !== currentAnimal.diet) {
+                            incorrectAnswersSet.add(animalData.diet);
+                        }
                     }
-                    wrongAnswers = Array.from(uniqueAnimalDiets);
                     break;
             }
 
-            // Get 3 random wrong answers using Fisher-Yates shuffle (more efficient than sort)
-            for (let currentIndex = wrongAnswers.length - 1; currentIndex > 0; currentIndex--) {
-                const randomIndex = Math.floor(Math.random() * (currentIndex + 1));
-                [wrongAnswers[currentIndex], wrongAnswers[randomIndex]] = [wrongAnswers[randomIndex], wrongAnswers[currentIndex]];
-            }
-            wrongAnswers = wrongAnswers.slice(0, GAME_CONFIG.WRONG_OPTIONS_COUNT);
-
-            // Combine and shuffle all options using Fisher-Yates
-            const allOptions = [correctAnswer, ...wrongAnswers];
-            for (let currentIndex = allOptions.length - 1; currentIndex > 0; currentIndex--) {
-                const randomIndex = Math.floor(Math.random() * (currentIndex + 1));
-                [allOptions[currentIndex], allOptions[randomIndex]] = [allOptions[randomIndex], allOptions[currentIndex]];
-            }
-
-            // Create option buttons using DocumentFragment for better performance
-            const optionsFragment = document.createDocumentFragment();
-            allOptions.forEach(answerOption => {
-                const optionButton = document.createElement('button');
-                optionButton.className = 'option-btn';
-                // Store the raw option value for internal logic
-                optionButton.dataset.value = answerOption;
-
-                // Prepare display text with an identifying symbol for kids
-                let displayText = answerOption;
-                if (currentQuestionType === 'name') {
-                    const matchingAnimal = animals.find(animalData => animalData.name === answerOption);
-                    if (matchingAnimal) {
-                        displayText = `${matchingAnimal.emoji} ${answerOption}`;
-                    }
-                }
-                optionButton.textContent = displayText;
-                optionButton.onclick = () => handleOptionClick(answerOption, optionButton);
-                optionsFragment.appendChild(optionButton);
-            });
-            optionsContainer.appendChild(optionsFragment);
+            return Array.from(incorrectAnswersSet);
         }
 
-        // Modified function to handle option clicks - now immediately processes answer
-        function handleOptionClick(selectedOption, buttonElement) {
-            // Immediately process the selected answer
-            selectOption(selectedOption, buttonElement);
+        /**
+         * Randomly select incorrect answers from pool
+         * @param {Array<string>} incorrectAnswersPool - Pool of incorrect answers
+         * @param {number} count - Number of incorrect answers to select
+         * @returns {Array<string>} Selected incorrect answers
+         */
+        function selectRandomIncorrectAnswers(incorrectAnswersPool, count) {
+            const shuffled = shuffleArray([...incorrectAnswersPool]);
+            return shuffled.slice(0, count);
+        }
+
+        /**
+         * Create an answer option button with enhanced UX
+         * @param {string} answerText - The answer text to display
+         * @param {Object} animalData - The animal data for emoji display
+         * @param {number} index - Button index for stagger animation
+         * @returns {HTMLButtonElement} The created button element
+         */
+        function createAnswerOptionButton(answerText, animalData, index) {
+            const buttonElement = document.createElement('button');
+            buttonElement.className = 'option-btn';
+            buttonElement.dataset.value = answerText;
             
-            // Auto-advance to next question after showing feedback
+            // Add emoji for visual recognition (helps non-readers)
+            if (currentQuestionType === 'name') {
+                const matchingAnimal = animals.find(a => a.name === answerText);
+                buttonElement.textContent = `${matchingAnimal?.emoji || ''} ${answerText}`;
+            } else {
+                buttonElement.textContent = answerText;
+            }
+            
+            // Attach event handler with animation
+            buttonElement.onclick = function() {
+                handleAnswerSelection(answerText, buttonElement);
+            };
+
+            // Accessibility improvements
+            buttonElement.setAttribute('aria-label', `Select answer: ${answerText}`);
+            buttonElement.setAttribute('tabindex', '0');
+            
+            return buttonElement;
+        }
+
+        /**
+         * Shuffle array using Fisher-Yates algorithm
+         * @param {Array} array - Array to shuffle
+         * @returns {Array} Shuffled array
+         */
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        /**
+         * Handle answer selection with immediate feedback
+         * Renamed from handleOptionClick for better semantic meaning
+         * @param {string} selectedAnswerText - The selected answer text
+         * @param {HTMLButtonElement} selectedButton - The clicked button element
+         */
+        function handleAnswerSelection(selectedAnswerText, selectedButton) {
+            // Immediately process the selected answer
+            processAnswerSubmission(selectedAnswerText, selectedButton);
+            
+            // Auto-advance to next question after showing feedback (optimistic UI)
             setTimeout(() => {
                 currentQuestionIndex++;
                 loadQuestion();
             }, GAME_CONFIG.AUTO_ADVANCE_DELAY);
         }
         
-        function selectOption(selectedOption, buttonElement) {
-            const correctAnswer = getCorrectAnswer();
-            const isCorrect = selectedOption === correctAnswer;
-            const allButtons = document.querySelectorAll('.option-btn');
+        // Legacy function name for backward compatibility
+        const handleOptionClick = handleAnswerSelection;
+        
+        /**
+         * Process answer submission and provide immediate feedback
+         * Renamed from selectOption for better semantic clarity
+         * @param {string} selectedAnswerText - The answer selected by user
+         * @param {HTMLButtonElement} selectedButtonElement - The button that was clicked
+         */
+        function processAnswerSubmission(selectedAnswerText, selectedButtonElement) {
+            const correctAnswerText = getCorrectAnswer();
+            const isAnswerCorrect = selectedAnswerText === correctAnswerText;
+            const allAnswerButtons = document.querySelectorAll('.option-btn');
 
             // Clear timer for speed mode
             if (timer) {
@@ -620,40 +798,38 @@
                 timer = null;
             }
 
-            // Disable all buttons to prevent multiple clicks
-            allButtons.forEach(btn => {
-                btn.disabled = true;
-                if (btn.dataset.value === correctAnswer) {
-                    btn.classList.add('correct');
-                } else if (btn === buttonElement && !isCorrect) {
-                    btn.classList.add('incorrect');
+            // Disable all buttons to prevent multiple clicks (optimistic UI lock)
+            allAnswerButtons.forEach(buttonElement => {
+                buttonElement.disabled = true;
+                if (buttonElement.dataset.value === correctAnswerText) {
+                    buttonElement.classList.add('correct');
+                } else if (buttonElement === selectedButtonElement && !isAnswerCorrect) {
+                    buttonElement.classList.add('incorrect');
                 }
             });
 
             // Play animal pronunciation sound when answer is selected
             if (currentQuestionType === 'name' && window.realAnimalSounds && window.realAnimalSounds.playAnimalSound) {
-                window.realAnimalSounds.playAnimalSound(selectedOption);
+                window.realAnimalSounds.playAnimalSound(selectedAnswerText);
             }
 
-            // Update score and streak
-            if (isCorrect && selectedOption !== 'TIME_UP') {
-                let points = GAME_CONFIG.POINTS_PER_CORRECT;
+            // Update score and streak with visual feedback
+            if (isAnswerCorrect && selectedAnswerText !== 'TIME_UP') {
+                let earnedPoints = GAME_CONFIG.POINTS_PER_CORRECT;
 
                 // Time bonus for speed mode
                 if (gameMode === 'speed' && timeLeft > GAME_CONFIG.SPEED_BONUS_THRESHOLD) {
-                    points += (timeLeft - GAME_CONFIG.SPEED_BONUS_THRESHOLD) * GAME_CONFIG.SPEED_BONUS_MULTIPLIER;
+                    earnedPoints += (timeLeft - GAME_CONFIG.SPEED_BONUS_THRESHOLD) * GAME_CONFIG.SPEED_BONUS_MULTIPLIER;
                 }
 
-                score += points;
+                score += earnedPoints;
                 streak++;
                 maxStreak = Math.max(maxStreak, streak);
 
-                showFeedback(`Excellent! ${getFeedbackMessage()}! 🎉`, 'correct');
-                if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
-                    window.realAnimalSounds.playUISound('correct');
-                }
-
-
+                displaySuccessFeedback();
+                playSuccessSound();
+                
+                // Visual celebration effects
                 createParticles();
 
                 // Show combo indicator for streaks
@@ -670,14 +846,50 @@
                     return;
                 }
                 streak = 0;
-                showFeedback(`${selectedOption === 'TIME_UP' ? 'Time\'s up!' : 'Oops!'} ${getFeedbackMessage()}. Try again next time! 😊`, 'incorrect');
-                if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
-                    window.realAnimalSounds.playUISound('incorrect');
-                }
-
+                displayFailureFeedback(selectedAnswerText);
+                playFailureSound();
             }
 
             updateScoreBoard();
+        }
+        
+        // Legacy function name for backward compatibility
+        const selectOption = processAnswerSubmission;
+
+        /**
+         * Display success feedback with positive reinforcement
+         */
+        function displaySuccessFeedback() {
+            const feedbackText = `Excellent! ${getFeedbackMessage()}! 🎉`;
+            showFeedback(feedbackText, 'correct');
+        }
+
+        /**
+         * Display failure feedback with encouragement
+         * @param {string} selectedAnswerText - The incorrect answer selected
+         */
+        function displayFailureFeedback(selectedAnswerText) {
+            const prefix = selectedAnswerText === 'TIME_UP' ? 'Time\'s up!' : 'Oops!';
+            const feedbackText = `${prefix} ${getFeedbackMessage()}. Try again next time! 😊`;
+            showFeedback(feedbackText, 'incorrect');
+        }
+
+        /**
+         * Play success sound with error handling
+         */
+        function playSuccessSound() {
+            if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
+                window.realAnimalSounds.playUISound('correct');
+            }
+        }
+
+        /**
+         * Play failure sound with error handling
+         */
+        function playFailureSound() {
+            if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
+                window.realAnimalSounds.playUISound('incorrect');
+            }
         }
 
         // Simplified next question function - now only used by power-ups like skip
@@ -773,11 +985,23 @@
             }
         }
 
-        function updateScoreBoard() {
+        /**
+         * Update score board with micro-interaction animations
+         * Uses cached DOM elements and requestAnimationFrame for smooth updates
+         */
+        const updateScoreBoard = PerformanceUtils.rafSchedule(() => {
             // Use cached DOM elements for better performance
-            if (cachedDOMElements.score) cachedDOMElements.score.textContent = score;
-            if (cachedDOMElements.streak) cachedDOMElements.streak.textContent = streak;
-        }
+            if (cachedDOMElements.score) {
+                cachedDOMElements.score.textContent = score;
+                PerformanceUtils.animateScoreBump(cachedDOMElements.score.parentElement);
+            }
+            if (cachedDOMElements.streak) {
+                cachedDOMElements.streak.textContent = streak;
+                if (streak > 0) {
+                    PerformanceUtils.animateScoreBump(cachedDOMElements.streak.parentElement);
+                }
+            }
+        });
 
         function endGame() {
             // Save high score
