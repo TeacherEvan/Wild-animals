@@ -1,6 +1,12 @@
+/**
+ * Wild Animals Adventure - Production-Grade Stylesheet
+ * Optimized for performance and visual excellence
+ * @version 2.0.0
+ */
+
 /* CSS Custom Properties for better maintainability and theming */
 :root {
-    /* Color palette */
+    /* Color palette - Kindergarten-friendly vibrant colors */
     --color-primary: #2E8B57;
     --color-secondary: #FF6347;
     --color-accent: #FFD700;
@@ -1375,5 +1381,240 @@ gap: 10px;
 
     .animal-option-btn {
 padding: 20px 15px;
+    }
+}
+
+/* ========================================
+   Loading Skeletons & Progressive Enhancement
+   ======================================== */
+
+/* Loading skeleton for game modes */
+.mode-btn.loading {
+    position: relative;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.mode-btn.loading::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(255, 255, 255, 0.4) 50%, 
+        transparent 100%
+    );
+    animation: loading-shimmer 1.5s infinite;
+}
+
+@keyframes loading-shimmer {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+/* Skeleton for animal display during load */
+.animal-display.loading {
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* ========================================
+   Smooth Page Transitions
+   ======================================== */
+
+/* Fade in animation for content */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Scale in animation for buttons */
+.scale-in {
+    animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ========================================
+   Enhanced Micro-interactions
+   ======================================== */
+
+/* Ripple effect for buttons */
+.option-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.option-btn .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    transform: scale(0);
+    animation: ripple-animation 0.6s ease-out;
+    pointer-events: none;
+}
+
+@keyframes ripple-animation {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* Smooth color transitions */
+* {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in-out;
+}
+
+/* Disable transitions for animations and transforms */
+*:not(.animate) {
+    transition-property: background-color, border-color, color, fill, stroke;
+}
+
+/* ========================================
+   Performance Optimizations
+   ======================================== */
+
+/* GPU acceleration for animations */
+.animal-emoji,
+.mode-btn,
+.option-btn,
+.game-container {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* Optimize for touch devices */
+@media (hover: none) and (pointer: coarse) {
+    .option-btn:hover,
+    .mode-btn:hover {
+        transform: none;
+    }
+    
+    .option-btn:active {
+        transform: scale(0.95);
+    }
+}
+
+/* ========================================
+   Accessibility Enhancements
+   ======================================== */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --color-primary: #006400;
+        --color-secondary: #8B0000;
+        --color-accent: #DAA520;
+    }
+    
+    .option-btn,
+    .mode-btn {
+        border: 3px solid currentColor;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .animal-emoji {
+        animation: none !important;
+    }
+}
+
+/* Focus visible for keyboard navigation */
+:focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 5px;
+}
+
+/* ========================================
+   Print Styles
+   ======================================== */
+
+@media print {
+    body {
+        background: white;
+    }
+    
+    .sound-btn,
+    .powerups,
+    button {
+        display: none;
+    }
+    
+    .game-container {
+        box-shadow: none;
+        border: 2px solid #000;
+    }
+}
+
+/* ========================================
+   Dark Mode Support (Future Enhancement)
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-white: rgba(30, 30, 30, 0.98);
+        --color-primary: #3CB371;
+        --color-secondary: #FF6B6B;
+    }
+    
+    body {
+        background: linear-gradient(135deg, #1a2a3a 0%, #2d4a3a 50%, #3a3a2a 100%);
+    }
+    
+    .game-container {
+        background: var(--bg-white);
+        color: #f0f0f0;
+    }
+    
+    .animal-display {
+        background: linear-gradient(135deg, #3a3a2a 0%, #4a4a3a 100%);
     }
 }
