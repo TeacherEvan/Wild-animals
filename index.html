@@ -16,12 +16,24 @@
     <!-- Preconnect for performance (if external resources needed in future) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     
+    <!-- Resource hints for improved performance -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="animal-sounds.js" as="script">
+    <link rel="preload" href="real-animal-sounds.js" as="script">
+    <link rel="preload" href="interactive-features.js" as="script">
+    
     <!-- External stylesheet for better caching and maintainability -->
     <link rel="stylesheet" href="styles.css">
     
-    <!-- Inline critical CSS for above-the-fold content - minimize CLS -->
+    <!-- Performance optimization: defer non-critical JavaScript -->
+    <link rel="modulepreload" href="animal-sounds.js">
+    <link rel="modulepreload" href="real-animal-sounds.js">
+    <link rel="modulepreload" href="interactive-features.js">
+    
+    <!-- Inline critical CSS for above-the-fold content - minimize CLS (Cumulative Layout Shift) -->
     <style>
-        /* Critical CSS for initial paint - prevents layout shift */
+        /* Critical CSS for initial paint - prevents layout shift and optimizes LCP (Largest Contentful Paint) */
         body {
             font-family: 'Comic Sans MS', cursive, sans-serif;
             margin: 0;
@@ -31,6 +43,9 @@
             align-items: center;
             justify-content: center;
             background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #F0E68C 100%);
+            /* Performance: GPU-accelerated compositing */
+            contain: layout style paint;
+            will-change: auto;
         }
         .game-container {
             max-width: 900px;
@@ -39,16 +54,38 @@
             border-radius: 30px;
             padding: 40px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            /* Performance: Optimize repaints */
+            contain: layout style;
         }
-        /* Loading skeleton to prevent layout shift */
+        /* Loading skeleton to prevent layout shift - improves perceived performance */
         .game-area {
             min-height: 400px;
+            position: relative;
+        }
+        /* Loading skeleton animation */
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite;
+            border-radius: 15px;
+        }
+        /* Optimistic UI - Show loading states */
+        .loading-state {
+            opacity: 0.6;
+            pointer-events: none;
+            transition: opacity 0.3s ease-in-out;
         }
     </style>
-    <script src="animal-sounds.js"></script>
+    
+    <!-- Deferred script loading for better performance -->
+    <script defer src="animal-sounds.js"></script>
     <script>
-        // If the real sound module failed to load, create a no-op fallback so that
-        // game logic doesn't crash when trying to call its methods.
+        // Performance: Ensure graceful degradation if modules fail to load
+        // This prevents application crashes from missing dependencies
         if (!window.realAnimalSounds) {
             const emptyFunction = () => { };
             window.realAnimalSounds = {
@@ -68,8 +105,9 @@
         }
     </script>
 
-    <script src="real-animal-sounds.js"></script>
-    <script src="interactive-features.js"></script>
+    <!-- Deferred script loading - improves Time to Interactive (TTI) -->
+    <script defer src="real-animal-sounds.js"></script>
+    <script defer src="interactive-features.js"></script>
 </head>
 
 <body>
