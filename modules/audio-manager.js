@@ -1,6 +1,6 @@
 /**
  * Audio Manager Module - Production-Grade Audio System
- * Manages text-to-speech, sound effects, and audio state
+ * Manages text-to-speech with proper error handling
  * 
  * @module AudioManager
  * @version 2.0.0
@@ -11,7 +11,8 @@ export class AudioManager {
         this.CONFIG = {
             SPEECH_RATE: 0.8,
             SPEECH_PITCH: 1.1,
-            SPEECH_VOLUME: 0.8
+            SPEECH_VOLUME: 0.8,
+            TIMEOUT_MS: 5000
         };
 
         this.isAudioEnabled = true;
@@ -20,17 +21,22 @@ export class AudioManager {
     }
 
     async pronounceAnimalName(animalName) {
-        if (!this.isAudioEnabled || !animalName) return;
+        if (!this.isAudioEnabled || !animalName) return Promise.resolve();
 
-        const soundEffect = this.getAnimalSoundEffect(animalName);
-        const textToSpeak = `${animalName} says ${soundEffect}`;
-
-        return this.speakText(textToSpeak);
+        try {
+            const soundEffect = this.getAnimalSoundEffect(animalName);
+            const textToSpeak = `${animalName} says ${soundEffect}`;
+            return await this.speakText(textToSpeak);
+        } catch (error) {
+            console.warn('[AudioManager] Speech failed:', error);
+            return Promise.resolve();
+        }
     }
 
     speakText(text) {
         return new Promise((resolve) => {
             if (!this.speechSynthesis) {
+                console.warn('[AudioManager] Speech synthesis not available');
                 resolve();
                 return;
             }
@@ -42,12 +48,35 @@ export class AudioManager {
             utterance.pitch = this.CONFIG.SPEECH_PITCH;
             utterance.volume = this.CONFIG.SPEECH_VOLUME;
 
+            const timeoutId = setTimeout(() => {
+                this.stopCurrentSpeech();
+                resolve();
+            }, this.CONFIG.TIMEOUT_MS);
+
+            utterance.onstart = () => {
+                this.currentUtterance = utterance;
+            };
+
             utterance.onend = () => {
+                clearTimeout(timeoutId);
                 this.currentUtterance = null;
                 resolve();
             };
 
-            this.speechSynthesis.speak(utterance);
+            utterance.onerror = (error) => {
+                clearTimeout(timeoutId);
+                console.warn('[AudioManager] Speech error:', error);
+                this.currentUtterance = null;
+                resolve();
+            };
+
+            try {
+                this.speechSynthesis.speak(utterance);
+            } catch (error) {
+                clearTimeout(timeoutId);
+                console.warn('[AudioManager] Failed to speak:', error);
+                resolve();
+            }
         });
     }
 
@@ -59,15 +88,17 @@ export class AudioManager {
             'Penguin': 'waddle', 'Giraffe': 'hum', 'Zebra': 'neigh',
             'Rhino': 'snort', 'Fox': 'yip', 'Leopard': 'growl',
             'Kangaroo': 'grunt', 'Koala': 'snore', 'Gorilla': 'hoo hoo',
-            'Shark': 'splash', 'Octopus': 'whoosh', 'Camel': 'groan'
+            'Shark': 'splash', 'Octopus': 'whoosh', 'Camel': 'groan',
+            'Crocodile': 'snap', 'Turtle': 'snap'
         };
         return soundEffects[animalName] || 'sound';
     }
 
     stopCurrentSpeech() {
-        if (this.speechSynthesis && this.currentUtterance) {
+        if (this.speechSynthesis && this.currentUtterance && this.speechSynthesis.speaking) {
             this.speechSynthesis.cancel();
         }
+        this.currentUtterance = null;
     }
 
     toggleAudio() {
