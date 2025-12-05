@@ -444,19 +444,15 @@
                 showLoadingSkeleton(gameAreaElement);
 
                 try {
-                    // Lazy load interactive features module if not already loaded
-                    // TODO: [OPTIMIZATION] Implement code splitting with separate module files
+                    // TODO: [OPTIMIZATION] Replace with dynamic import: const { InteractiveFeatures } = await import('./interactive-features.js');
+                    // For now, use already-loaded module with minimal loading state for UX consistency
                     if (window.interactiveFeatures && typeof window.interactiveFeatures.startGame === 'function') {
-                        // Module already loaded, start game immediately
+                        // Small delay for visual feedback (ensures skeleton is visible)
+                        await new Promise(resolve => setTimeout(resolve, 150));
                         gameAreaElement.innerHTML = '';
                         await window.interactiveFeatures.startGame(mode);
                     } else {
-                        // Simulate dynamic import delay (replace with actual import in production)
-                        await new Promise(resolve => setTimeout(resolve, 300));
-                        gameAreaElement.innerHTML = '';
-                        if (window.interactiveFeatures) {
-                            await window.interactiveFeatures.startGame(mode);
-                        }
+                        throw new Error('Interactive features module not loaded');
                     }
                 } catch (error) {
                     console.error('Failed to load interactive game mode:', error);
@@ -808,9 +804,6 @@
             }, 1000);
         }
 
-        // Legacy function name for backward compatibility
-        const startTimer = startCountdownTimer;
-
         /**
          * Generate answer options for current question
          * Creates interactive buttons with staggered animations
@@ -847,9 +840,6 @@
                 answerOptionsContainer.appendChild(optionButton);
             });
         }
-
-        // Legacy function name for backward compatibility
-        const generateOptions = generateAnswerOptionsForCurrentQuestion;
 
         /**
          * Determine correct answer based on current question type
@@ -1216,9 +1206,6 @@
                 }
             }
         });
-
-        // Legacy function name for backward compatibility
-        const updateScoreBoard = updateScoreBoardDisplay;
 
         function endGame() {
             // Save high score
