@@ -50,6 +50,19 @@
 }
 
 /* TODO: [OPTIMIZATION] Implement dark mode using prefers-color-scheme */
+/* TODO: [OPTIMIZATION] Consider moving animation definitions to separate file for code splitting */
+
+/* Reduced motion support for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
 
 /* Reset and base styles with performance optimizations */
 * {
@@ -1795,6 +1808,8 @@ padding: 20px 15px;
         --color-secondary: #FF6B6B;
     }
     
+    /* TODO: [OPTIMIZATION] Complete dark mode implementation for all components */
+    
     body {
         background: linear-gradient(135deg, #1a2a3a 0%, #2d4a3a 50%, #3a3a2a 100%);
     }
@@ -1808,3 +1823,207 @@ padding: 20px 15px;
         background: linear-gradient(135deg, #3a3a2a 0%, #4a4a3a 100%);
     }
 }
+
+/* ========================================
+   Modern Loading States & Skeletons (2025)
+   ======================================== */
+
+/* Loading skeleton animation - prevents layout shift */
+.skeleton-loader {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: var(--radius-md);
+    position: relative;
+    overflow: hidden;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Skeleton for animal display */
+.skeleton-animal {
+    width: 100%;
+    height: 320px;
+    margin-bottom: var(--spacing-md);
+}
+
+/* Skeleton for option buttons */
+.skeleton-option {
+    height: 60px;
+    margin-bottom: 15px;
+}
+
+/* Loading spinner - modern design */
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid rgba(255, 215, 0, 0.2);
+    border-top-color: var(--color-accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 40px auto;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Optimistic UI - show loading state while processing */
+.loading-state {
+    opacity: 0.6;
+    pointer-events: none;
+    position: relative;
+}
+
+.loading-state::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 30px;
+    height: 30px;
+    margin: -15px 0 0 -15px;
+    border: 3px solid transparent;
+    border-top-color: var(--color-accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+/* ========================================
+   Enhanced Micro-Interactions (2025 Trends)
+   ======================================== */
+
+/* Magnetic button effect - modern UX */
+.option-btn,
+.mode-btn {
+    position: relative;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Tactile feedback on touch devices */
+@media (hover: none) and (pointer: coarse) {
+    .option-btn:active,
+    .mode-btn:active {
+        transform: scale(0.95);
+        transition-duration: 0.1s;
+    }
+}
+
+/* Success celebration - confetti particle system */
+.success-particle {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 999;
+    animation: particleFloat 2s ease-out forwards;
+}
+
+@keyframes particleFloat {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotate(0deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-200px) scale(0) rotate(720deg);
+    }
+}
+
+/* Streak indicator - visual reward */
+.streak-indicator {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: linear-gradient(135deg, #FF6347, #FFD700);
+    color: white;
+    padding: 30px 50px;
+    border-radius: 20px;
+    font-size: 2.5em;
+    font-weight: 900;
+    box-shadow: 0 20px 60px rgba(255, 99, 71, 0.6);
+    animation: streakPop 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    z-index: 1000;
+}
+
+@keyframes streakPop {
+    0% { transform: translate(-50%, -50%) scale(0) rotate(-180deg); }
+    70% { transform: translate(-50%, -50%) scale(1.2) rotate(10deg); }
+    100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+}
+
+/* Haptic-style visual feedback */
+.haptic-pulse {
+    animation: hapticPulse 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+@keyframes hapticPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Progress bar with gradient animation */
+.animated-progress {
+    background: linear-gradient(90deg, #32CD32, #FFD700, #FF6347);
+    background-size: 200% 100%;
+    animation: progressGradient 2s ease-in-out infinite;
+}
+
+@keyframes progressGradient {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* ========================================
+   Lazy Loading Indicators
+   ======================================== */
+
+/* Fade-in for lazy-loaded content */
+.lazy-load-fade {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s var(--easing-decelerate),
+                transform 0.6s var(--easing-decelerate);
+}
+
+.lazy-load-fade.loaded {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Blur-up effect for images (if added in future) */
+.blur-up {
+    filter: blur(20px);
+    transition: filter 0.6s ease;
+}
+
+.blur-up.loaded {
+    filter: blur(0);
+}
+
+/* ========================================
+   Performance Hints (2025 Best Practices)
+   ======================================== */
+
+/* TODO: [OPTIMIZATION] Implement Intersection Observer for lazy mode loading */
+/* TODO: [OPTIMIZATION] Add Service Worker for offline support and asset caching */
+/* TODO: [OPTIMIZATION] Consider implementing virtual scrolling for large animal lists */
+/* TODO: [OPTIMIZATION] Add resource hints (preconnect, prefetch) for critical assets */
+/* TODO: [OPTIMIZATION] Implement code splitting with dynamic imports for game modes */
+
+/* Content visibility for off-screen elements */
+.offscreen {
+    content-visibility: auto;
+    contain-intrinsic-size: 500px;
+}
+
+/* Prevent layout shift with aspect-ratio (modern CSS) */
+.aspect-ratio-box {
+    aspect-ratio: 16 / 9;
+}
+
