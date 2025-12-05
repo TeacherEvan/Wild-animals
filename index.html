@@ -655,7 +655,7 @@
             }
 
             // Generate and display answer options with animations
-            generateAnswerOptions();
+            generateAnswerOptionsForCurrentQuestion();
             
             // Clear feedback and disable next button using cached elements
             if (cachedDOMElements.feedback) cachedDOMElements.feedback.textContent = '';
@@ -978,7 +978,7 @@
             // Auto-advance to next question after showing feedback (optimistic UI)
             setTimeout(() => {
                 currentQuestionIndex++;
-                loadQuestion();
+                loadNextQuestion();
             }, GAME_CONFIG.AUTO_ADVANCE_DELAY);
         }
         
@@ -1099,7 +1099,7 @@
         // Simplified next question function - now only used by power-ups like skip
         function nextQuestion() {
             currentQuestionIndex++;
-            loadQuestion();
+            loadNextQuestion();
         }
 
         function getCorrectAnswer() {
@@ -1345,7 +1345,7 @@
 
             setTimeout(() => {
                 currentQuestionIndex++;
-                loadQuestion();
+                loadNextQuestion();
             }, GAME_CONFIG.SKIP_DELAY);
 
             if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
@@ -1488,7 +1488,7 @@
 
         // Initialize the game when page loads
         window.onload = () => {
-            updateHighScore();
+            updateHighScoreDisplay();
             initGame();
             setupKeyboardSupport();
 
