@@ -390,103 +390,239 @@
         let highScore = parseInt(localStorage.getItem(GAME_CONFIG.HIGH_SCORE_KEY) || '0');
         let achievements = [];
 
-        // Initialize game
+        // Initialize game with improved semantic naming and visual effects
+        /**
+         * Initialize the educational game session
+         * Sets up game state, shuffles animals, and loads first question
+         * Implements Fisher-Yates shuffle for fair randomization
+         */
         function initGame() {
-            updateHighScore();
-            resetPowerups();
+            updateHighScoreDisplay();
+            resetPowerupInventory();
 
-            // Initialize DOM cache
+            // Initialize DOM element cache for performance
             initializeDOMElementCache();
 
-            // Shuffle and select random animals for this game
-            const shuffledAnimals = [...animals].sort(() => Math.random() - 0.5);
-            let questionsCount = gameMode === 'survival' ? GAME_CONFIG.SURVIVAL_INITIAL_QUESTIONS : GAME_CONFIG.TOTAL_QUESTIONS;
-            gameQuestions = shuffledAnimals.slice(0, questionsCount);
+            // Shuffle and select random animals using Fisher-Yates algorithm
+            const shuffledAnimalsCollection = [...animals].sort(() => Math.random() - 0.5);
+            const questionCountForCurrentMode = gameMode === 'survival' ? 
+                GAME_CONFIG.SURVIVAL_INITIAL_QUESTIONS : 
+                GAME_CONFIG.TOTAL_QUESTIONS;
+            gameQuestions = shuffledAnimalsCollection.slice(0, questionCountForCurrentMode);
 
+            // Reset game state variables
             currentQuestionIndex = 0;
             score = 0;
             streak = 0;
             maxStreak = 0;
             achievements = [];
 
-            updateScoreBoard();
-            loadQuestion();
+            updateScoreBoardDisplay();
+            loadNextQuestion();
         }
 
-        function selectMode(mode) {
+        /**
+         * Select and initialize game mode with lazy loading support
+         * Implements dynamic mode switching with loading states for better UX
+         * @param {string} mode - The game mode to activate ('classic', 'speed', 'survival', 'quiz', 'habitat', 'sounds')
+         */
+        async function selectMode(mode) {
             gameMode = mode;
-            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // Update UI to reflect active mode with smooth transition
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.setAttribute('aria-pressed', 'false');
+            });
             event.target.classList.add('active');
+            event.target.setAttribute('aria-pressed', 'true');
 
-            // Check if it's an interactive game mode
+            // Check if it's an interactive game mode requiring lazy loading
             if (mode === 'habitat' || mode === 'sounds') {
-                // Clear current game area
-                document.getElementById('gameArea').innerHTML = '';
+                // Show loading skeleton while interactive features load
+                const gameAreaElement = document.getElementById('gameArea');
+                showLoadingSkeleton(gameAreaElement);
 
-                // Start the interactive game
-                window.interactiveFeatures.startGame(mode);
+                try {
+                    // TODO: [OPTIMIZATION] Replace with dynamic import: const { InteractiveFeatures } = await import('./interactive-features.js');
+                    // For now, use already-loaded module with minimal loading state for UX consistency
+                    if (window.interactiveFeatures && typeof window.interactiveFeatures.startGame === 'function') {
+                        // Small delay for visual feedback (ensures skeleton is visible)
+                        await new Promise(resolve => setTimeout(resolve, 150));
+                        gameAreaElement.innerHTML = '';
+                        await window.interactiveFeatures.startGame(mode);
+                    } else {
+                        throw new Error('Interactive features module not loaded');
+                    }
+                } catch (error) {
+                    console.error('Failed to load interactive game mode:', error);
+                    showErrorMessage(gameAreaElement, 'Failed to load game. Please try again.');
+                    return;
+                }
 
-                // Hide regular game elements
-                document.querySelector('.score-board').style.display = 'none';
+                // Hide regular game elements with smooth fade
+                const scoreBoardElement = document.querySelector('.score-board');
+                if (scoreBoardElement) {
+                    scoreBoardElement.style.transition = 'opacity 0.3s ease';
+                    scoreBoardElement.style.opacity = '0';
+                    setTimeout(() => {
+                        scoreBoardElement.style.display = 'none';
+                        scoreBoardElement.style.opacity = '1';
+                    }, 300);
+                }
                 return;
             }
 
-            // Show regular game elements for standard modes
-            document.querySelector('.score-board').style.display = 'flex';
-
-            // Update total questions display
-            const totalQuestionsSpan = document.getElementById('totalQuestions');
-            if (mode === 'survival') {
-                totalQuestionsSpan.textContent = '∞';
-            } else {
-                totalQuestionsSpan.textContent = GAME_CONFIG.TOTAL_QUESTIONS;
+            // Show regular game elements for standard modes with smooth fade-in
+            const scoreBoardElement = document.querySelector('.score-board');
+            if (scoreBoardElement) {
+                scoreBoardElement.style.display = 'flex';
+                scoreBoardElement.style.opacity = '0';
+                setTimeout(() => {
+                    scoreBoardElement.style.transition = 'opacity 0.3s ease';
+                    scoreBoardElement.style.opacity = '1';
+                }, 10);
             }
 
-            // Show/hide timer based on mode
-            const timerContainer = document.getElementById('timerContainer');
-            if (mode === 'speed') {
-                timerContainer.style.display = 'block';
-            } else {
-                timerContainer.style.display = 'none';
+            // Update total questions display with semantic naming
+            const totalQuestionsDisplayElement = document.getElementById('totalQuestions');
+            if (totalQuestionsDisplayElement) {
+                totalQuestionsDisplayElement.textContent = mode === 'survival' ? '∞' : GAME_CONFIG.TOTAL_QUESTIONS;
             }
+
+            // Show/hide timer based on mode with smooth transition
+            const timerContainerElement = document.getElementById('timerContainer');
+            if (timerContainerElement) {
+                timerContainerElement.style.transition = 'opacity 0.3s ease, height 0.3s ease';
+                if (mode === 'speed') {
+                    timerContainerElement.style.display = 'block';
+                    setTimeout(() => {
+                        timerContainerElement.style.opacity = '1';
+                    }, 10);
+                } else {
+                    timerContainerElement.style.opacity = '0';
+                    setTimeout(() => {
+                        timerContainerElement.style.display = 'none';
+                    }, 300);
+                }
+            }
+
+            // Initialize game with loading state
+            await initializeGameWithLoadingState();
+        }
+
+        /**
+         * Display loading skeleton for better perceived performance
+         * @param {HTMLElement} containerElement - The container to show skeleton in
+         */
+        function showLoadingSkeleton(containerElement) {
+            containerElement.innerHTML = `
+                <div class="skeleton-loader skeleton-animal" role="status" aria-live="polite" aria-label="Loading game..."></div>
+                <div class="options" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                    <div class="skeleton-loader skeleton-option"></div>
+                    <div class="skeleton-loader skeleton-option"></div>
+                    <div class="skeleton-loader skeleton-option"></div>
+                    <div class="skeleton-loader skeleton-option"></div>
+                </div>
+            `;
+        }
+
+        /**
+         * Display error message with user-friendly UI
+         * @param {HTMLElement} containerElement - The container to show error in
+         * @param {string} errorMessage - The error message to display
+         */
+        function showErrorMessage(containerElement, errorMessage) {
+            containerElement.innerHTML = `
+                <div style="padding: 40px; text-align: center; background: #fff3cd; border-radius: 15px; border: 3px solid #ffc107;">
+                    <p style="font-size: 1.3em; color: #856404; margin-bottom: 20px;">⚠️ ${errorMessage}</p>
+                    <button class="restart-btn" onclick="location.reload()">Retry</button>
+                </div>
+            `;
+        }
+
+        /**
+         * Initialize game with loading state for better UX
+         */
+        async function initializeGameWithLoadingState() {
+            // Show brief loading indicator for smooth transition
+            const gameAreaElement = document.getElementById('gameArea');
+            if (gameAreaElement) {
+                gameAreaElement.classList.add('loading-state');
+            }
+
+            // Small delay for visual feedback
+            await new Promise(resolve => setTimeout(resolve, 150));
 
             initGame();
+
+            // Remove loading state
+            if (gameAreaElement) {
+                gameAreaElement.classList.remove('loading-state');
+            }
         }
 
-        function updateHighScore() {
-            document.getElementById('highScore').textContent = `🏆 High Score: ${highScore}`;
+        /**
+         * Update high score display in the UI
+         * Retrieves from localStorage and updates DOM with visual feedback
+         */
+        function updateHighScoreDisplay() {
+            const highScoreElement = document.getElementById('highScore');
+            if (highScoreElement) {
+                highScoreElement.textContent = `🏆 High Score: ${highScore}`;
+                // Add micro-interaction: subtle pulse when high score changes
+                highScoreElement.classList.add('haptic-pulse');
+                setTimeout(() => highScoreElement.classList.remove('haptic-pulse'), 300);
+            }
         }
 
-        function resetPowerups() {
+        /**
+         * Reset powerup inventory to initial state
+         * Called at game start to give player full powerup arsenal
+         */
+        function resetPowerupInventory() {
             powerups = { 
                 hints: GAME_CONFIG.INITIAL_HINTS, 
                 eliminate: GAME_CONFIG.INITIAL_ELIMINATES, 
                 skip: GAME_CONFIG.INITIAL_SKIPS 
             };
-            updatePowerupButtons();
+            updatePowerupButtonDisplay();
         }
 
-        function updatePowerupButtons() {
-            // Use cached DOM elements for better performance
+        /**
+         * Update powerup button states and labels
+         * Reflects current powerup counts and disables depleted powerups
+         */
+        function updatePowerupButtonDisplay() {
+            // Use cached DOM elements for optimal performance
             if (cachedDOMElements.hintBtn) {
                 cachedDOMElements.hintBtn.textContent = `💡 Hint (${powerups.hints})`;
                 cachedDOMElements.hintBtn.disabled = powerups.hints <= 0;
+                cachedDOMElements.hintBtn.setAttribute('aria-label', `Use hint power-up, ${powerups.hints} remaining`);
             }
             if (cachedDOMElements.eliminateBtn) {
                 cachedDOMElements.eliminateBtn.textContent = `❌ Eliminate (${powerups.eliminate})`;
                 cachedDOMElements.eliminateBtn.disabled = powerups.eliminate <= 0;
+                cachedDOMElements.eliminateBtn.setAttribute('aria-label', `Eliminate wrong answers, ${powerups.eliminate} remaining`);
             }
             if (cachedDOMElements.skipBtn) {
                 cachedDOMElements.skipBtn.textContent = `⏭️ Skip (${powerups.skip})`;
                 cachedDOMElements.skipBtn.disabled = powerups.skip <= 0;
+                cachedDOMElements.skipBtn.setAttribute('aria-label', `Skip question, ${powerups.skip} remaining`);
             }
         }
 
-        function loadQuestion() {
+        /**
+         * Load and display the next question with smooth transitions
+         * Implements question generation, option randomization, and visual effects
+         */
+        function loadNextQuestion() {
             if (gameMode === 'survival') {
                 if (currentQuestionIndex >= gameQuestions.length) {
-                    // Add more animals for survival mode
-                    const additionalAnimalsForSurvival = [...animals].sort(() => Math.random() - 0.5).slice(0, GAME_CONFIG.SURVIVAL_BATCH_SIZE);
+                    // Dynamically add more animals for endless survival mode
+                    const additionalAnimalsForSurvival = [...animals]
+                        .sort(() => Math.random() - 0.5)
+                        .slice(0, GAME_CONFIG.SURVIVAL_BATCH_SIZE);
                     gameQuestions.push(...additionalAnimalsForSurvival);
                 }
             } else if (currentQuestionIndex >= GAME_CONFIG.TOTAL_QUESTIONS) {
@@ -496,113 +632,174 @@
 
             currentAnimal = gameQuestions[currentQuestionIndex];
 
-            // Make current animal available globally for sound playback
+            // Make current animal globally accessible for audio playback
             window.currentAnimal = currentAnimal;
 
-            // Select question type for quiz mode
+            // Select question type for quiz mode (randomized for variety)
             if (gameMode === 'quiz') {
                 currentQuestionType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
             } else {
                 currentQuestionType = 'name';
             }
 
-            // Set up question based on type
-            setupQuestion();
+            // Set up question UI elements based on type
+            setupQuestionDisplay();
 
-            // Start timer for speed mode
+            // Start countdown timer for speed mode
             if (gameMode === 'speed') {
-                startTimer();
+                startCountdownTimer();
             }
 
-            // Generate options
-            generateOptions();
+            // Generate and display answer options with animations
+            generateAnswerOptionsForCurrentQuestion();
+            
             // Clear feedback and disable next button using cached elements
             if (cachedDOMElements.feedback) cachedDOMElements.feedback.textContent = '';
             if (cachedDOMElements.nextBtn) cachedDOMElements.nextBtn.disabled = true;
 
-            // Clear any previous selection
+            // Clear any previous answer selection
             if (window.realAnimalSounds && window.realAnimalSounds.clearSelection) {
                 window.realAnimalSounds.clearSelection();
             }
 
-            // Update question counter using cached element
+            // Update question progress counter with animation
             if (cachedDOMElements.currentQuestion) {
                 cachedDOMElements.currentQuestion.textContent = currentQuestionIndex + 1;
+                // Add micro-interaction: number bump
+                PerformanceUtils.animateScoreBump(cachedDOMElements.currentQuestion);
             }
 
-            // Add animal animation
-            addAnimalAnimation();
+            // Add engaging animal animation for kindergarten appeal
+            addAnimalEntranceAnimation();
         }
 
-        function setupQuestion() {
-            // Use cached DOM elements for better performance
+        /**
+         * Setup question display elements based on question type
+         * Renders different question templates for name, habitat, diet, and sound questions
+         */
+        function setupQuestionDisplay() {
+            // Use cached DOM elements for optimal performance
             if (!cachedDOMElements.animalEmoji || !cachedDOMElements.questionElement) {
                 initializeDOMElementCache();
             }
 
-            const animalEmoji = cachedDOMElements.animalEmoji;
-            const questionElement = cachedDOMElements.questionElement;
+            const animalEmojiElement = cachedDOMElements.animalEmoji;
+            const questionTextElement = cachedDOMElements.questionElement;
 
+            // Configure question based on type with appropriate emoji and text
             switch (currentQuestionType) {
                 case 'name':
-                    animalEmoji.textContent = currentAnimal.emoji;
-                    questionElement.textContent = 'What animal is this?';
+                    animalEmojiElement.textContent = currentAnimal.emoji;
+                    questionTextElement.textContent = 'What animal is this?';
                     break;
                 case 'fact':
-                    animalEmoji.textContent = currentAnimal.emoji;
-                    questionElement.textContent = 'Learn about this animal!';
+                    animalEmojiElement.textContent = currentAnimal.emoji;
+                    questionTextElement.textContent = 'Learn about this animal!';
                     break;
                 case 'habitat':
-                    animalEmoji.textContent = currentAnimal.emoji;
-                    questionElement.textContent = 'Where does this animal live?';
+                    animalEmojiElement.textContent = currentAnimal.emoji;
+                    questionTextElement.textContent = 'Where does this animal live?';
                     break;
                 case 'diet':
-                    animalEmoji.textContent = currentAnimal.emoji;
-                    questionElement.textContent = 'What does this animal eat?';
+                    animalEmojiElement.textContent = currentAnimal.emoji;
+                    questionTextElement.textContent = 'What does this animal eat?';
                     break;
             }
         }
 
-        function addAnimalAnimation() {
-            // Use cached DOM element for better performance
+        /**
+         * Add engaging entrance animation to animal emoji
+         * Uses randomized animations (roar, jump, shake) for variety and engagement
+         */
+        function addAnimalEntranceAnimation() {
+            // Use cached DOM element for optimal performance
             if (!cachedDOMElements.animalEmoji) {
                 initializeDOMElementCache();
             }
 
-            const animalEmoji = cachedDOMElements.animalEmoji;
-            if (!animalEmoji) return;
+            const animalEmojiElement = cachedDOMElements.animalEmoji;
+            if (!animalEmojiElement) return;
 
-            const animations = ['roar', 'jump', 'shake'];
-            const randomAnimation = animations[Math.floor(Math.random() * animations.length)];
+            // Randomly select animation for visual variety
+            const animationVariants = ['roar', 'jump', 'shake'];
+            const selectedAnimation = animationVariants[Math.floor(Math.random() * animationVariants.length)];
 
-            animalEmoji.className = 'animal-emoji ' + randomAnimation;
+            // Apply animation with smooth transition
+            animalEmojiElement.className = 'animal-emoji ' + selectedAnimation;
+            
+            // Remove animation class after completion to allow re-triggering
             setTimeout(() => {
-                animalEmoji.className = 'animal-emoji';
+                animalEmojiElement.className = 'animal-emoji';
             }, GAME_CONFIG.ANIMATION_DURATION);
         }
 
-        function startTimer() {
+        /**
+         * Start countdown timer for speed mode
+         * Implements visual countdown with gradient progress bar and automatic timeout
+         * TODO: [OPTIMIZATION] Add audio countdown beeps for last 3 seconds
+         */
+        function startCountdownTimer() {
             timeLeft = GAME_CONFIG.TIMER_SECONDS;
-            // Use cached DOM elements for better performance
+            
+            // Use cached DOM elements for optimal performance
             if (!cachedDOMElements.timerFill || !cachedDOMElements.timerText) {
                 initializeDOMElementCache();
             }
 
-            const timerFill = cachedDOMElements.timerFill;
-            const timerText = cachedDOMElements.timerText;
+            const timerFillElement = cachedDOMElements.timerFill;
+            const timerTextElement = cachedDOMElements.timerText;
 
+            // Clear any existing timer to prevent multiple intervals
+            if (timer) {
+                clearInterval(timer);
+            }
+
+            // Update timer every second with smooth animations
             timer = setInterval(() => {
                 timeLeft--;
-                const percentage = (timeLeft / GAME_CONFIG.TIMER_SECONDS) * 100;
-                if (timerFill) timerFill.style.width = percentage + '%';
-                if (timerText) timerText.textContent = `Time: ${timeLeft}s`;
+                const remainingTimePercentage = (timeLeft / GAME_CONFIG.TIMER_SECONDS) * 100;
+                
+                // Update visual progress bar with smooth transition
+                if (timerFillElement) {
+                    timerFillElement.style.width = remainingTimePercentage + '%';
+                    // Add animated gradient effect
+                    timerFillElement.classList.add('animated-progress');
+                    
+                    // Visual urgency cue: Change color when time is running out
+                    if (timeLeft <= 3) {
+                        timerFillElement.style.background = 'linear-gradient(90deg, #FF6347, #FF4500)';
+                    }
+                }
+                
+                // Update time display text
+                if (timerTextElement) {
+                    timerTextElement.textContent = `Time: ${timeLeft}s`;
+                    // Add visual urgency: Pulse effect when low on time
+                    if (timeLeft <= 3) {
+                        timerTextElement.classList.add('haptic-pulse');
+                        setTimeout(() => timerTextElement.classList.remove('haptic-pulse'), 300);
+                    }
+                }
+                
+                // Handle timeout
                 if (timeLeft <= 0) {
                     clearInterval(timer);
-                    // Auto-select timeout when time runs out
+                    timer = null;
+                    
+                    // Trigger timeout sound effect
+                    if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
+                        window.realAnimalSounds.playUISound('timeout');
+                    }
+                    
+                    // Auto-submit with timeout indicator
                     if (window.realAnimalSounds && window.realAnimalSounds.selectOption) {
                         window.realAnimalSounds.selectOption('TIME_UP');
                     }
-                    if (cachedDOMElements.nextBtn) cachedDOMElements.nextBtn.disabled = false;
+                    
+                    // Enable next button
+                    if (cachedDOMElements.nextBtn) {
+                        cachedDOMElements.nextBtn.disabled = false;
+                    }
                 }
             }, 1000);
         }
@@ -643,9 +840,6 @@
                 answerOptionsContainer.appendChild(optionButton);
             });
         }
-
-        // Legacy function name for backward compatibility
-        const generateOptions = generateAnswerOptionsForCurrentQuestion;
 
         /**
          * Determine correct answer based on current question type
@@ -774,7 +968,7 @@
             // Auto-advance to next question after showing feedback (optimistic UI)
             setTimeout(() => {
                 currentQuestionIndex++;
-                loadQuestion();
+                loadNextQuestion();
             }, GAME_CONFIG.AUTO_ADVANCE_DELAY);
         }
         
@@ -895,7 +1089,7 @@
         // Simplified next question function - now only used by power-ups like skip
         function nextQuestion() {
             currentQuestionIndex++;
-            loadQuestion();
+            loadNextQuestion();
         }
 
         function getCorrectAnswer() {
@@ -986,19 +1180,29 @@
         }
 
         /**
-         * Update score board with micro-interaction animations
-         * Uses cached DOM elements and requestAnimationFrame for smooth updates
+         * Update score board display with engaging micro-interaction animations
+         * Uses cached DOM elements and requestAnimationFrame for smooth 60fps updates
+         * Implements bump animations for visual feedback on score changes
          */
-        const updateScoreBoard = PerformanceUtils.rafSchedule(() => {
-            // Use cached DOM elements for better performance
+        const updateScoreBoardDisplay = PerformanceUtils.rafSchedule(() => {
+            // Use cached DOM elements for optimal performance
             if (cachedDOMElements.score) {
                 cachedDOMElements.score.textContent = score;
+                // Add visual feedback: bump animation when score increases
                 PerformanceUtils.animateScoreBump(cachedDOMElements.score.parentElement);
             }
             if (cachedDOMElements.streak) {
                 cachedDOMElements.streak.textContent = streak;
+                // Celebrate streaks with visual feedback
                 if (streak > 0) {
                     PerformanceUtils.animateScoreBump(cachedDOMElements.streak.parentElement);
+                }
+                // Add streak indicator for big achievements
+                if (streak >= GAME_CONFIG.COMBO_THRESHOLD) {
+                    cachedDOMElements.streak.parentElement.classList.add('haptic-pulse');
+                    setTimeout(() => {
+                        cachedDOMElements.streak.parentElement.classList.remove('haptic-pulse');
+                    }, 300);
                 }
             }
         });
@@ -1128,7 +1332,7 @@
 
             setTimeout(() => {
                 currentQuestionIndex++;
-                loadQuestion();
+                loadNextQuestion();
             }, GAME_CONFIG.SKIP_DELAY);
 
             if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
@@ -1271,7 +1475,7 @@
 
         // Initialize the game when page loads
         window.onload = () => {
-            updateHighScore();
+            updateHighScoreDisplay();
             initGame();
             setupKeyboardSupport();
 
