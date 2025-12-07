@@ -14,6 +14,16 @@ if (typeof window.realAnimalSounds !== 'undefined') {
     // Fallback: Create when realAnimalSounds becomes available
     Object.defineProperty(window, 'animalSounds', {
         get: function() {
+            if (typeof window.realAnimalSounds === 'undefined') {
+                console.warn('RealAnimalSounds not loaded yet. Returning placeholder.');
+                // Return a minimal fallback object to prevent runtime errors
+                return {
+                    playAnimalSound: () => console.warn('Audio not ready'),
+                    toggleSound: () => false,
+                    isSoundEnabled: () => true,
+                    pronounceAnimal: () => console.warn('Audio not ready')
+                };
+            }
             return window.realAnimalSounds;
         },
         configurable: true

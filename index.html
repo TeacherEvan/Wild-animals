@@ -74,9 +74,9 @@
         /* Respect user motion preferences for accessibility */
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
-                animation-duration: 0.01ms !important;
+                animation-duration: 0s !important;
                 animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
+                transition-duration: 0s !important;
             }
             .animal-emoji.roar,
             .animal-emoji.jump,
@@ -883,8 +883,9 @@
          * @returns {Array<string>} Array of incorrect answers
          */
         function generateIncorrectAnswerOptionsPool() {
-            const propertyMap = { name: 'name', fact: 'fact', habitat: 'habitat', diet: 'diet' };
-            const prop = propertyMap[currentQuestionType] || 'name';
+            // Validate question type and default to 'name' if invalid
+            const validTypes = ['name', 'fact', 'habitat', 'diet'];
+            const prop = validTypes.includes(currentQuestionType) ? currentQuestionType : 'name';
             const currentValue = currentAnimal[prop];
             
             return [...new Set(
