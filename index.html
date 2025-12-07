@@ -71,6 +71,22 @@
             pointer-events: none;
             transition: opacity 0.3s ease-in-out;
         }
+        /* Respect user motion preferences for accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0s !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0s !important;
+            }
+            .animal-emoji.roar,
+            .animal-emoji.jump,
+            .animal-emoji.shake {
+                animation: none !important;
+            }
+            .skeleton {
+                animation: none !important;
+            }
+        }
     </style>
     
     <!-- Deferred script loading for better performance -->
@@ -404,7 +420,7 @@
             initializeDOMElementCache();
 
             // Shuffle and select random animals using Fisher-Yates algorithm
-            const shuffledAnimalsCollection = [...animals].sort(() => Math.random() - 0.5);
+            const shuffledAnimalsCollection = shuffleArray([...animals]);
             const questionCountForCurrentMode = gameMode === 'survival' ? 
                 GAME_CONFIG.SURVIVAL_INITIAL_QUESTIONS : 
                 GAME_CONFIG.TOTAL_QUESTIONS;
@@ -427,6 +443,12 @@
          * @param {string} mode - The game mode to activate ('classic', 'speed', 'survival', 'quiz', 'habitat', 'sounds')
          */
         async function selectMode(mode) {
+            // Clear any existing timer before mode switch to prevent memory leaks
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+            
             gameMode = mode;
             
             // Update UI to reflect active mode with smooth transition
@@ -861,41 +883,16 @@
          * @returns {Array<string>} Array of incorrect answers
          */
         function generateIncorrectAnswerOptionsPool() {
-            const incorrectAnswersSet = new Set();
-
-            // Optimize by using a single loop for each case instead of filter + map
-            switch (currentQuestionType) {
-                case 'name':
-                    for (const animalData of animals) {
-                        if (animalData.name !== currentAnimal.name) {
-                            incorrectAnswersSet.add(animalData.name);
-                        }
-                    }
-                    break;
-                case 'fact':
-                    for (const animalData of animals) {
-                        if (animalData.fact !== currentAnimal.fact) {
-                            incorrectAnswersSet.add(animalData.fact);
-                        }
-                    }
-                    break;
-                case 'habitat':
-                    for (const animalData of animals) {
-                        if (animalData.habitat !== currentAnimal.habitat) {
-                            incorrectAnswersSet.add(animalData.habitat);
-                        }
-                    }
-                    break;
-                case 'diet':
-                    for (const animalData of animals) {
-                        if (animalData.diet !== currentAnimal.diet) {
-                            incorrectAnswersSet.add(animalData.diet);
-                        }
-                    }
-                    break;
-            }
-
-            return Array.from(incorrectAnswersSet);
+            // Validate question type and default to 'name' if invalid
+            const validTypes = ['name', 'fact', 'habitat', 'diet'];
+            const prop = validTypes.includes(currentQuestionType) ? currentQuestionType : 'name';
+            const currentValue = currentAnimal[prop];
+            
+            return [...new Set(
+                animals
+                    .filter(animal => animal[prop] !== currentValue)
+                    .map(animal => animal[prop])
+            )];
         }
 
         /**
@@ -1044,7 +1041,7 @@
                 playFailureSound();
             }
 
-            updateScoreBoard();
+            updateScoreBoardDisplay();
         }
         
         // Legacy function name for backward compatibility
@@ -1328,7 +1325,7 @@
 
             showFeedback('⏭️ Question skipped!', 'correct');
             score += GAME_CONFIG.POINTS_FOR_SKIP;
-            updateScoreBoard();
+            updateScoreBoardDisplay();
 
             setTimeout(() => {
                 currentQuestionIndex++;
