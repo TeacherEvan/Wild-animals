@@ -1040,7 +1040,7 @@
                 playFailureSound();
             }
 
-            updateScoreBoard();
+            updateScoreBoardDisplay();
         }
         
         // Legacy function name for backward compatibility
@@ -1324,7 +1324,7 @@
 
             showFeedback('⏭️ Question skipped!', 'correct');
             score += GAME_CONFIG.POINTS_FOR_SKIP;
-            updateScoreBoard();
+            updateScoreBoardDisplay();
 
             setTimeout(() => {
                 currentQuestionIndex++;
