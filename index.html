@@ -1,28 +1,298 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```const soundName = window.soundLoader.getSoundName('Lion'); // Returns 'roar'```javascriptGet the sound filename for
+an animal.#### `getSoundName(animalName)````window.soundLoader.stopAll();```javascriptStop all playing sounds.####
+`stopAll()````window.soundLoader.setVolume(0.5);```javascriptSet master volume (0-1).#### `setVolume(volume)````); () =>
+console.log('Sound ended') () => console.log('Sound started'), 'Lion',window.soundLoader.playSound(```javascriptPlay a
+sound for an animal with callbacks.#### `playSound(animalName, onStart, onEnd)`### SoundLoader Methods## API Reference
+``` audio/sounds/custom-sound.mp3 ```3. Add the corresponding MP3 file: ``` 'CustomAnimal': 'custom-sound'
+```javascript2. Add/update the entry in `this.animalSoundMap`:1. Edit `audio/sound-loader.js`To add a new animal or
+modify the sound mapping:## Adding Custom Sounds- This is normal behavior- Subsequent plays are instant (cached)- First
+play decodes the MP3, which takes ~100-500ms### Audio latency on first play- Check file format (should be MP3)- Verify
+browser Web Audio API support- Check that audio files are in the correct location- This is the fallback behavior###
+Text-to-speech playing instead- Verify server is running and serving files with correct CORS headers- Check browser
+console for error messages- Verify filenames match the mapping in `sound-loader.js`- Check that files exist in
+`audio/sounds/` directory### Audio files not playing## Troubleshooting- **Volume Control**: Master volume can be
+adjusted via `window.soundLoader.setVolume()`- **Lazy Loading**: Audio files are only loaded when first played-
+**Request Deduplication**: Multiple requests for the same sound are handled efficiently- **Audio Caching**: Decoded
+audio buffers are cached in memoryThe SoundLoader includes several optimizations:## Performance Optimization3. The app
+continues to work without interruption2. A message will appear in the browser console: `Falling back to text-to-speech
+for [Animal Name]`1. The app will attempt to use text-to-speechIf an audio file is not found or the Web Audio API isn't
+available:## Fallback Behavior- ✅ Mobile browsers (iOS Safari, Android Chrome)- ✅ Safari- ✅ Firefox- ✅ Chrome/Edge
+(Chromium)The system works in all modern browsers:## Browser Compatibility5. If the audio file isn't found, it will fall
+back to text-to-speech4. You should hear the human voice saying the animal sound3. Click on an animal in any game mode2.
+Open `http://localhost:8080/` in your browser ``` python3 -m http.server 8080 ```bash1. Start a local web server:Once
+you've added audio files:## TestingThen add MP3 files with names matching the sound map.```audio/sounds/```Create the
+directory structure:### Step 3: Place Files- **File Names**: Must match the mapping in `sound-loader.js`- **Duration**:
+0.5-2 seconds each (shorter is better)- **Mono or Stereo**: Either works- **Sample Rate**: 44.1 kHz or higher-
+**Format**: MP3 (recommended for browser compatibility)### Step 2: File Requirements- ElevenLabs API- Amazon Polly-
+Google Cloud Text-to-Speech API- Natural Reader (naturalreader.com)Services like:#### Option C: AI Voice Generators4.
+Save to `audio/sounds/` directory3. Export as MP3 files2. Record yourself saying each sound1. Use Audacity, GarageBand,
+or similar recording software#### Option B: Recording Yourself3. Save to `audio/sounds/` directory with appropriate
+filenames2. Download MP3 files1. Use Google Translate, Natural Reader, or similar services to generate human voice
+audio#### Option A: Using Online TTS ServicesYou can create these in several ways:### Step 1: Create Audio Files##
+Adding Audio Files| Octopus | whoosh.mp3 | "whoosh" || Shark | splash.mp3 | "splash" || Gorilla | hoo-hoo.mp3 | "hoo
+hoo" || Koala | snore.mp3 | "snore" || Kangaroo | grunt.mp3 | "grunt" || Leopard | growl.mp3 | "growl" || Fox |
+yip-yip.mp3 | "yip yip" || Rhino | snort.mp3 | "snort" || Zebra | neigh.mp3 | "neigh" || Giraffe | hum.mp3 | "hum" ||
+Eagle | screech.mp3 | "screech" || Frog | ribbit.mp3 | "ribbit" || Dolphin | click-click.mp3 | "click click" || Bear |
+growl.mp3 | "growl" || Wolf | howl.mp3 | "howl" || Monkey | ooh-ooh-ah-ah.mp3 | "ooh ooh ah ah" || Elephant |
+trumpet.mp3 | "trumpet" || Penguin | waddle-waddle.mp3 | "waddle-waddle" || Tiger | roar.mp3 | "roar" || Lion | roar.mp3
+| "roar" ||--------|-----------|------------------|| Animal | Sound File | Human Voice Says |The mapping in
+`sound-loader.js` includes:### 3. Animal-to-Sound Mapping- Maintains all visual feedback (sound waves, animations)-
+Automatically falls back to text-to-speech if files aren't found- Calls `window.soundLoader.playSound()` to play audio
+filesUpdated to use the SoundLoader:### 2. Real Animal Sounds (`real-animal-sounds.js`)- Falls back to text-to-speech if
+audio files are unavailable- Caches decoded audio buffers in memory for fast playback- Uses the Web Audio API to load
+and play MP3 files- Maps animal names to sound files (e.g., "Lion" → "roar.mp3")The SoundLoader module:### 1. Sound
+Loader (`sound-loader.js`)## How It Works```│ └── whoosh.mp3 # Human voice saying "whoosh"│ ├── splash.mp3 # Human voice
+saying "splash"│ ├── hoo-hoo.mp3 # Human voice saying "hoo hoo"│ ├── snore.mp3 # Human voice saying "snore"│ ├──
+grunt.mp3 # Human voice saying "grunt"│ ├── yip-yip.mp3 # Human voice saying "yip yip"│ ├── snort.mp3 # Human voice
+saying "snort"│ ├── neigh.mp3 # Human voice saying "neigh"│ ├── hum.mp3 # Human voice saying "hum"│ ├── screech.mp3 #
+Human voice saying "screech"│ ├── ribbit.mp3 # Human voice saying "ribbit"│ ├── click-click.mp3 # Human voice saying
+"click click"│ ├── growl.mp3 # Human voice saying "growl"│ ├── howl.mp3 # Human voice saying "howl"│ ├──
+ooh-ooh-ah-ah.mp3 # Human voice saying "ooh ooh ah ah"│ ├── trumpet.mp3 # Human voice saying "trumpet"│ ├──
+waddle-waddle.mp3 # Human voice saying "waddle-waddle"│ ├── roar.mp3 # Human voice saying "roar"├── sounds/ # Directory
+for MP3 audio files├── sound-loader.js # Module that handles audio loading and playbackaudio/```## File StructureThis
+guide explains how to add human voice recordings saying animal sounds to the Wild Animals Adventure application.## Real
+Animal Sounds with Human Voice
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="description" content="Interactive educational game for kindergarten students to learn about wild animals through fun activities">
+    <meta name="description"
+        content="Interactive educational game for kindergarten students to learn about wild animals through fun activities">
     <meta name="theme-color" content="#2E8B57">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Wild Animals Adventure - TEACHER EVAN!</title>
-    
+
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
-    
+
     <!-- Preconnect for performance (if external resources needed in future) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-    
+
     <!-- Resource hints for improved performance -->
     <link rel="dns-prefetch" href="https://fonts.googleapis.com">
     <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="audio/sound-loader.js" as="script">
     <link rel="preload" href="animal-sounds.js" as="script">
     <link rel="preload" href="real-animal-sounds.js" as="script">
     <link rel="preload" href="interactive-features.js" as="script">
-    
+
     <!-- Inline critical CSS for above-the-fold content - minimize CLS (Cumulative Layout Shift) -->
     <style>
         /* Critical CSS for initial paint - prevents layout shift and optimizes LCP (Largest Contentful Paint) */
@@ -39,6 +309,7 @@
             contain: layout style paint;
             will-change: auto;
         }
+
         .game-container {
             max-width: 900px;
             width: 100%;
@@ -49,47 +320,63 @@
             /* Performance: Optimize repaints */
             contain: layout style;
         }
+
         /* Loading skeleton to prevent layout shift - improves perceived performance */
         .game-area {
             min-height: 400px;
             position: relative;
         }
+
         /* Loading skeleton animation */
         @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
+            0% {
+                background-position: -1000px 0;
+            }
+
+            100% {
+                background-position: 1000px 0;
+            }
         }
+
         .skeleton {
             background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
             background-size: 1000px 100%;
             animation: shimmer 2s infinite;
             border-radius: 15px;
         }
+
         /* Optimistic UI - Show loading states */
         .loading-state {
             opacity: 0.6;
             pointer-events: none;
             transition: opacity 0.3s ease-in-out;
         }
+
         /* Respect user motion preferences for accessibility */
         @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
+
+            *,
+            *::before,
+            *::after {
                 animation-duration: 0s !important;
                 animation-iteration-count: 1 !important;
                 transition-duration: 0s !important;
             }
+
             .animal-emoji.roar,
             .animal-emoji.jump,
             .animal-emoji.shake {
                 animation: none !important;
             }
+
             .skeleton {
                 animation: none !important;
             }
         }
     </style>
-    
+
     <!-- Deferred script loading for better performance -->
+    <script defer src="audio/sound-loader.js"></script>
     <script defer src="animal-sounds.js"></script>
     <script>
         // Performance: Ensure graceful degradation if modules fail to load
@@ -119,7 +406,8 @@
 </head>
 
 <body>
-    <button class="sound-btn" onclick="toggleSound()" id="soundBtn" aria-label="Toggle sound on or off" aria-pressed="true">🔊</button>
+    <button class="sound-btn" onclick="toggleSound()" id="soundBtn" aria-label="Toggle sound on or off"
+        aria-pressed="true">🔊</button>
     <div class="game-container" role="main">
         <h1>🦁 Wild Animals Adventure 🐯</h1>
         <p class="subtitle">Learn English Animal Names!</p>
@@ -127,29 +415,36 @@
         <div class="high-score" id="highScore" role="status" aria-live="polite">🏆 High Score: 0</div>
 
         <div class="mode-selection" id="modeSelection" role="group" aria-label="Game mode selection">
-            <button class="mode-btn active" onclick="selectMode('classic')" aria-label="Select Classic Mode with 10 questions" aria-pressed="true">
+            <button class="mode-btn active" onclick="selectMode('classic')"
+                aria-label="Select Classic Mode with 10 questions" aria-pressed="true">
                 🎯 Classic Mode<br><small>10 Questions</small>
             </button>
-            <button class="mode-btn" onclick="selectMode('speed')" aria-label="Select Speed Mode time challenge" aria-pressed="false">
+            <button class="mode-btn" onclick="selectMode('speed')" aria-label="Select Speed Mode time challenge"
+                aria-pressed="false">
                 ⚡ Speed Mode<br><small>Time Challenge</small>
             </button>
-            <button class="mode-btn" onclick="selectMode('survival')" aria-label="Select Survival Mode play until wrong" aria-pressed="false">
+            <button class="mode-btn" onclick="selectMode('survival')" aria-label="Select Survival Mode play until wrong"
+                aria-pressed="false">
                 🔥 Survival Mode<br><small>Until Wrong</small>
             </button>
-            <button class="mode-btn" onclick="selectMode('quiz')" aria-label="Select Quiz Mode with mixed questions" aria-pressed="false">
+            <button class="mode-btn" onclick="selectMode('quiz')" aria-label="Select Quiz Mode with mixed questions"
+                aria-pressed="false">
                 🧠 Quiz Mode<br><small>Mixed Questions</small>
             </button>
-            <button class="mode-btn" onclick="selectMode('habitat')" aria-label="Select Habitat Match drag and drop game" aria-pressed="false">
+            <button class="mode-btn" onclick="selectMode('habitat')"
+                aria-label="Select Habitat Match drag and drop game" aria-pressed="false">
                 🏠 Habitat Match<br><small>Drag & Drop</small>
             </button>
-            <button class="mode-btn" onclick="selectMode('sounds')" aria-label="Select Sound Game guess animal sounds" aria-pressed="false">
+            <button class="mode-btn" onclick="selectMode('sounds')" aria-label="Select Sound Game guess animal sounds"
+                aria-pressed="false">
                 🔊 Sound Game<br><small>Guess Sounds</small>
             </button>
         </div>
 
         <div class="score-board" role="status" aria-live="polite">
             <div class="score-item" aria-label="Current score">Score: <span id="score">0</span></div>
-            <div class="score-item" aria-label="Question progress">Question: <span id="currentQuestion">1</span> / <span id="totalQuestions">10</span>
+            <div class="score-item" aria-label="Question progress">Question: <span id="currentQuestion">1</span> / <span
+                    id="totalQuestions">10</span>
             </div>
             <div class="score-item" aria-label="Current streak">Streak: <span id="streak">0</span> 🔥</div>
         </div>
@@ -162,12 +457,16 @@
             </div>
 
             <div class="powerups" id="powerups" role="group" aria-label="Power-up buttons">
-                <button class="powerup-btn" id="hintBtn" onclick="useHint()" aria-label="Use hint power-up, 3 remaining">💡 Hint (3)</button>
-                <button class="powerup-btn" id="eliminateBtn" onclick="eliminateWrong()" aria-label="Eliminate wrong answers, 2 remaining">❌ Eliminate (2)</button>
-                <button class="powerup-btn" id="skipBtn" onclick="skipQuestion()" aria-label="Skip question, 1 remaining">⏭️ Skip (1)</button>
+                <button class="powerup-btn" id="hintBtn" onclick="useHint()"
+                    aria-label="Use hint power-up, 3 remaining">💡 Hint (3)</button>
+                <button class="powerup-btn" id="eliminateBtn" onclick="eliminateWrong()"
+                    aria-label="Eliminate wrong answers, 2 remaining">❌ Eliminate (2)</button>
+                <button class="powerup-btn" id="skipBtn" onclick="skipQuestion()"
+                    aria-label="Skip question, 1 remaining">⏭️ Skip (1)</button>
             </div>
 
-            <div class="animal-display" onclick="playCurrentAnimalSound()" role="button" tabindex="0" aria-label="Click or press Enter to hear animal sound">
+            <div class="animal-display" onclick="playCurrentAnimalSound()" role="button" tabindex="0"
+                aria-label="Click or press Enter to hear animal sound">
                 <div class="animal-emoji" id="animalEmoji" aria-hidden="true">🦁</div>
                 <div class="question" id="question">What animal is this?</div>
                 <div class="tap-hint" style="font-size: 0.9em; color: #666; margin-top: 10px;">
@@ -181,7 +480,8 @@
 
             <div class="feedback" id="feedback" role="status" aria-live="assertive"></div>
 
-            <button class="next-btn" id="nextBtn" onclick="nextQuestion()" disabled aria-label="Proceed to next question">Next Animal →</button>
+            <button class="next-btn" id="nextBtn" onclick="nextQuestion()" disabled
+                aria-label="Proceed to next question">Next Animal →</button>
         </div>
     </div>
 
@@ -191,7 +491,7 @@
         // TODO: Extract this game logic to separate module files (GameEngine.js, ScoreManager.js, QuestionGenerator.js)
         // TODO: Implement dynamic imports for game modes to reduce initial bundle size
         // TODO: Add TypeScript types for better development experience
-        
+
         /**
          * Performance Utility Functions
          * Implements debouncing, throttling, and requestAnimationFrame wrappers
@@ -223,7 +523,7 @@
              */
             throttle: (func, limit) => {
                 let inThrottle;
-                return function(...args) {
+                return function (...args) {
                     if (!inThrottle) {
                         func.apply(this, args);
                         inThrottle = true;
@@ -238,7 +538,7 @@
              */
             rafSchedule: (callback) => {
                 let rafId = null;
-                return function(...args) {
+                return function (...args) {
                     if (rafId !== null) return;
                     rafId = requestAnimationFrame(() => {
                         callback(...args);
@@ -257,7 +557,7 @@
                 setTimeout(() => element.classList.remove('bump'), 400);
             }
         };
-        
+
         /**
          * Game Configuration Constants
          * All magic numbers and configurable values are centralized here for easy maintenance
@@ -269,26 +569,26 @@
             POINTS_FOR_SKIP: 5,
             SPEED_BONUS_THRESHOLD: 5,   // Time left in seconds to get bonus
             SPEED_BONUS_MULTIPLIER: 2,  // Points per second over threshold
-            
+
             // Timer configuration
             TIMER_SECONDS: 10,
-            
+
             // Questions configuration
             TOTAL_QUESTIONS: 10,
             SURVIVAL_INITIAL_QUESTIONS: 20,
             SURVIVAL_BATCH_SIZE: 10,
             WRONG_OPTIONS_COUNT: 3,
-            
+
             // Powerup configuration
             INITIAL_HINTS: 3,
             INITIAL_ELIMINATES: 2,
             INITIAL_SKIPS: 1,
             ELIMINATE_COUNT: 2,
-            
+
             // Visual effects configuration
             PARTICLE_COUNT: 15,
             CONFETTI_COUNT: 50,
-            
+
             // Timing delays (in milliseconds)
             AUTO_ADVANCE_DELAY: 2000,
             PARTICLE_LIFETIME: 2000,
@@ -298,18 +598,18 @@
             CONFETTI_LIFETIME: 3000,
             ANIMATION_DURATION: 1000,
             SCALE_RESET_DELAY: 200,
-            
+
             // Achievement thresholds
             STREAK_ACHIEVEMENT_5: 5,
             STREAK_ACHIEVEMENT_10: 10,
             SCORE_ACHIEVEMENT_100: 100,
             COMBO_THRESHOLD: 3,
-            
+
             // Percentage thresholds
             EXCELLENT_THRESHOLD: 90,
             GREAT_THRESHOLD: 70,
             GOOD_THRESHOLD: 50,
-            
+
             // Storage keys
             HIGH_SCORE_KEY: 'wildAnimalsHighScore'
         };
@@ -398,10 +698,10 @@
         let currentQuestionType = 'name';
         let timer = null;
         let timeLeft = GAME_CONFIG.TIMER_SECONDS;
-        let powerups = { 
-            hints: GAME_CONFIG.INITIAL_HINTS, 
-            eliminate: GAME_CONFIG.INITIAL_ELIMINATES, 
-            skip: GAME_CONFIG.INITIAL_SKIPS 
+        let powerups = {
+            hints: GAME_CONFIG.INITIAL_HINTS,
+            eliminate: GAME_CONFIG.INITIAL_ELIMINATES,
+            skip: GAME_CONFIG.INITIAL_SKIPS
         };
         let highScore = parseInt(localStorage.getItem(GAME_CONFIG.HIGH_SCORE_KEY) || '0');
         let achievements = [];
@@ -421,8 +721,8 @@
 
             // Shuffle and select random animals using Fisher-Yates algorithm
             const shuffledAnimalsCollection = shuffleArray([...animals]);
-            const questionCountForCurrentMode = gameMode === 'survival' ? 
-                GAME_CONFIG.SURVIVAL_INITIAL_QUESTIONS : 
+            const questionCountForCurrentMode = gameMode === 'survival' ?
+                GAME_CONFIG.SURVIVAL_INITIAL_QUESTIONS :
                 GAME_CONFIG.TOTAL_QUESTIONS;
             gameQuestions = shuffledAnimalsCollection.slice(0, questionCountForCurrentMode);
 
@@ -448,9 +748,9 @@
                 clearInterval(timer);
                 timer = null;
             }
-            
+
             gameMode = mode;
-            
+
             // Update UI to reflect active mode with smooth transition
             document.querySelectorAll('.mode-btn').forEach(btn => {
                 btn.classList.remove('active');
@@ -603,10 +903,10 @@
          * Called at game start to give player full powerup arsenal
          */
         function resetPowerupInventory() {
-            powerups = { 
-                hints: GAME_CONFIG.INITIAL_HINTS, 
-                eliminate: GAME_CONFIG.INITIAL_ELIMINATES, 
-                skip: GAME_CONFIG.INITIAL_SKIPS 
+            powerups = {
+                hints: GAME_CONFIG.INITIAL_HINTS,
+                eliminate: GAME_CONFIG.INITIAL_ELIMINATES,
+                skip: GAME_CONFIG.INITIAL_SKIPS
             };
             updatePowerupButtonDisplay();
         }
@@ -674,7 +974,7 @@
 
             // Generate and display answer options with animations
             generateAnswerOptionsForCurrentQuestion();
-            
+
             // Clear feedback and disable next button using cached elements
             if (cachedDOMElements.feedback) cachedDOMElements.feedback.textContent = '';
             if (cachedDOMElements.nextBtn) cachedDOMElements.nextBtn.disabled = true;
@@ -748,7 +1048,7 @@
 
             // Apply animation with smooth transition
             animalEmojiElement.className = 'animal-emoji ' + selectedAnimation;
-            
+
             // Remove animation class after completion to allow re-triggering
             setTimeout(() => {
                 animalEmojiElement.className = 'animal-emoji';
@@ -762,7 +1062,7 @@
          */
         function startCountdownTimer() {
             timeLeft = GAME_CONFIG.TIMER_SECONDS;
-            
+
             // Use cached DOM elements for optimal performance
             if (!cachedDOMElements.timerFill || !cachedDOMElements.timerText) {
                 initializeDOMElementCache();
@@ -780,19 +1080,19 @@
             timer = setInterval(() => {
                 timeLeft--;
                 const remainingTimePercentage = (timeLeft / GAME_CONFIG.TIMER_SECONDS) * 100;
-                
+
                 // Update visual progress bar with smooth transition
                 if (timerFillElement) {
                     timerFillElement.style.width = remainingTimePercentage + '%';
                     // Add animated gradient effect
                     timerFillElement.classList.add('animated-progress');
-                    
+
                     // Visual urgency cue: Change color when time is running out
                     if (timeLeft <= 3) {
                         timerFillElement.style.background = 'linear-gradient(90deg, #FF6347, #FF4500)';
                     }
                 }
-                
+
                 // Update time display text
                 if (timerTextElement) {
                     timerTextElement.textContent = `Time: ${timeLeft}s`;
@@ -802,22 +1102,22 @@
                         setTimeout(() => timerTextElement.classList.remove('haptic-pulse'), 300);
                     }
                 }
-                
+
                 // Handle timeout
                 if (timeLeft <= 0) {
                     clearInterval(timer);
                     timer = null;
-                    
+
                     // Trigger timeout sound effect
                     if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
                         window.realAnimalSounds.playUISound('timeout');
                     }
-                    
+
                     // Auto-submit with timeout indicator
                     if (window.realAnimalSounds && window.realAnimalSounds.selectOption) {
                         window.realAnimalSounds.selectOption('TIME_UP');
                     }
-                    
+
                     // Enable next button
                     if (cachedDOMElements.nextBtn) {
                         cachedDOMElements.nextBtn.disabled = false;
@@ -849,7 +1149,7 @@
 
             // Randomly select wrong answers
             const selectedIncorrectAnswers = selectRandomIncorrectAnswers(
-                incorrectAnswerOptions, 
+                incorrectAnswerOptions,
                 GAME_CONFIG.WRONG_OPTIONS_COUNT
             );
 
@@ -887,7 +1187,7 @@
             const validTypes = ['name', 'fact', 'habitat', 'diet'];
             const prop = validTypes.includes(currentQuestionType) ? currentQuestionType : 'name';
             const currentValue = currentAnimal[prop];
-            
+
             return [...new Set(
                 animals
                     .filter(animal => animal[prop] !== currentValue)
@@ -917,7 +1217,7 @@
             const buttonElement = document.createElement('button');
             buttonElement.className = 'option-btn';
             buttonElement.dataset.value = answerText;
-            
+
             // Add emoji for visual recognition (helps non-readers)
             if (currentQuestionType === 'name') {
                 const matchingAnimal = animals.find(a => a.name === answerText);
@@ -925,16 +1225,16 @@
             } else {
                 buttonElement.textContent = answerText;
             }
-            
+
             // Attach event handler with animation
-            buttonElement.onclick = function() {
+            buttonElement.onclick = function () {
                 handleAnswerSelection(answerText, buttonElement);
             };
 
             // Accessibility improvements
             buttonElement.setAttribute('aria-label', `Select answer: ${answerText}`);
             buttonElement.setAttribute('tabindex', '0');
-            
+
             return buttonElement;
         }
 
@@ -961,17 +1261,17 @@
         function handleAnswerSelection(selectedAnswerText, selectedButton) {
             // Immediately process the selected answer
             processAnswerSubmission(selectedAnswerText, selectedButton);
-            
+
             // Auto-advance to next question after showing feedback (optimistic UI)
             setTimeout(() => {
                 currentQuestionIndex++;
                 loadNextQuestion();
             }, GAME_CONFIG.AUTO_ADVANCE_DELAY);
         }
-        
+
         // Legacy function name for backward compatibility
         const handleOptionClick = handleAnswerSelection;
-        
+
         /**
          * Process answer submission and provide immediate feedback
          * Renamed from selectOption for better semantic clarity
@@ -1019,7 +1319,7 @@
 
                 displaySuccessFeedback();
                 playSuccessSound();
-                
+
                 // Visual celebration effects
                 createParticles();
 
@@ -1043,7 +1343,7 @@
 
             updateScoreBoardDisplay();
         }
-        
+
         // Legacy function name for backward compatibility
         const selectOption = processAnswerSubmission;
 
