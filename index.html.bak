@@ -1,108 +1,409 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```const soundName = window.soundLoader.getSoundName('Lion'); // Returns 'roar'```javascriptGet the sound filename for
+an animal.#### `getSoundName(animalName)````window.soundLoader.stopAll();```javascriptStop all playing sounds.####
+`stopAll()````window.soundLoader.setVolume(0.5);```javascriptSet master volume (0-1).#### `setVolume(volume)````); () =>
+console.log('Sound ended') () => console.log('Sound started'), 'Lion',window.soundLoader.playSound(```javascriptPlay a
+sound for an animal with callbacks.#### `playSound(animalName, onStart, onEnd)`### SoundLoader Methods## API Reference
+``` audio/sounds/custom-sound.mp3 ```3. Add the corresponding MP3 file: ``` 'CustomAnimal': 'custom-sound'
+```javascript2. Add/update the entry in `this.animalSoundMap`:1. Edit `audio/sound-loader.js`To add a new animal or
+modify the sound mapping:## Adding Custom Sounds- This is normal behavior- Subsequent plays are instant (cached)- First
+play decodes the MP3, which takes ~100-500ms### Audio latency on first play- Check file format (should be MP3)- Verify
+browser Web Audio API support- Check that audio files are in the correct location- This is the fallback behavior###
+Text-to-speech playing instead- Verify server is running and serving files with correct CORS headers- Check browser
+console for error messages- Verify filenames match the mapping in `sound-loader.js`- Check that files exist in
+`audio/sounds/` directory### Audio files not playing## Troubleshooting- **Volume Control**: Master volume can be
+adjusted via `window.soundLoader.setVolume()`- **Lazy Loading**: Audio files are only loaded when first played-
+**Request Deduplication**: Multiple requests for the same sound are handled efficiently- **Audio Caching**: Decoded
+audio buffers are cached in memoryThe SoundLoader includes several optimizations:## Performance Optimization3. The app
+continues to work without interruption2. A message will appear in the browser console: `Falling back to text-to-speech
+for [Animal Name]`1. The app will attempt to use text-to-speechIf an audio file is not found or the Web Audio API isn't
+available:## Fallback Behavior- ✅ Mobile browsers (iOS Safari, Android Chrome)- ✅ Safari- ✅ Firefox- ✅ Chrome/Edge
+(Chromium)The system works in all modern browsers:## Browser Compatibility5. If the audio file isn't found, it will fall
+back to text-to-speech4. You should hear the human voice saying the animal sound3. Click on an animal in any game mode2.
+Open `http://localhost:8080/` in your browser ``` python3 -m http.server 8080 ```bash1. Start a local web server:Once
+you've added audio files:## TestingThen add MP3 files with names matching the sound map.```audio/sounds/```Create the
+directory structure:### Step 3: Place Files- **File Names**: Must match the mapping in `sound-loader.js`- **Duration**:
+0.5-2 seconds each (shorter is better)- **Mono or Stereo**: Either works- **Sample Rate**: 44.1 kHz or higher-
+**Format**: MP3 (recommended for browser compatibility)### Step 2: File Requirements- ElevenLabs API- Amazon Polly-
+Google Cloud Text-to-Speech API- Natural Reader (naturalreader.com)Services like:#### Option C: AI Voice Generators4.
+Save to `audio/sounds/` directory3. Export as MP3 files2. Record yourself saying each sound1. Use Audacity, GarageBand,
+or similar recording software#### Option B: Recording Yourself3. Save to `audio/sounds/` directory with appropriate
+filenames2. Download MP3 files1. Use Google Translate, Natural Reader, or similar services to generate human voice
+audio#### Option A: Using Online TTS ServicesYou can create these in several ways:### Step 1: Create Audio Files##
+Adding Audio Files| Octopus | whoosh.mp3 | "whoosh" || Shark | splash.mp3 | "splash" || Gorilla | hoo-hoo.mp3 | "hoo
+hoo" || Koala | snore.mp3 | "snore" || Kangaroo | grunt.mp3 | "grunt" || Leopard | growl.mp3 | "growl" || Fox |
+yip-yip.mp3 | "yip yip" || Rhino | snort.mp3 | "snort" || Zebra | neigh.mp3 | "neigh" || Giraffe | hum.mp3 | "hum" ||
+Eagle | screech.mp3 | "screech" || Frog | ribbit.mp3 | "ribbit" || Dolphin | click-click.mp3 | "click click" || Bear |
+growl.mp3 | "growl" || Wolf | howl.mp3 | "howl" || Monkey | ooh-ooh-ah-ah.mp3 | "ooh ooh ah ah" || Elephant |
+trumpet.mp3 | "trumpet" || Penguin | waddle-waddle.mp3 | "waddle-waddle" || Tiger | roar.mp3 | "roar" || Lion | roar.mp3
+| "roar" ||--------|-----------|------------------|| Animal | Sound File | Human Voice Says |The mapping in
+`sound-loader.js` includes:### 3. Animal-to-Sound Mapping- Maintains all visual feedback (sound waves, animations)-
+Automatically falls back to text-to-speech if files aren't found- Calls `window.soundLoader.playSound()` to play audio
+filesUpdated to use the SoundLoader:### 2. Real Animal Sounds (`real-animal-sounds.js`)- Falls back to text-to-speech if
+audio files are unavailable- Caches decoded audio buffers in memory for fast playback- Uses the Web Audio API to load
+and play MP3 files- Maps animal names to sound files (e.g., "Lion" → "roar.mp3")The SoundLoader module:### 1. Sound
+Loader (`sound-loader.js`)## How It Works```│ └── whoosh.mp3 # Human voice saying "whoosh"│ ├── splash.mp3 # Human voice
+saying "splash"│ ├── hoo-hoo.mp3 # Human voice saying "hoo hoo"│ ├── snore.mp3 # Human voice saying "snore"│ ├──
+grunt.mp3 # Human voice saying "grunt"│ ├── yip-yip.mp3 # Human voice saying "yip yip"│ ├── snort.mp3 # Human voice
+saying "snort"│ ├── neigh.mp3 # Human voice saying "neigh"│ ├── hum.mp3 # Human voice saying "hum"│ ├── screech.mp3 #
+Human voice saying "screech"│ ├── ribbit.mp3 # Human voice saying "ribbit"│ ├── click-click.mp3 # Human voice saying
+"click click"│ ├── growl.mp3 # Human voice saying "growl"│ ├── howl.mp3 # Human voice saying "howl"│ ├──
+ooh-ooh-ah-ah.mp3 # Human voice saying "ooh ooh ah ah"│ ├── trumpet.mp3 # Human voice saying "trumpet"│ ├──
+waddle-waddle.mp3 # Human voice saying "waddle-waddle"│ ├── roar.mp3 # Human voice saying "roar"├── sounds/ # Directory
+for MP3 audio files├── sound-loader.js # Module that handles audio loading and playbackaudio/```## File StructureThis
+guide explains how to add human voice recordings saying animal sounds to the Wild Animals Adventure application.## Real
+Animal Sounds with Human Voice
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="description"
         content="Interactive educational game for kindergarten students to learn about wild animals through fun activities">
-    <title>Wild Animals Adventure</title>
+    <meta name="theme-color" content="#2E8B57">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Wild Animals Adventure - TEACHER EVAN!</title>
+
+    <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
+
+    <!-- Preconnect for performance (if external resources needed in future) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-    <!-- Ensure stylesheet is applied -->
-    <link rel="stylesheet" href="styles.css">
-    <!-- Defer main scripts for performance; already included later in file -->
+
+    <!-- Resource hints for improved performance -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="audio/sound-loader.js" as="script">
+    <link rel="preload" href="animal-sounds.js" as="script">
+    <link rel="preload" href="real-animal-sounds.js" as="script">
+    <link rel="preload" href="interactive-features.js" as="script">
+
+    <!-- Inline critical CSS for above-the-fold content - minimize CLS (Cumulative Layout Shift) -->
+    <style>
+        /* Critical CSS for initial paint - prevents layout shift and optimizes LCP (Largest Contentful Paint) */
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #F0E68C 100%);
+            /* Performance: GPU-accelerated compositing */
+            contain: layout style paint;
+            will-change: auto;
+        }
+
+        .game-container {
+            max-width: 900px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            /* Performance: Optimize repaints */
+            contain: layout style;
+        }
+
+        /* Loading skeleton to prevent layout shift - improves perceived performance */
+        .game-area {
+            min-height: 400px;
+            position: relative;
+        }
+
+        /* Loading skeleton animation */
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite;
+            border-radius: 15px;
+        }
+
+        /* Optimistic UI - Show loading states */
+        .loading-state {
+            opacity: 0.6;
+            pointer-events: none;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        /* Respect user motion preferences for accessibility */
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0s !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0s !important;
+            }
+
+            .animal-emoji.roar,
+            .animal-emoji.jump,
+            .animal-emoji.shake {
+                animation: none !important;
+            }
+
+            .skeleton {
+                animation: none !important;
+            }
+        }
+    </style>
+
+    <!-- Deferred script loading for better performance -->
+    <script defer src="audio/sound-loader.js"></script>
+    <script defer src="animal-sounds.js"></script>
+    <script>
+        // Performance: Ensure graceful degradation if modules fail to load
+        // This prevents application crashes from missing dependencies
+        if (!window.realAnimalSounds) {
+            const emptyFunction = () => { };
+            window.realAnimalSounds = {
+                playAnimalSound: emptyFunction,
+                playUISound: emptyFunction,
+                selectOption: emptyFunction,
+                getCurrentSelection: () => null,
+                clearSelection: emptyFunction,
+                toggleSound: () => false,
+                isSoundEnabled: () => false
+            };
+        }
+
+        // Maintain backward-compatibility with legacy references.
+        if (!window.animalSounds) {
+            window.animalSounds = window.realAnimalSounds;
+        }
+    </script>
+
+    <!-- Deferred script loading - improves Time to Interactive (TTI) -->
+    <script defer src="real-animal-sounds.js"></script>
+    <script defer src="interactive-features.js"></script>
 </head>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 <body>
     <button class="sound-btn" onclick="toggleSound()" id="soundBtn" aria-label="Toggle sound on or off"
