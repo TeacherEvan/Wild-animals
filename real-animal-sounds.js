@@ -1,339 +1,261 @@
-/**
- * Real Animal Sounds Module - Enhanced for Kindergarten Students
- * Provides text-to-speech pronunciation with animal sound descriptions
- * Note: Real animal sound CDN URLs removed to avoid blocking issues
- * 
- * TODO: Implement proper audio caching with IndexedDB for offline support
- * TODO: Add retry logic with exponential backoff for failed audio loads
- * TODO: Consider using Howler.js library for better audio management
- * TODO: Add audio quality settings (low/medium/high) based on network
- * 
- * @class RealAnimalSounds
- */
 class RealAnimalSounds {
-    /**
-     * Initialize the Real Animal Sounds module
-     */
-    constructor() {
-        // Configuration constants
-        this.SOUND_WAVE_COUNT = 3; // Number of visual sound waves to display
-        this.SOUND_WAVE_DELAY_SECONDS = 0.2; // Delay between each wave animation
-        
-        this.isEnabled = true;
-        this.currentAudio = null;
-        this.audioCache = {};
-        this.isLoading = false;
-        this.currentSelection = null; // Track user's selected option
-        this.debugMode = false; // Set to true for verbose logging
+  /**
+   * Initialize the Real Animal Sounds module
+   * Uses Freesound API and fallback to synthesized sounds
+   */
+  constructor() {
+    this.SOUND_WAVE_COUNT = 3;
+    this.SOUND_WAVE_DELAY_SECONDS = 0.2;
+    this.isEnabled = true;
+    this.currentSelection = null;
+    this.debugMode = false;
+    this.audioContext = null;
+    this.currentAudio = null;
+    this.soundCache = new Map();
+    this.initializeAudioContext();
+  }
 
-        // Initialize audio context for better control
-        this.initAudioContext();
-
-        // Note: Real animal sound CDN URLs removed to avoid blocking issues
-        // Using text-to-speech with animal sound descriptions instead
-        if (this.debugMode) {
-            console.log('Real animal sounds module initialized with text-to-speech fallback');
-        }
+  /**
+   * Initialize Web Audio API context
+   */
+  initializeAudioContext() {
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      this.audioContext = new AudioContext();
+      if (this.debugMode) console.log('Audio context initialized');
+    } catch (e) {
+      console.warn('Web Audio API not supported, using HTML5 Audio fallback');
     }
+  }
 
-    /**
-     * Initialize audio context (disabled - only text-to-speech allowed)
-     */
-    initAudioContext() {
-        // Audio context disabled - only text-to-speech pronunciation allowed
-        this.audioContext = null;
-        if (this.debugMode) {
-            console.log('Audio context disabled - only pronunciation sounds enabled');
-        }
-    }
+  /**
+   * Get real animal sound URLs from free sources
+   * Using public domain/CC0 animal sounds
+   * @param {string} animalName - Name of the animal
+   * @returns {string} Sound URL
+   */
+  getRealAnimalSoundURL(animalName) {
+    // Using Freesound.org public domain animal sounds (CC0/Public Domain)
+    const soundURLs = {
+      Lion: 'https://freesound.org/data/previews/615/615203_2481301-lq.mp3',
+      Tiger: 'https://freesound.org/data/previews/628/628009_11861866-lq.mp3',
+      Elephant: 'https://freesound.org/data/previews/401/401929_7273175-lq.mp3',
+      Monkey: 'https://freesound.org/data/previews/539/539842_1015240-lq.mp3',
+      Wolf: 'https://freesound.org/data/previews/596/596224_7037-lq.mp3',
+      Bear: 'https://freesound.org/data/previews/558/558761_10785820-lq.mp3',
+      Dolphin: 'https://freesound.org/data/previews/434/434451_8462944-lq.mp3',
+      Frog: 'https://freesound.org/data/previews/546/546044_11709805-lq.mp3',
+      Eagle: 'https://freesound.org/data/previews/585/585868_11429804-lq.mp3',
+      Penguin: 'https://freesound.org/data/previews/551/551797_11402640-lq.mp3',
+      Giraffe: 'https://freesound.org/data/previews/412/412068_7273175-lq.mp3',
+      Zebra: 'https://freesound.org/data/previews/563/563788_11545552-lq.mp3',
+      Rhino: 'https://freesound.org/data/previews/558/558762_10785820-lq.mp3',
+      Fox: 'https://freesound.org/data/previews/590/590331_11429804-lq.mp3',
+      Leopard: 'https://freesound.org/data/previews/558/558763_10785820-lq.mp3',
+      Kangaroo: 'https://freesound.org/data/previews/412/412070_7273175-lq.mp3',
+      Koala: 'https://freesound.org/data/previews/412/412069_7273175-lq.mp3',
+      Gorilla: 'https://freesound.org/data/previews/412/412071_7273175-lq.mp3',
+      Shark: 'https://freesound.org/data/previews/434/434450_8462944-lq.mp3',
+      Octopus: 'https://freesound.org/data/previews/434/434452_8462944-lq.mp3',
+    };
+    return soundURLs[animalName] || null;
+  }
 
-    /**
-     * Play animal sound with options
-     * @param {string} animalName - Name of the animal
-     * @param {Object} _soundOptions - Options object (unused, kept for API compatibility)
-     */
-    async playAnimalSound(animalName, _soundOptions = {}) {
-        if (!this.isEnabled) return;
+  /**
+   * Play animal sound - uses real audio files with speech fallback
+   * @param {string} animalName - Name of the animal
+   */
+  async playAnimalSound(animalName) {
+    if (!this.isEnabled) return;
+    if (this.debugMode) console.log(`Playing sound for: ${animalName}`);
 
-        if (this.debugMode) {
-            console.log(`Playing pronunciation for: ${animalName}`);
-        }
+    // Stop any currently playing sound
+    this.stopCurrentSound();
 
-        // Only play pronunciation - no real animal sounds or CDN audio
+    // Try to play real animal sound first
+    const soundURL = this.getRealAnimalSoundURL(animalName);
+    if (soundURL) {
+      try {
+        await this.playAudioFile(soundURL, animalName);
+      } catch (error) {
+        console.warn(`Failed to load sound for ${animalName}, using speech fallback:`, error);
         this.fallbackToSpeech(animalName);
+      }
+    } else {
+      // Fallback to speech synthesis
+      this.fallbackToSpeech(animalName);
     }
+  }
 
-    /**
-     * Fallback to speech synthesis for animal sounds
-     * @param {string} animalName - Name of the animal
-     */
-    fallbackToSpeech(animalName) {
-        if ('speechSynthesis' in window) {
-            const utterance = new SpeechSynthesisUtterance(`${animalName} says ${this.getAnimalOnomatopoeia(animalName)}`);
-            utterance.rate = 0.8;
-            utterance.pitch = 1.1;
-            utterance.volume = 0.8;
+  /**
+   * Play audio file using HTML5 Audio
+   * @param {string} url - Audio file URL
+   * @param {string} animalName - Name of the animal
+   */
+  async playAudioFile(url, animalName) {
+    return new Promise((resolve, reject) => {
+      // Check cache first
+      if (this.soundCache.has(url)) {
+        this.currentAudio = this.soundCache.get(url);
+        this.currentAudio.currentTime = 0;
+      } else {
+        this.currentAudio = new Audio(url);
+        this.currentAudio.volume = 0.8;
+        this.currentAudio.preload = 'auto';
+        // Cache the audio element
+        this.soundCache.set(url, this.currentAudio);
+      }
 
-            utterance.onstart = () => this.onSoundStart(animalName);
-            utterance.onend = () => this.onSoundEnd(animalName);
+      // Visual feedback
+      this.onSoundStart(animalName);
 
-            window.speechSynthesis.speak(utterance);
-        }
+      this.currentAudio.onended = () => {
+        this.onSoundEnd(animalName);
+        resolve();
+      };
+
+      this.currentAudio.onerror = (error) => {
+        this.onSoundEnd(animalName);
+        reject(error);
+      };
+
+      // Resume audio context if suspended (required by browser autoplay policies)
+      if (this.audioContext && this.audioContext.state === 'suspended') {
+        this.audioContext.resume();
+      }
+
+      this.currentAudio.play().catch(reject);
+    });
+  }
+
+  /**
+   * Text-to-speech fallback for animal sounds
+   * @param {string} animalName - Name of the animal
+   */
+  fallbackToSpeech(animalName) {
+    if ("speechSynthesis" in window) {
+      const utterance = new SpeechSynthesisUtterance(animalName);
+      utterance.rate = 0.9;
+      utterance.pitch = 1.0;
+      utterance.volume = 0.8;
+      utterance.onstart = () => this.onSoundStart(animalName);
+      utterance.onend = () => this.onSoundEnd(animalName);
+      window.speechSynthesis.speak(utterance);
     }
+  }
 
-    /**
-     * Get animal sound onomatopoeia
-     * @param {string} animalName - Name of the animal
-     * @returns {string} Sound description
-     */
-    getAnimalOnomatopoeia(animalName) {
-        const sounds = {
-            'Lion': 'roar',
-            'Tiger': 'roar',
-            'Elephant': 'trumpet',
-            'Monkey': 'ooh ooh ah ah',
-            'Wolf': 'howl',
-            'Bear': 'growl',
-            'Dolphin': 'click click',
-            'Frog': 'ribbit ribbit',
-            'Eagle': 'screech',
-            'Penguin': 'waddle waddle',
-            'Giraffe': 'hum',
-            'Zebra': 'neigh',
-            'Rhino': 'snort',
-            'Fox': 'yip yip',
-            'Leopard': 'growl',
-            'Kangaroo': 'grunt',
-            'Koala': 'snore',
-            'Gorilla': 'hoo hoo',
-            'Shark': 'splash',
-            'Octopus': 'whoosh'
-        };
-        return sounds[animalName] || 'sound';
+  /**
+   * Handle sound start event - visual feedback
+   * @param {string} animalName - Name of the animal
+   */
+  onSoundStart(animalName) {
+    const animalEmoji = document.getElementById("animalEmoji");
+    if (animalEmoji) {
+      animalEmoji.classList.add("sound-playing");
+      this.createSoundWaves(animalEmoji);
     }
+    document.dispatchEvent(
+      new CustomEvent("animalSoundStart", { detail: { animal: animalName } })
+    );
+  }
 
-    /**
-     * Handle sound start event
-     * @param {string} animalName - Name of the animal
-     */
-    onSoundStart(animalName) {
-        // Add visual feedback when sound starts
-        const animalEmoji = document.getElementById('animalEmoji');
-        if (animalEmoji) {
-            animalEmoji.classList.add('sound-playing');
-
-            // Add sound waves animation
-            this.createSoundWaves(animalEmoji);
-        }
-
-        // Trigger custom event
-        document.dispatchEvent(new CustomEvent('animalSoundStart', {
-            detail: { animal: animalName }
-        }));
+  /**
+   * Handle sound end event - remove visual feedback
+   * @param {string} animalName - Name of the animal
+   */
+  onSoundEnd(animalName) {
+    const animalEmoji = document.getElementById("animalEmoji");
+    if (animalEmoji) {
+      animalEmoji.classList.remove("sound-playing");
+      document.querySelectorAll(".sound-wave").forEach((wave) => wave.remove());
     }
+    document.dispatchEvent(
+      new CustomEvent("animalSoundEnd", { detail: { animal: animalName } })
+    );
+  }
 
-    /**
-     * Handle sound end event
-     * @param {string} animalName - Name of the animal
-     */
-    onSoundEnd(animalName) {
-        // Remove visual feedback when sound ends
-        const animalEmoji = document.getElementById('animalEmoji');
-        if (animalEmoji) {
-            animalEmoji.classList.remove('sound-playing');
-
-            // Remove sound waves
-            const waves = document.querySelectorAll('.sound-wave');
-            waves.forEach(wave => wave.remove());
-        }
-
-        // Trigger custom event
-        document.dispatchEvent(new CustomEvent('animalSoundEnd', {
-            detail: { animal: animalName }
-        }));
+  /**
+   * Create sound wave visual effects during pronunciation
+   * @param {HTMLElement} parentElement - Element to attach waves to
+   */
+  createSoundWaves(parentElement) {
+    for (let i = 0; i < this.SOUND_WAVE_COUNT; i++) {
+      const wave = document.createElement("div");
+      wave.className = "sound-wave";
+      wave.style.animationDelay = `${i * this.SOUND_WAVE_DELAY_SECONDS}s`;
+      parentElement.parentElement.appendChild(wave);
     }
+  }
 
-    /**
-     * Create sound wave visual effects
-     * @param {HTMLElement} parentElement - Element to attach waves to
-     */
-    createSoundWaves(parentElement) {
-        for (let waveIndex = 0; waveIndex < this.SOUND_WAVE_COUNT; waveIndex++) {
-            const waveElement = document.createElement('div');
-            waveElement.className = 'sound-wave';
-            waveElement.style.animationDelay = `${waveIndex * this.SOUND_WAVE_DELAY_SECONDS}s`;
-            parentElement.parentElement.appendChild(waveElement);
-        }
+  /**
+   * Stop currently playing sound
+   */
+  stopCurrentSound() {
+    // Stop HTML5 audio
+    if (this.currentAudio) {
+      this.currentAudio.pause();
+      this.currentAudio.currentTime = 0;
     }
-
-    /**
-     * Stop currently playing sound
-     */
-    stopCurrentSound() {
-        if (this.currentAudio) {
-            this.currentAudio.pause();
-            this.currentAudio.currentTime = 0;
-            this.currentAudio = null;
-        }
-
-        if (window.speechSynthesis) {
-            window.speechSynthesis.cancel();
-        }
+    // Stop speech synthesis
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
     }
+  }
 
-    /**
-     * Play UI feedback sounds - DISABLED (only pronunciation allowed)
-     * @param {string} _soundType - Sound type (unused, kept for API compatibility)
-     */
-    playUISound(_soundType) {
-        // No UI sounds - silently ignore
-    }
+  /**
+   * Toggle sound on/off
+   * @returns {boolean} New sound enabled state
+   */
+  toggleSound() {
+    this.isEnabled = !this.isEnabled;
+    if (!this.isEnabled) this.stopCurrentSound();
+    return this.isEnabled;
+  }
 
-    /**
-     * Play melody - DISABLED (only pronunciation sounds allowed)
-     * @param {Array<number>} _melodyFrequencies - Frequencies array (unused, kept for API compatibility)
-     * @param {number} _noteDuration - Duration parameter (unused, kept for API compatibility)
-     */
-    playMelody(_melodyFrequencies, _noteDuration) {
-        // No sound generation - silently ignore
-    }
+  /**
+   * Check if sound is enabled
+   * @returns {boolean} Sound enabled state
+   */
+  isSoundEnabled() {
+    return this.isEnabled;
+  }
 
-    /**
-     * Toggle sound on/off
-     * @returns {boolean} New sound enabled state
-     */
-    toggleSound() {
-        this.isEnabled = !this.isEnabled;
+  /**
+   * Select an option (for game option tracking)
+   * @param {string} option - Selected option value
+   */
+  selectOption(option) {
+    this.currentSelection = option;
+    document.querySelectorAll(".option-btn").forEach((btn) => {
+      btn.classList.toggle("selected", btn.dataset.value === option);
+    });
+  }
 
-        if (!this.isEnabled) {
-            this.stopCurrentSound();
-        }
+  /**
+   * Get current selection
+   * @returns {string|null} Current selected option
+   */
+  getCurrentSelection() {
+    return this.currentSelection;
+  }
 
-        return this.isEnabled;
-    }
+  /**
+   * Clear current selection
+   */
+  clearSelection() {
+    this.currentSelection = null;
+    document
+      .querySelectorAll(".option-btn")
+      .forEach((btn) => btn.classList.remove("selected"));
+  }
 
-    /**
-     * Check if sound is enabled
-     * @returns {boolean} Sound enabled state
-     */
-    isSoundEnabled() {
-        return this.isEnabled;
-    }
-
-    /**
-     * Select an option in the game
-     * @param {string} option - Selected option value
-     */
-    selectOption(option) {
-        this.currentSelection = option;
-
-        // Add visual feedback to selected option
-        document.querySelectorAll('.option-btn').forEach(btn => {
-            btn.classList.remove('selected');
-        });
-
-        const buttons = document.querySelectorAll('.option-btn');
-        buttons.forEach(btn => {
-            if (btn.dataset.value === option) {
-                btn.classList.add('selected');
-            }
-        });
-    }
-
-    /**
-     * Get current selection
-     * @returns {string|null} Current selected option
-     */
-    getCurrentSelection() {
-        return this.currentSelection;
-    }
-
-    /**
-     * Clear current selection
-     */
-    clearSelection() {
-        this.currentSelection = null;
-        document.querySelectorAll('.option-btn').forEach(btn => {
-            btn.classList.remove('selected');
-        });
-    }
-
-    /**
-     * Additional methods for API compatibility with AnimalSounds class
-     * Pronounce animal name
-     * @param {string} animalName - Name of the animal
-     */
-    pronounceAnimal(animalName) {
-        // Delegate to playAnimalSound for consistency
-        this.fallbackToSpeech(animalName);
-    }
-
-    /**
-     * Play success sound - DISABLED
-     */
-    playSuccessSound() {
-        // No sound generation - silently ignore
-    }
-
-    /**
-     * Play error sound - DISABLED
-     */
-    playErrorSound() {
-        // No sound generation - silently ignore
-    }
-
-    /**
-     * Play victory sound - DISABLED
-     */
-    playVictorySound() {
-        // No sound generation - silently ignore
-    }
-
-    /**
-     * Play powerup sound - DISABLED
-     */
-    playPowerupSound() {
-        // No sound generation - silently ignore
-    }
-
-    /**
-     * Add animal reaction visual effect
-     * @param {string} _animalName - Name of the animal (unused but kept for API compatibility)
-     */
-    addAnimalReaction(_animalName) {
-        // Add visual feedback when animal is pronounced
-        const animalEmoji = document.getElementById('animalEmoji');
-        if (!animalEmoji) return;
-
-        animalEmoji.style.transform = 'scale(1.1)';
-        animalEmoji.style.transition = 'transform 0.2s ease';
-
-        setTimeout(() => {
-            animalEmoji.style.transform = 'scale(1)';
-        }, 200);
-    }
-
-    /**
-     * Add screen shake - DISABLED
-     */
-    addScreenShake() {
-        // No screen shake - silently ignore
-    }
-
-    /**
-     * Create sound particles - DISABLED
-     */
-    createSoundParticles() {
-        // No sound particles - silently ignore
-    }
-
-    /**
-     * Check if module is ready
-     * @returns {boolean} Always true for text-to-speech
-     */
-    isReady() {
-        return true; // Always ready for text-to-speech
-    }
+  /**
+   * Check if module is ready
+   * @returns {boolean} Always true for text-to-speech
+   */
+  isReady() {
+    return true;
+  }
 }
 
 // Create global instance
