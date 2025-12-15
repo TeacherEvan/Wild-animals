@@ -22,9 +22,9 @@ class RealAnimalSounds {
     try {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       this.audioContext = new AudioContext();
-      if (this.debugMode) console.log('Audio context initialized');
+      if (this.debugMode) console.log("Audio context initialized");
     } catch (e) {
-      console.warn('Web Audio API not supported, using HTML5 Audio fallback');
+      console.warn("Web Audio API not supported, using HTML5 Audio fallback");
     }
   }
 
@@ -37,26 +37,26 @@ class RealAnimalSounds {
   getRealAnimalSoundURL(animalName) {
     // Using Freesound.org public domain animal sounds (CC0/Public Domain)
     const soundURLs = {
-      Lion: 'https://freesound.org/data/previews/615/615203_2481301-lq.mp3',
-      Tiger: 'https://freesound.org/data/previews/628/628009_11861866-lq.mp3',
-      Elephant: 'https://freesound.org/data/previews/401/401929_7273175-lq.mp3',
-      Monkey: 'https://freesound.org/data/previews/539/539842_1015240-lq.mp3',
-      Wolf: 'https://freesound.org/data/previews/596/596224_7037-lq.mp3',
-      Bear: 'https://freesound.org/data/previews/558/558761_10785820-lq.mp3',
-      Dolphin: 'https://freesound.org/data/previews/434/434451_8462944-lq.mp3',
-      Frog: 'https://freesound.org/data/previews/546/546044_11709805-lq.mp3',
-      Eagle: 'https://freesound.org/data/previews/585/585868_11429804-lq.mp3',
-      Penguin: 'https://freesound.org/data/previews/551/551797_11402640-lq.mp3',
-      Giraffe: 'https://freesound.org/data/previews/412/412068_7273175-lq.mp3',
-      Zebra: 'https://freesound.org/data/previews/563/563788_11545552-lq.mp3',
-      Rhino: 'https://freesound.org/data/previews/558/558762_10785820-lq.mp3',
-      Fox: 'https://freesound.org/data/previews/590/590331_11429804-lq.mp3',
-      Leopard: 'https://freesound.org/data/previews/558/558763_10785820-lq.mp3',
-      Kangaroo: 'https://freesound.org/data/previews/412/412070_7273175-lq.mp3',
-      Koala: 'https://freesound.org/data/previews/412/412069_7273175-lq.mp3',
-      Gorilla: 'https://freesound.org/data/previews/412/412071_7273175-lq.mp3',
-      Shark: 'https://freesound.org/data/previews/434/434450_8462944-lq.mp3',
-      Octopus: 'https://freesound.org/data/previews/434/434452_8462944-lq.mp3',
+      Lion: "https://freesound.org/data/previews/615/615203_2481301-lq.mp3",
+      Tiger: "https://freesound.org/data/previews/628/628009_11861866-lq.mp3",
+      Elephant: "https://freesound.org/data/previews/401/401929_7273175-lq.mp3",
+      Monkey: "https://freesound.org/data/previews/539/539842_1015240-lq.mp3",
+      Wolf: "https://freesound.org/data/previews/596/596224_7037-lq.mp3",
+      Bear: "https://freesound.org/data/previews/558/558761_10785820-lq.mp3",
+      Dolphin: "https://freesound.org/data/previews/434/434451_8462944-lq.mp3",
+      Frog: "https://freesound.org/data/previews/546/546044_11709805-lq.mp3",
+      Eagle: "https://freesound.org/data/previews/585/585868_11429804-lq.mp3",
+      Penguin: "https://freesound.org/data/previews/551/551797_11402640-lq.mp3",
+      Giraffe: "https://freesound.org/data/previews/412/412068_7273175-lq.mp3",
+      Zebra: "https://freesound.org/data/previews/563/563788_11545552-lq.mp3",
+      Rhino: "https://freesound.org/data/previews/558/558762_10785820-lq.mp3",
+      Fox: "https://freesound.org/data/previews/590/590331_11429804-lq.mp3",
+      Leopard: "https://freesound.org/data/previews/558/558763_10785820-lq.mp3",
+      Kangaroo: "https://freesound.org/data/previews/412/412070_7273175-lq.mp3",
+      Koala: "https://freesound.org/data/previews/412/412069_7273175-lq.mp3",
+      Gorilla: "https://freesound.org/data/previews/412/412071_7273175-lq.mp3",
+      Shark: "https://freesound.org/data/previews/434/434450_8462944-lq.mp3",
+      Octopus: "https://freesound.org/data/previews/434/434452_8462944-lq.mp3",
     };
     return soundURLs[animalName] || null;
   }
@@ -78,7 +78,10 @@ class RealAnimalSounds {
       try {
         await this.playAudioFile(soundURL, animalName);
       } catch (error) {
-        console.warn(`Failed to load sound for ${animalName}, using speech fallback:`, error);
+        console.warn(
+          `Failed to load sound for ${animalName}, using speech fallback:`,
+          error
+        );
         this.fallbackToSpeech(animalName);
       }
     } else {
@@ -101,7 +104,7 @@ class RealAnimalSounds {
       } else {
         this.currentAudio = new Audio(url);
         this.currentAudio.volume = 0.8;
-        this.currentAudio.preload = 'auto';
+        this.currentAudio.preload = "auto";
         // Cache the audio element
         this.soundCache.set(url, this.currentAudio);
       }
@@ -120,7 +123,7 @@ class RealAnimalSounds {
       };
 
       // Resume audio context if suspended (required by browser autoplay policies)
-      if (this.audioContext && this.audioContext.state === 'suspended') {
+      if (this.audioContext && this.audioContext.state === "suspended") {
         this.audioContext.resume();
       }
 
