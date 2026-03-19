@@ -5,7 +5,10 @@
   "main": "index.html",
   "scripts": {
     "start": "python3 -m http.server 8080",
-    "test": "echo \"No tests specified - this is a static HTML application\" && exit 0",
+    "check:max-lines": "node scripts/check-max-lines.js",
+    "lint": "eslint . --ext .js",
+    "test:e2e": "playwright test",
+    "test": "npm run check:max-lines && npm run lint && npm run test:e2e",
     "build": "echo \"No build process required - this is a static HTML application\" && exit 0"
   },
   "keywords": [
@@ -24,6 +27,7 @@
   },
   "homepage": "https://github.com/TeacherEvan/Wild-animals",
   "devDependencies": {
+    "@playwright/test": "^1.53.2",
     "eslint": "^8.57.1"
   }
 }

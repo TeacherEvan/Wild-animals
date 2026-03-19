@@ -13,3 +13,5 @@ node_modules/
 # Build outputs
 dist/
 build/
+playwright-report/
+test-results/

@@ -1,0 +1,60 @@
+.feedback.correct {
+  color: var(--success);
+}
+
+.feedback.wrong {
+  color: var(--danger);
+}
+
+.feedback.info {
+  color: var(--text);
+}
+
+.option-btn.hinted {
+  outline: 3px solid #ffd54a;
+  box-shadow: 0 0 0 4px rgba(255, 213, 74, 0.25);
+}
+
+.option-btn.hidden {
+  visibility: hidden;
+}
+
+.sound-playing {
+  animation: bounce 0.8s ease-in-out infinite alternate;
+}
+
+.sound-wave {
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  border: 3px solid rgba(78, 183, 168, 0.35);
+  border-radius: 50%;
+  animation: ripple 1.2s ease-out infinite;
+}
+
+.animal-display {
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes bounce {
+  from {
+    transform: scale(1);
+  }
+
+  to {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes ripple {
+  from {
+    transform: scale(0.6);
+    opacity: 0.8;
+  }
+
+  to {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
