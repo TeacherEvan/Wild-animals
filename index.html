@@ -1,34 +1,1497 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="description" content="Interactive educational game for kindergarten students to learn about wild animals.">
+    <meta name="description"
+        content="Interactive educational game for kindergarten students to learn about wild animals through fun activities">
     <title>Wild Animals Adventure</title>
     <link rel="manifest" href="manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <!-- Ensure stylesheet is applied -->
     <link rel="stylesheet" href="styles.css">
-    <script type="module" src="src/main.js"></script>
-  </head>
-  <body>
-    <button class="sound-btn" id="soundBtn" aria-label="Toggle sound on or off" aria-pressed="true">🔊</button>
-    <main class="game-container">
-      <h1>🦁 Wild Animals Adventure 🐯</h1>
-      <p class="subtitle">Learn English Animal Names!</p>
-      <div class="high-score" id="highScore" aria-live="polite">High Score: 0</div>
-      <nav class="mode-selection" id="modeSelection" aria-label="Game mode selection">
-        <button class="mode-btn active" data-mode="classic" aria-pressed="true">Classic Mode</button>
-        <button class="mode-btn" data-mode="speed" aria-pressed="false">Speed Mode</button>
-        <button class="mode-btn" data-mode="survival" aria-pressed="false">Survival Mode</button>
-        <button class="mode-btn" data-mode="quiz" aria-pressed="false">Quiz Mode</button>
-        <button class="mode-btn" data-mode="habitat" aria-pressed="false">Habitat Match</button>
-        <button class="mode-btn" data-mode="sounds" aria-pressed="false">Sound Game</button>
-      </nav>
-      <section class="score-board" aria-live="polite">
-        <div class="score-item">Score: <span id="score">0</span></div>
-        <div class="score-item">Question: <span id="currentQuestion">1</span> / <span id="totalQuestions">10</span></div>
-        <div class="score-item">Streak: <span id="streak">0</span></div>
-      </section>
-      <section class="game-area" id="gameArea"></section>
-    </main>
-  </body>
+    <!-- Defer main scripts for performance; already included later in file -->
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<body>
+    <button class="sound-btn" onclick="toggleSound()" id="soundBtn" aria-label="Toggle sound on or off"
+        aria-pressed="true">🔊</button>
+    <div class="game-container" role="main">
+        <h1>🦁 Wild Animals Adventure 🐯</h1>
+        <p class="subtitle">Learn English Animal Names!</p>
+
+        <div class="high-score" id="highScore" role="status" aria-live="polite">🏆 High Score: 0</div>
+
+        <div class="mode-selection" id="modeSelection" role="group" aria-label="Game mode selection">
+            <button class="mode-btn active" onclick="selectMode('classic')"
+                aria-label="Select Classic Mode with 10 questions" aria-pressed="true">
+                🎯 Classic Mode<br><small>10 Questions</small>
+            </button>
+            <button class="mode-btn" onclick="selectMode('speed')" aria-label="Select Speed Mode time challenge"
+                aria-pressed="false">
+                ⚡ Speed Mode<br><small>Time Challenge</small>
+            </button>
+            <button class="mode-btn" onclick="selectMode('survival')" aria-label="Select Survival Mode play until wrong"
+                aria-pressed="false">
+                🔥 Survival Mode<br><small>Until Wrong</small>
+            </button>
+            <button class="mode-btn" onclick="selectMode('quiz')" aria-label="Select Quiz Mode with mixed questions"
+                aria-pressed="false">
+                🧠 Quiz Mode<br><small>Mixed Questions</small>
+            </button>
+            <button class="mode-btn" onclick="selectMode('habitat')"
+                aria-label="Select Habitat Match drag and drop game" aria-pressed="false">
+                🏠 Habitat Match<br><small>Drag & Drop</small>
+            </button>
+            <button class="mode-btn" onclick="selectMode('sounds')" aria-label="Select Sound Game guess animal sounds"
+                aria-pressed="false">
+                🔊 Sound Game<br><small>Guess Sounds</small>
+            </button>
+        </div>
+
+        <div class="score-board" role="status" aria-live="polite">
+            <div class="score-item" aria-label="Current score">Score: <span id="score">0</span></div>
+            <div class="score-item" aria-label="Question progress">Question: <span id="currentQuestion">1</span> / <span
+                    id="totalQuestions">10</span>
+            </div>
+            <div class="score-item" aria-label="Current streak">Streak: <span id="streak">0</span> 🔥</div>
+        </div>
+        <div class="game-area" id="gameArea">
+            <div class="timer-container" id="timerContainer" style="display: none;">
+                <div class="timer-bar">
+                    <div class="timer-fill" id="timerFill"></div>
+                </div>
+                <div class="timer-text" id="timerText">Time: 10s</div>
+            </div>
+
+            <div class="powerups" id="powerups" role="group" aria-label="Power-up buttons">
+                <button class="powerup-btn" id="hintBtn" onclick="useHint()"
+                    aria-label="Use hint power-up, 3 remaining">💡 Hint (3)</button>
+                <button class="powerup-btn" id="eliminateBtn" onclick="eliminateWrong()"
+                    aria-label="Eliminate wrong answers, 2 remaining">❌ Eliminate (2)</button>
+                <button class="powerup-btn" id="skipBtn" onclick="skipQuestion()"
+                    aria-label="Skip question, 1 remaining">⏭️ Skip (1)</button>
+            </div>
+
+            <div class="animal-display" onclick="playCurrentAnimalSound()" role="button" tabindex="0"
+                aria-label="Click or press Enter to hear animal sound">
+                <div class="animal-emoji" id="animalEmoji" aria-hidden="true">🦁</div>
+                <div class="question" id="question">What animal is this?</div>
+                <div class="tap-hint" style="font-size: 0.9em; color: #666; margin-top: 10px;">
+                    👆 Tap the animal to hear its sound!
+                </div>
+            </div>
+
+            <div class="options" id="options" role="group" aria-label="Answer options">
+                <!-- Options will be generated by JavaScript -->
+            </div>
+
+            <div class="feedback" id="feedback" role="status" aria-live="assertive"></div>
+
+            <button class="next-btn" id="nextBtn" onclick="nextQuestion()" disabled
+                aria-label="Proceed to next question">Next Animal →</button>
+        </div>
+    </div>
+
+    <div class="celebration" id="celebration"></div>
+
+    <script>
+        // TODO: Extract this game logic to separate module files (GameEngine.js, ScoreManager.js, QuestionGenerator.js)
+        // TODO: Implement dynamic imports for game modes to reduce initial bundle size
+        // TODO: Add TypeScript types for better development experience
+
+        /**
+         * Performance Utility Functions
+         * Implements debouncing, throttling, and requestAnimationFrame wrappers
+         */
+        const PerformanceUtils = {
+            /**
+             * Debounce function - delays execution until after wait time has elapsed
+             * @param {Function} func - Function to debounce
+             * @param {number} wait - Milliseconds to wait
+             * @returns {Function} Debounced function
+             */
+            debounce: (func, wait) => {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            },
+
+            /**
+             * Throttle function - ensures function is called at most once per interval
+             * @param {Function} func - Function to throttle
+             * @param {number} limit - Milliseconds between calls
+             * @returns {Function} Throttled function
+             */
+            throttle: (func, limit) => {
+                let inThrottle;
+                return function (...args) {
+                    if (!inThrottle) {
+                        func.apply(this, args);
+                        inThrottle = true;
+                        setTimeout(() => inThrottle = false, limit);
+                    }
+                };
+            },
+
+            /**
+             * RequestAnimationFrame wrapper for smooth animations
+             * @param {Function} callback - Animation callback
+             */
+            rafSchedule: (callback) => {
+                let rafId = null;
+                return function (...args) {
+                    if (rafId !== null) return;
+                    rafId = requestAnimationFrame(() => {
+                        callback(...args);
+                        rafId = null;
+                    });
+                };
+            },
+
+            /**
+             * Add bump animation to score display for visual feedback
+             * @param {HTMLElement} element - Element to animate
+             */
+            animateScoreBump: (element) => {
+                if (!element) return;
+                element.classList.add('bump');
+                setTimeout(() => element.classList.remove('bump'), 400);
+            }
+        };
+
+        /**
+         * Game Configuration Constants
+         * All magic numbers and configurable values are centralized here for easy maintenance
+         * TODO: Move to external config file for easier customization without code changes
+         */
+        const GAME_CONFIG = {
+            // Scoring configuration
+            POINTS_PER_CORRECT: 10,
+            POINTS_FOR_SKIP: 5,
+            SPEED_BONUS_THRESHOLD: 5,   // Time left in seconds to get bonus
+            SPEED_BONUS_MULTIPLIER: 2,  // Points per second over threshold
+
+            // Timer configuration
+            TIMER_SECONDS: 10,
+
+            // Questions configuration
+            TOTAL_QUESTIONS: 10,
+            SURVIVAL_INITIAL_QUESTIONS: 20,
+            SURVIVAL_BATCH_SIZE: 10,
+            WRONG_OPTIONS_COUNT: 3,
+
+            // Powerup configuration
+            INITIAL_HINTS: 3,
+            INITIAL_ELIMINATES: 2,
+            INITIAL_SKIPS: 1,
+            ELIMINATE_COUNT: 2,
+
+            // Visual effects configuration
+            PARTICLE_COUNT: 15,
+            CONFETTI_COUNT: 50,
+
+            // Timing delays (in milliseconds)
+            AUTO_ADVANCE_DELAY: 2000,
+            PARTICLE_LIFETIME: 2000,
+            INDICATOR_LIFETIME: 2000,
+            ACHIEVEMENT_LIFETIME: 3000,
+            SKIP_DELAY: 1000,
+            CONFETTI_LIFETIME: 3000,
+            ANIMATION_DURATION: 1000,
+            SCALE_RESET_DELAY: 200,
+
+            // Achievement thresholds
+            STREAK_ACHIEVEMENT_5: 5,
+            STREAK_ACHIEVEMENT_10: 10,
+            SCORE_ACHIEVEMENT_100: 100,
+            COMBO_THRESHOLD: 3,
+
+            // Percentage thresholds
+            EXCELLENT_THRESHOLD: 90,
+            GREAT_THRESHOLD: 70,
+            GOOD_THRESHOLD: 50,
+
+            // Storage keys
+            HIGH_SCORE_KEY: 'wildAnimalsHighScore'
+        };
+
+        // Enhanced game data with visual symbols and categories for non-reading kids
+        const animals = [
+            { emoji: '🦁', name: 'Lion', sound: 'roar', habitat: 'Savanna', diet: 'Carnivore', fact: 'A lion is the king of the jungle', symbol: '👑', color: '#FFD700', category: 'Big Cats' },
+            { emoji: '🐯', name: 'Tiger', sound: 'roar', habitat: 'Jungle', diet: 'Carnivore', fact: 'A tiger has orange fur with black stripes', symbol: '🐅', color: '#FF6347', category: 'Big Cats' },
+            { emoji: '🐘', name: 'Elephant', sound: 'trumpet', habitat: 'Savanna', diet: 'Herbivore', fact: 'An elephant is the biggest land animal', symbol: '🐽', color: '#808080', category: 'Giants' },
+            { emoji: '🦒', name: 'Giraffe', sound: 'hum', habitat: 'Savanna', diet: 'Herbivore', fact: 'A giraffe has a very long neck', symbol: '📏', color: '#DEB887', category: 'Giants' },
+            { emoji: '🐻', name: 'Bear', sound: 'growl', habitat: 'Forest', diet: 'Omnivore', fact: 'A bear sleeps all winter long', symbol: '🍯', color: '#8B4513', category: 'Forest Friends' },
+            { emoji: '🦓', name: 'Zebra', sound: 'neigh', habitat: 'Savanna', diet: 'Herbivore', fact: 'A zebra has black and white stripes', symbol: '⚫⚪', color: '#000000', category: 'Striped' },
+            { emoji: '🦏', name: 'Rhino', sound: 'snort', habitat: 'Savanna', diet: 'Herbivore', fact: 'A rhino has a big horn on its nose', symbol: '🔺', color: '#696969', category: 'Giants' },
+            { emoji: '🐺', name: 'Wolf', sound: 'howl', habitat: 'Forest', diet: 'Carnivore', fact: 'A wolf howls at the moon', symbol: '🌙', color: '#708090', category: 'Wild Dogs' },
+            { emoji: '🦊', name: 'Fox', sound: 'bark', habitat: 'Forest', diet: 'Omnivore', fact: 'A fox has a fluffy tail', symbol: '🧠', color: '#FF4500', category: 'Smart Animals' },
+            { emoji: '🐆', name: 'Leopard', sound: 'roar', habitat: 'Forest', diet: 'Carnivore', fact: 'A leopard can climb trees very well', symbol: '🌳', color: '#DAA520', category: 'Big Cats' },
+            { emoji: '🦘', name: 'Kangaroo', sound: 'grunt', habitat: 'Grassland', diet: 'Herbivore', fact: 'A kangaroo carries its baby in a pouch', symbol: '👶', color: '#CD853F', category: 'Hoppers' },
+            { emoji: '🐨', name: 'Koala', sound: 'grunt', habitat: 'Forest', diet: 'Herbivore', fact: 'A koala sleeps most of the day', symbol: '😴', color: '#A9A9A9', category: 'Sleepy Animals' },
+            { emoji: '🐵', name: 'Monkey', sound: 'chatter', habitat: 'Jungle', diet: 'Omnivore', fact: 'A monkey loves to eat bananas', symbol: '🍌', color: '#F4A460', category: 'Primates' },
+            { emoji: '🦍', name: 'Gorilla', sound: 'grunt', habitat: 'Jungle', diet: 'Herbivore', fact: 'A gorilla is very strong', symbol: '💪', color: '#2F4F4F', category: 'Primates' },
+            { emoji: '🐧', name: 'Penguin', sound: 'squawk', habitat: 'Antarctica', diet: 'Carnivore', fact: 'A penguin cannot fly but can swim', symbol: '🏊', color: '#000080', category: 'Ocean Birds' },
+            { emoji: '🦅', name: 'Eagle', sound: 'screech', habitat: 'Mountains', diet: 'Carnivore', fact: 'An eagle can see very far away', symbol: '👁️', color: '#8B4513', category: 'Flying Hunters' },
+            { emoji: '🐙', name: 'Octopus', sound: 'silent', habitat: 'Ocean', diet: 'Carnivore', fact: 'An octopus has eight legs', symbol: '8️⃣', color: '#800080', category: 'Ocean Creatures' },
+            { emoji: '🐬', name: 'Dolphin', sound: 'click', habitat: 'Ocean', diet: 'Carnivore', fact: 'A dolphin is very smart and friendly', symbol: '🧠', color: '#4682B4', category: 'Smart Ocean' },
+            { emoji: '🦈', name: 'Shark', sound: 'silent', habitat: 'Ocean', diet: 'Carnivore', fact: 'A shark has many sharp teeth', symbol: '⚡', color: '#708090', category: 'Ocean Hunters' },
+            { emoji: '🐸', name: 'Frog', sound: 'croak', habitat: 'Pond', diet: 'Carnivore', fact: 'A frog can jump very high', symbol: '🌊', color: '#32CD32', category: 'Water Hoppers' },
+            { emoji: '🐪', name: 'Camel', sound: 'grunt', habitat: 'Desert', diet: 'Herbivore', fact: 'A camel can go without water for days', symbol: '💧', color: '#C19A6B', category: 'Desert Animals' },
+            { emoji: '🐊', name: 'Crocodile', sound: 'hiss', habitat: 'River', diet: 'Carnivore', fact: 'A crocodile has very strong jaws', symbol: '💪', color: '#556B2F', category: 'Reptiles' },
+            { emoji: '🦛', name: 'Hippo', sound: 'grunt', habitat: 'River', diet: 'Herbivore', fact: 'A hippo spends most of its day in water', symbol: '💦', color: '#696969', category: 'River Giants' },
+            { emoji: '🐆', name: 'Cheetah', sound: 'chirp', habitat: 'Savanna', diet: 'Carnivore', fact: 'A cheetah is the fastest land animal', symbol: '⚡', color: '#F4A460', category: 'Fast Cats' },
+            { emoji: '🦜', name: 'Parrot', sound: 'squawk', habitat: 'Jungle', diet: 'Omnivore', fact: 'A parrot can learn to talk', symbol: '🗣️', color: '#FF1493', category: 'Tropical Birds' },
+            { emoji: '🐢', name: 'Turtle', sound: 'silent', habitat: 'Ocean', diet: 'Omnivore', fact: 'A turtle can live for over 100 years', symbol: '⏰', color: '#228B22', category: 'Slow Movers' },
+            { emoji: '🦉', name: 'Owl', sound: 'hoot', habitat: 'Forest', diet: 'Carnivore', fact: 'An owl can turn its head almost all the way around', symbol: '🔄', color: '#8B4513', category: 'Night Birds' },
+            { emoji: '🐿️', name: 'Squirrel', sound: 'chatter', habitat: 'Forest', diet: 'Omnivore', fact: 'A squirrel stores nuts for winter', symbol: '🌰', color: '#A0522D', category: 'Tree Climbers' },
+            { emoji: '🦔', name: 'Hedgehog', sound: 'snuffle', habitat: 'Forest', diet: 'Omnivore', fact: 'A hedgehog has spiky quills for protection', symbol: '🛡️', color: '#8B7355', category: 'Spiky Animals' },
+            { emoji: '🐝', name: 'Bee', sound: 'buzz', habitat: 'Garden', diet: 'Herbivore', fact: 'A bee makes honey from flower nectar', symbol: '🍯', color: '#FFD700', category: 'Insects' }
+        ];
+
+        // DOM element cache for better performance
+        const cachedDOMElements = {
+            animalEmoji: null,
+            questionElement: null,
+            optionsContainer: null,
+            feedback: null,
+            nextBtn: null,
+            timerFill: null,
+            timerText: null,
+            score: null,
+            currentQuestion: null,
+            streak: null,
+            hintBtn: null,
+            eliminateBtn: null,
+            skipBtn: null
+        };
+
+        // Initialize DOM element cache for performance optimization
+        // TODO: Consider using WeakMap for automatic garbage collection of cached elements
+        function initializeDOMElementCache() {
+            cachedDOMElements.animalEmoji = document.getElementById('animalEmoji');
+            cachedDOMElements.questionElement = document.getElementById('question');
+            cachedDOMElements.optionsContainer = document.getElementById('options');
+            cachedDOMElements.feedback = document.getElementById('feedback');
+            cachedDOMElements.nextBtn = document.getElementById('nextBtn');
+            cachedDOMElements.timerFill = document.getElementById('timerFill');
+            cachedDOMElements.timerText = document.getElementById('timerText');
+            cachedDOMElements.score = document.getElementById('score');
+            cachedDOMElements.currentQuestion = document.getElementById('currentQuestion');
+            cachedDOMElements.streak = document.getElementById('streak');
+            cachedDOMElements.hintBtn = document.getElementById('hintBtn');
+            cachedDOMElements.eliminateBtn = document.getElementById('eliminateBtn');
+            cachedDOMElements.skipBtn = document.getElementById('skipBtn');
+        }
+
+        // Game state variables
+        // TODO: Refactor to use a centralized state management pattern (e.g., Redux-like store)
+        // TODO: Consider using localStorage/sessionStorage for state persistence
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let streak = 0;
+        let maxStreak = 0;
+        let currentAnimal = null;
+        let gameQuestions = [];
+        let soundEnabled = true;
+        let gameMode = 'classic';
+        let questionTypes = ['name', 'fact', 'habitat', 'diet'];
+        let currentQuestionType = 'name';
+        let timer = null;
+        let timeLeft = GAME_CONFIG.TIMER_SECONDS;
+        let powerups = {
+            hints: GAME_CONFIG.INITIAL_HINTS,
+            eliminate: GAME_CONFIG.INITIAL_ELIMINATES,
+            skip: GAME_CONFIG.INITIAL_SKIPS
+        };
+        let highScore = parseInt(localStorage.getItem(GAME_CONFIG.HIGH_SCORE_KEY) || '0');
+        let achievements = [];
+
+        // Initialize game with improved semantic naming and visual effects
+        /**
+         * Initialize the educational game session
+         * Sets up game state, shuffles animals, and loads first question
+         * Implements Fisher-Yates shuffle for fair randomization
+         */
+        function initGame() {
+            updateHighScoreDisplay();
+            resetPowerupInventory();
+
+            // Initialize DOM element cache for performance
+            initializeDOMElementCache();
+
+            // Shuffle and select random animals using Fisher-Yates algorithm
+            const shuffledAnimalsCollection = shuffleArray([...animals]);
+            const questionCountForCurrentMode = gameMode === 'survival' ?
+                GAME_CONFIG.SURVIVAL_INITIAL_QUESTIONS :
+                GAME_CONFIG.TOTAL_QUESTIONS;
+            gameQuestions = shuffledAnimalsCollection.slice(0, questionCountForCurrentMode);
+
+            // Reset game state variables
+            currentQuestionIndex = 0;
+            score = 0;
+            streak = 0;
+            maxStreak = 0;
+            achievements = [];
+
+            updateScoreBoardDisplay();
+            loadNextQuestion();
+        }
+
+        /**
+         * Select and initialize game mode with lazy loading support
+         * Implements dynamic mode switching with loading states for better UX
+         * @param {string} mode - The game mode to activate ('classic', 'speed', 'survival', 'quiz', 'habitat', 'sounds')
+         */
+        async function selectMode(mode) {
+            // Clear any existing timer before mode switch to prevent memory leaks
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+
+            gameMode = mode;
+
+            // Update UI to reflect active mode with smooth transition
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.setAttribute('aria-pressed', 'false');
+            });
+            event.target.classList.add('active');
+            event.target.setAttribute('aria-pressed', 'true');
+
+            // Check if it's an interactive game mode requiring lazy loading
+            if (mode === 'habitat' || mode === 'sounds') {
+                // Show loading skeleton while interactive features load
+                const gameAreaElement = document.getElementById('gameArea');
+                showLoadingSkeleton(gameAreaElement);
+
+                try {
+                    // TODO: [OPTIMIZATION] Replace with dynamic import: const { InteractiveFeatures } = await import('./interactive-features.js');
+                    // For now, use already-loaded module with minimal loading state for UX consistency
+                    if (window.interactiveFeatures && typeof window.interactiveFeatures.startGame === 'function') {
+                        // Small delay for visual feedback (ensures skeleton is visible)
+                        await new Promise(resolve => setTimeout(resolve, 150));
+                        gameAreaElement.innerHTML = '';
+                        await window.interactiveFeatures.startGame(mode);
+                    } else {
+                        throw new Error('Interactive features module not loaded');
+                    }
+                } catch (error) {
+                    console.error('Failed to load interactive game mode:', error);
+                    showErrorMessage(gameAreaElement, 'Failed to load game. Please try again.');
+                    return;
+                }
+
+                // Hide regular game elements with smooth fade
+                const scoreBoardElement = document.querySelector('.score-board');
+                if (scoreBoardElement) {
+                    scoreBoardElement.style.transition = 'opacity 0.3s ease';
+                    scoreBoardElement.style.opacity = '0';
+                    setTimeout(() => {
+                        scoreBoardElement.style.display = 'none';
+                        scoreBoardElement.style.opacity = '1';
+                    }, 300);
+                }
+                return;
+            }
+
+            // Show regular game elements for standard modes with smooth fade-in
+            const scoreBoardElement = document.querySelector('.score-board');
+            if (scoreBoardElement) {
+                scoreBoardElement.style.display = 'flex';
+                scoreBoardElement.style.opacity = '0';
+                setTimeout(() => {
+                    scoreBoardElement.style.transition = 'opacity 0.3s ease';
+                    scoreBoardElement.style.opacity = '1';
+                }, 10);
+            }
+
+            // Update total questions display with semantic naming
+            const totalQuestionsDisplayElement = document.getElementById('totalQuestions');
+            if (totalQuestionsDisplayElement) {
+                totalQuestionsDisplayElement.textContent = mode === 'survival' ? '∞' : GAME_CONFIG.TOTAL_QUESTIONS;
+            }
+
+            // Show/hide timer based on mode with smooth transition
+            const timerContainerElement = document.getElementById('timerContainer');
+            if (timerContainerElement) {
+                timerContainerElement.style.transition = 'opacity 0.3s ease, height 0.3s ease';
+                if (mode === 'speed') {
+                    timerContainerElement.style.display = 'block';
+                    setTimeout(() => {
+                        timerContainerElement.style.opacity = '1';
+                    }, 10);
+                } else {
+                    timerContainerElement.style.opacity = '0';
+                    setTimeout(() => {
+                        timerContainerElement.style.display = 'none';
+                    }, 300);
+                }
+            }
+
+            // Initialize game with loading state
+            await initializeGameWithLoadingState();
+        }
+
+        /**
+         * Display loading skeleton for better perceived performance
+         * @param {HTMLElement} containerElement - The container to show skeleton in
+         */
+        function showLoadingSkeleton(containerElement) {
+            containerElement.innerHTML = `
+                <div class="skeleton-loader skeleton-animal" role="status" aria-live="polite" aria-label="Loading game..."></div>
+                <div class="options" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                    <div class="skeleton-loader skeleton-option"></div>
+                    <div class="skeleton-loader skeleton-option"></div>
+                    <div class="skeleton-loader skeleton-option"></div>
+                    <div class="skeleton-loader skeleton-option"></div>
+                </div>
+            `;
+        }
+
+        /**
+         * Display error message with user-friendly UI
+         * @param {HTMLElement} containerElement - The container to show error in
+         * @param {string} errorMessage - The error message to display
+         */
+        function showErrorMessage(containerElement, errorMessage) {
+            containerElement.innerHTML = `
+                <div style="padding: 40px; text-align: center; background: #fff3cd; border-radius: 15px; border: 3px solid #ffc107;">
+                    <p style="font-size: 1.3em; color: #856404; margin-bottom: 20px;">⚠️ ${errorMessage}</p>
+                    <button class="restart-btn" onclick="location.reload()">Retry</button>
+                </div>
+            `;
+        }
+
+        /**
+         * Initialize game with loading state for better UX
+         */
+        async function initializeGameWithLoadingState() {
+            // Show brief loading indicator for smooth transition
+            const gameAreaElement = document.getElementById('gameArea');
+            if (gameAreaElement) {
+                gameAreaElement.classList.add('loading-state');
+            }
+
+            // Small delay for visual feedback
+            await new Promise(resolve => setTimeout(resolve, 150));
+
+            initGame();
+
+            // Remove loading state
+            if (gameAreaElement) {
+                gameAreaElement.classList.remove('loading-state');
+            }
+        }
+
+        /**
+         * Update high score display in the UI
+         * Retrieves from localStorage and updates DOM with visual feedback
+         */
+        function updateHighScoreDisplay() {
+            const highScoreElement = document.getElementById('highScore');
+            if (highScoreElement) {
+                highScoreElement.textContent = `🏆 High Score: ${highScore}`;
+                // Add micro-interaction: subtle pulse when high score changes
+                highScoreElement.classList.add('haptic-pulse');
+                setTimeout(() => highScoreElement.classList.remove('haptic-pulse'), 300);
+            }
+        }
+
+        /**
+         * Reset powerup inventory to initial state
+         * Called at game start to give player full powerup arsenal
+         */
+        function resetPowerupInventory() {
+            powerups = {
+                hints: GAME_CONFIG.INITIAL_HINTS,
+                eliminate: GAME_CONFIG.INITIAL_ELIMINATES,
+                skip: GAME_CONFIG.INITIAL_SKIPS
+            };
+            updatePowerupButtonDisplay();
+        }
+
+        /**
+         * Update powerup button states and labels
+         * Reflects current powerup counts and disables depleted powerups
+         */
+        function updatePowerupButtonDisplay() {
+            // Use cached DOM elements for optimal performance
+            if (cachedDOMElements.hintBtn) {
+                cachedDOMElements.hintBtn.textContent = `💡 Hint (${powerups.hints})`;
+                cachedDOMElements.hintBtn.disabled = powerups.hints <= 0;
+                cachedDOMElements.hintBtn.setAttribute('aria-label', `Use hint power-up, ${powerups.hints} remaining`);
+            }
+            if (cachedDOMElements.eliminateBtn) {
+                cachedDOMElements.eliminateBtn.textContent = `❌ Eliminate (${powerups.eliminate})`;
+                cachedDOMElements.eliminateBtn.disabled = powerups.eliminate <= 0;
+                cachedDOMElements.eliminateBtn.setAttribute('aria-label', `Eliminate wrong answers, ${powerups.eliminate} remaining`);
+            }
+            if (cachedDOMElements.skipBtn) {
+                cachedDOMElements.skipBtn.textContent = `⏭️ Skip (${powerups.skip})`;
+                cachedDOMElements.skipBtn.disabled = powerups.skip <= 0;
+                cachedDOMElements.skipBtn.setAttribute('aria-label', `Skip question, ${powerups.skip} remaining`);
+            }
+        }
+
+        /**
+         * Load and display the next question with smooth transitions
+         * Implements question generation, option randomization, and visual effects
+         */
+        function loadNextQuestion() {
+            if (gameMode === 'survival') {
+                if (currentQuestionIndex >= gameQuestions.length) {
+                    // Dynamically add more animals for endless survival mode
+                    const additionalAnimalsForSurvival = [...animals]
+                        .sort(() => Math.random() - 0.5)
+                        .slice(0, GAME_CONFIG.SURVIVAL_BATCH_SIZE);
+                    gameQuestions.push(...additionalAnimalsForSurvival);
+                }
+            } else if (currentQuestionIndex >= GAME_CONFIG.TOTAL_QUESTIONS) {
+                endGame();
+                return;
+            }
+
+            currentAnimal = gameQuestions[currentQuestionIndex];
+
+            // Make current animal globally accessible for audio playback
+            window.currentAnimal = currentAnimal;
+
+            // Select question type for quiz mode (randomized for variety)
+            if (gameMode === 'quiz') {
+                currentQuestionType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
+            } else {
+                currentQuestionType = 'name';
+            }
+
+            // Set up question UI elements based on type
+            setupQuestionDisplay();
+
+            // Start countdown timer for speed mode
+            if (gameMode === 'speed') {
+                startCountdownTimer();
+            }
+
+            // Generate and display answer options with animations
+            generateAnswerOptionsForCurrentQuestion();
+
+            // Clear feedback and disable next button using cached elements
+            if (cachedDOMElements.feedback) cachedDOMElements.feedback.textContent = '';
+            if (cachedDOMElements.nextBtn) cachedDOMElements.nextBtn.disabled = true;
+
+            // Clear any previous answer selection
+            if (window.realAnimalSounds && window.realAnimalSounds.clearSelection) {
+                window.realAnimalSounds.clearSelection();
+            }
+
+            // Update question progress counter with animation
+            if (cachedDOMElements.currentQuestion) {
+                cachedDOMElements.currentQuestion.textContent = currentQuestionIndex + 1;
+                // Add micro-interaction: number bump
+                PerformanceUtils.animateScoreBump(cachedDOMElements.currentQuestion);
+            }
+
+            // Add engaging animal animation for kindergarten appeal
+            addAnimalEntranceAnimation();
+        }
+
+        /**
+         * Setup question display elements based on question type
+         * Renders different question templates for name, habitat, diet, and sound questions
+         */
+        function setupQuestionDisplay() {
+            // Use cached DOM elements for optimal performance
+            if (!cachedDOMElements.animalEmoji || !cachedDOMElements.questionElement) {
+                initializeDOMElementCache();
+            }
+
+            const animalEmojiElement = cachedDOMElements.animalEmoji;
+            const questionTextElement = cachedDOMElements.questionElement;
+
+            // Configure question based on type with appropriate emoji and text
+            switch (currentQuestionType) {
+                case 'name':
+                    animalEmojiElement.textContent = currentAnimal.emoji;
+                    questionTextElement.textContent = 'What animal is this?';
+                    break;
+                case 'fact':
+                    animalEmojiElement.textContent = currentAnimal.emoji;
+                    questionTextElement.textContent = 'Learn about this animal!';
+                    break;
+                case 'habitat':
+                    animalEmojiElement.textContent = currentAnimal.emoji;
+                    questionTextElement.textContent = 'Where does this animal live?';
+                    break;
+                case 'diet':
+                    animalEmojiElement.textContent = currentAnimal.emoji;
+                    questionTextElement.textContent = 'What does this animal eat?';
+                    break;
+            }
+        }
+
+        /**
+         * Add engaging entrance animation to animal emoji
+         * Uses randomized animations (roar, jump, shake) for variety and engagement
+         */
+        function addAnimalEntranceAnimation() {
+            // Use cached DOM element for optimal performance
+            if (!cachedDOMElements.animalEmoji) {
+                initializeDOMElementCache();
+            }
+
+            const animalEmojiElement = cachedDOMElements.animalEmoji;
+            if (!animalEmojiElement) return;
+
+            // Randomly select animation for visual variety
+            const animationVariants = ['roar', 'jump', 'shake'];
+            const selectedAnimation = animationVariants[Math.floor(Math.random() * animationVariants.length)];
+
+            // Apply animation with smooth transition
+            animalEmojiElement.className = 'animal-emoji ' + selectedAnimation;
+
+            // Remove animation class after completion to allow re-triggering
+            setTimeout(() => {
+                animalEmojiElement.className = 'animal-emoji';
+            }, GAME_CONFIG.ANIMATION_DURATION);
+        }
+
+        /**
+         * Start countdown timer for speed mode
+         * Implements visual countdown with gradient progress bar and automatic timeout
+         * TODO: [OPTIMIZATION] Add audio countdown beeps for last 3 seconds
+         */
+        function startCountdownTimer() {
+            timeLeft = GAME_CONFIG.TIMER_SECONDS;
+
+            // Use cached DOM elements for optimal performance
+            if (!cachedDOMElements.timerFill || !cachedDOMElements.timerText) {
+                initializeDOMElementCache();
+            }
+
+            const timerFillElement = cachedDOMElements.timerFill;
+            const timerTextElement = cachedDOMElements.timerText;
+
+            // Clear any existing timer to prevent multiple intervals
+            if (timer) {
+                clearInterval(timer);
+            }
+
+            // Update timer every second with smooth animations
+            timer = setInterval(() => {
+                timeLeft--;
+                const remainingTimePercentage = (timeLeft / GAME_CONFIG.TIMER_SECONDS) * 100;
+
+                // Update visual progress bar with smooth transition
+                if (timerFillElement) {
+                    timerFillElement.style.width = remainingTimePercentage + '%';
+                    // Add animated gradient effect
+                    timerFillElement.classList.add('animated-progress');
+
+                    // Visual urgency cue: Change color when time is running out
+                    if (timeLeft <= 3) {
+                        timerFillElement.style.background = 'linear-gradient(90deg, #FF6347, #FF4500)';
+                    }
+                }
+
+                // Update time display text
+                if (timerTextElement) {
+                    timerTextElement.textContent = `Time: ${timeLeft}s`;
+                    // Add visual urgency: Pulse effect when low on time
+                    if (timeLeft <= 3) {
+                        timerTextElement.classList.add('haptic-pulse');
+                        setTimeout(() => timerTextElement.classList.remove('haptic-pulse'), 300);
+                    }
+                }
+
+                // Handle timeout
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    timer = null;
+
+                    // Trigger timeout sound effect
+                    if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
+                        window.realAnimalSounds.playUISound('timeout');
+                    }
+
+                    // Auto-submit with timeout indicator
+                    if (window.realAnimalSounds && window.realAnimalSounds.selectOption) {
+                        window.realAnimalSounds.selectOption('TIME_UP');
+                    }
+
+                    // Enable next button
+                    if (cachedDOMElements.nextBtn) {
+                        cachedDOMElements.nextBtn.disabled = false;
+                    }
+                }
+            }, 1000);
+        }
+
+        /**
+         * Generate answer options for current question
+         * Creates interactive buttons with staggered animations
+         * Uses semantic naming for better code readability
+         * TODO: [OPTIMIZATION] Memoize options generation for repeated animals
+         */
+        function generateAnswerOptionsForCurrentQuestion() {
+            // Use cached DOM element for better performance
+            if (!cachedDOMElements.optionsContainer) {
+                initializeDOMElementCache();
+            }
+            const answerOptionsContainer = cachedDOMElements.optionsContainer;
+            if (!answerOptionsContainer) return;
+
+            // Clear existing options with animation-friendly approach
+            answerOptionsContainer.innerHTML = '';
+
+            // Get correct answer based on question type
+            const correctAnswerText = determineCorrectAnswerForQuestionType();
+            const incorrectAnswerOptions = generateIncorrectAnswerOptionsPool();
+
+            // Randomly select wrong answers
+            const selectedIncorrectAnswers = selectRandomIncorrectAnswers(
+                incorrectAnswerOptions,
+                GAME_CONFIG.WRONG_OPTIONS_COUNT
+            );
+
+            // Combine and shuffle all options
+            const allAnswerOptions = shuffleArray([correctAnswerText, ...selectedIncorrectAnswers]);
+
+            // Create option buttons with enhanced UX
+            allAnswerOptions.forEach((answerText, index) => {
+                const optionButton = createAnswerOptionButton(answerText, currentAnimal, index);
+                answerOptionsContainer.appendChild(optionButton);
+            });
+        }
+
+        /**
+         * Determine correct answer based on current question type
+         * @returns {string} The correct answer text
+         */
+        function determineCorrectAnswerForQuestionType() {
+            switch (currentQuestionType) {
+                case 'name': return currentAnimal.name;
+                case 'fact': return currentAnimal.fact;
+                case 'habitat': return currentAnimal.habitat;
+                case 'diet': return currentAnimal.diet;
+                default: return currentAnimal.name;
+            }
+        }
+
+        /**
+         * Generate pool of incorrect answer options
+         * Uses Set for deduplication and better performance
+         * @returns {Array<string>} Array of incorrect answers
+         */
+        function generateIncorrectAnswerOptionsPool() {
+            // Validate question type and default to 'name' if invalid
+            const validTypes = ['name', 'fact', 'habitat', 'diet'];
+            const prop = validTypes.includes(currentQuestionType) ? currentQuestionType : 'name';
+            const currentValue = currentAnimal[prop];
+
+            return [...new Set(
+                animals
+                    .filter(animal => animal[prop] !== currentValue)
+                    .map(animal => animal[prop])
+            )];
+        }
+
+        /**
+         * Randomly select incorrect answers from pool
+         * @param {Array<string>} incorrectAnswersPool - Pool of incorrect answers
+         * @param {number} count - Number of incorrect answers to select
+         * @returns {Array<string>} Selected incorrect answers
+         */
+        function selectRandomIncorrectAnswers(incorrectAnswersPool, count) {
+            const shuffled = shuffleArray([...incorrectAnswersPool]);
+            return shuffled.slice(0, count);
+        }
+
+        /**
+         * Create an answer option button with enhanced UX
+         * @param {string} answerText - The answer text to display
+         * @param {Object} animalData - The animal data for emoji display
+         * @param {number} index - Button index for stagger animation
+         * @returns {HTMLButtonElement} The created button element
+         */
+        function createAnswerOptionButton(answerText, animalData, index) {
+            const buttonElement = document.createElement('button');
+            buttonElement.className = 'option-btn';
+            buttonElement.dataset.value = answerText;
+
+            // Add emoji for visual recognition (helps non-readers)
+            if (currentQuestionType === 'name') {
+                const matchingAnimal = animals.find(a => a.name === answerText);
+                buttonElement.textContent = `${matchingAnimal?.emoji || ''} ${answerText}`;
+            } else {
+                buttonElement.textContent = answerText;
+            }
+
+            // Attach event handler with animation
+            buttonElement.onclick = function () {
+                handleAnswerSelection(answerText, buttonElement);
+            };
+
+            // Accessibility improvements
+            buttonElement.setAttribute('aria-label', `Select answer: ${answerText}`);
+            buttonElement.setAttribute('tabindex', '0');
+
+            return buttonElement;
+        }
+
+        /**
+         * Shuffle array using Fisher-Yates algorithm
+         * @param {Array} array - Array to shuffle
+         * @returns {Array} Shuffled array
+         */
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        /**
+         * Handle answer selection with immediate feedback
+         * Renamed from handleOptionClick for better semantic meaning
+         * @param {string} selectedAnswerText - The selected answer text
+         * @param {HTMLButtonElement} selectedButton - The clicked button element
+         */
+        function handleAnswerSelection(selectedAnswerText, selectedButton) {
+            // Immediately process the selected answer
+            processAnswerSubmission(selectedAnswerText, selectedButton);
+
+            // Auto-advance to next question after showing feedback (optimistic UI)
+            setTimeout(() => {
+                currentQuestionIndex++;
+                loadNextQuestion();
+            }, GAME_CONFIG.AUTO_ADVANCE_DELAY);
+        }
+
+        // Legacy function name for backward compatibility
+        const handleOptionClick = handleAnswerSelection;
+
+        /**
+         * Process answer submission and provide immediate feedback
+         * Renamed from selectOption for better semantic clarity
+         * @param {string} selectedAnswerText - The answer selected by user
+         * @param {HTMLButtonElement} selectedButtonElement - The button that was clicked
+         */
+        function processAnswerSubmission(selectedAnswerText, selectedButtonElement) {
+            const correctAnswerText = getCorrectAnswer();
+            const isAnswerCorrect = selectedAnswerText === correctAnswerText;
+            const allAnswerButtons = document.querySelectorAll('.option-btn');
+
+            // Clear timer for speed mode
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+
+            // Disable all buttons to prevent multiple clicks (optimistic UI lock)
+            allAnswerButtons.forEach(buttonElement => {
+                buttonElement.disabled = true;
+                if (buttonElement.dataset.value === correctAnswerText) {
+                    buttonElement.classList.add('correct');
+                } else if (buttonElement === selectedButtonElement && !isAnswerCorrect) {
+                    buttonElement.classList.add('incorrect');
+                }
+            });
+
+            // Play animal pronunciation sound when answer is selected
+            if (currentQuestionType === 'name' && window.realAnimalSounds && window.realAnimalSounds.playAnimalSound) {
+                window.realAnimalSounds.playAnimalSound(selectedAnswerText);
+            }
+
+            // Update score and streak with visual feedback
+            if (isAnswerCorrect && selectedAnswerText !== 'TIME_UP') {
+                let earnedPoints = GAME_CONFIG.POINTS_PER_CORRECT;
+
+                // Time bonus for speed mode
+                if (gameMode === 'speed' && timeLeft > GAME_CONFIG.SPEED_BONUS_THRESHOLD) {
+                    earnedPoints += (timeLeft - GAME_CONFIG.SPEED_BONUS_THRESHOLD) * GAME_CONFIG.SPEED_BONUS_MULTIPLIER;
+                }
+
+                score += earnedPoints;
+                streak++;
+                maxStreak = Math.max(maxStreak, streak);
+
+                displaySuccessFeedback();
+                playSuccessSound();
+
+                // Visual celebration effects
+                createParticles();
+
+                // Show combo indicator for streaks
+                if (streak >= GAME_CONFIG.COMBO_THRESHOLD) {
+                    showComboIndicator();
+                    showConfetti();
+                }
+
+                // Check achievements
+                checkAchievements();
+            } else {
+                if (gameMode === 'survival') {
+                    endGame();
+                    return;
+                }
+                streak = 0;
+                displayFailureFeedback(selectedAnswerText);
+                playFailureSound();
+            }
+
+            updateScoreBoardDisplay();
+        }
+
+        // Legacy function name for backward compatibility
+        const selectOption = processAnswerSubmission;
+
+        /**
+         * Display success feedback with positive reinforcement
+         */
+        function displaySuccessFeedback() {
+            const feedbackText = `Excellent! ${getFeedbackMessage()}! 🎉`;
+            showFeedback(feedbackText, 'correct');
+        }
+
+        /**
+         * Display failure feedback with encouragement
+         * @param {string} selectedAnswerText - The incorrect answer selected
+         */
+        function displayFailureFeedback(selectedAnswerText) {
+            const prefix = selectedAnswerText === 'TIME_UP' ? 'Time\'s up!' : 'Oops!';
+            const feedbackText = `${prefix} ${getFeedbackMessage()}. Try again next time! 😊`;
+            showFeedback(feedbackText, 'incorrect');
+        }
+
+        /**
+         * Play success sound with error handling
+         */
+        function playSuccessSound() {
+            if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
+                window.realAnimalSounds.playUISound('correct');
+            }
+        }
+
+        /**
+         * Play failure sound with error handling
+         */
+        function playFailureSound() {
+            if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
+                window.realAnimalSounds.playUISound('incorrect');
+            }
+        }
+
+        // Simplified next question function - now only used by power-ups like skip
+        function nextQuestion() {
+            currentQuestionIndex++;
+            loadNextQuestion();
+        }
+
+        function getCorrectAnswer() {
+            switch (currentQuestionType) {
+                case 'name': return currentAnimal.name;
+                case 'fact': return currentAnimal.fact;
+                case 'habitat': return currentAnimal.habitat;
+                case 'diet': return currentAnimal.diet;
+                default: return currentAnimal.name;
+            }
+        }
+
+        function getFeedbackMessage() {
+            switch (currentQuestionType) {
+                case 'name': return `It's a ${currentAnimal.name}`;
+                case 'fact': return currentAnimal.fact;
+                case 'habitat': return `${currentAnimal.name}s live in the ${currentAnimal.habitat}`;
+                case 'diet': return `${currentAnimal.name}s are ${currentAnimal.diet}s`;
+                default: return `It's a ${currentAnimal.name}`;
+            }
+        }
+
+        function createParticles() {
+            // TODO: Use DocumentFragment for batch DOM insertion (already implemented for confetti)
+            // TODO: Consider using CSS animations instead of JavaScript for better performance
+            // TODO: Use object pooling to reuse particle elements instead of creating new ones
+            const animalDisplayContainer = document.querySelector('.animal-display');
+            const particleColors = ['#FFD700', '#FF69B4', '#87CEEB', '#98FB98', '#FFA500'];
+            for (let particleIndex = 0; particleIndex < GAME_CONFIG.PARTICLE_COUNT; particleIndex++) {
+                const particleElement = document.createElement('div');
+                particleElement.className = 'particle';
+                particleElement.style.left = Math.random() * 100 + '%';
+                particleElement.style.backgroundColor = particleColors[Math.floor(Math.random() * particleColors.length)];
+                particleElement.style.width = particleElement.style.height = Math.random() * 10 + 5 + 'px';
+                animalDisplayContainer.appendChild(particleElement);
+
+                setTimeout(() => particleElement.remove(), GAME_CONFIG.PARTICLE_LIFETIME);
+            }
+        }
+
+        function showComboIndicator() {
+            const comboIndicatorElement = document.createElement('div');
+            comboIndicatorElement.className = 'combo-indicator';
+            comboIndicatorElement.textContent = `🔥 ${streak} COMBO! 🔥`;
+            document.body.appendChild(comboIndicatorElement);
+
+            setTimeout(() => comboIndicatorElement.remove(), GAME_CONFIG.INDICATOR_LIFETIME);
+        }
+
+        function checkAchievements() {
+            const newAchievements = [];
+
+            if (streak === GAME_CONFIG.STREAK_ACHIEVEMENT_5 && !achievements.includes('streak5')) {
+                newAchievements.push({ text: '🔥 5 Streak Master!', id: 'streak5' });
+            }
+            if (streak === GAME_CONFIG.STREAK_ACHIEVEMENT_10 && !achievements.includes('streak10')) {
+                newAchievements.push({ text: '🌟 Perfect Streak!', id: 'streak10' });
+            }
+            if (score >= GAME_CONFIG.SCORE_ACHIEVEMENT_100 && !achievements.includes('score100')) {
+                newAchievements.push({ text: '💯 Century Club!', id: 'score100' });
+            }
+
+            newAchievements.forEach(achievement => {
+                achievements.push(achievement.id);
+                showAchievement(achievement.text);
+            });
+        }
+
+        function showAchievement(achievementText) {
+            const achievementElement = document.createElement('div');
+            achievementElement.className = 'achievement';
+            achievementElement.textContent = achievementText;
+            document.body.appendChild(achievementElement);
+
+            setTimeout(() => achievementElement.remove(), GAME_CONFIG.ACHIEVEMENT_LIFETIME);
+        }
+
+        function showFeedback(feedbackMessage, feedbackType) {
+            // Use cached DOM element for better performance
+            if (!cachedDOMElements.feedback) {
+                initializeDOMElementCache();
+            }
+            const feedbackElement = cachedDOMElements.feedback;
+            if (feedbackElement) {
+                feedbackElement.textContent = feedbackMessage;
+                feedbackElement.className = `feedback ${feedbackType}-feedback`;
+            }
+        }
+
+        /**
+         * Update score board display with engaging micro-interaction animations
+         * Uses cached DOM elements and requestAnimationFrame for smooth 60fps updates
+         * Implements bump animations for visual feedback on score changes
+         */
+        const updateScoreBoardDisplay = PerformanceUtils.rafSchedule(() => {
+            // Use cached DOM elements for optimal performance
+            if (cachedDOMElements.score) {
+                cachedDOMElements.score.textContent = score;
+                // Add visual feedback: bump animation when score increases
+                PerformanceUtils.animateScoreBump(cachedDOMElements.score.parentElement);
+            }
+            if (cachedDOMElements.streak) {
+                cachedDOMElements.streak.textContent = streak;
+                // Celebrate streaks with visual feedback
+                if (streak > 0) {
+                    PerformanceUtils.animateScoreBump(cachedDOMElements.streak.parentElement);
+                }
+                // Add streak indicator for big achievements
+                if (streak >= GAME_CONFIG.COMBO_THRESHOLD) {
+                    cachedDOMElements.streak.parentElement.classList.add('haptic-pulse');
+                    setTimeout(() => {
+                        cachedDOMElements.streak.parentElement.classList.remove('haptic-pulse');
+                    }, 300);
+                }
+            }
+        });
+
+        function endGame() {
+            // Save high score
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem(GAME_CONFIG.HIGH_SCORE_KEY, highScore.toString());
+                showAchievement('🏆 NEW HIGH SCORE! 🏆');
+            }
+
+            const gameArea = document.getElementById('gameArea');
+            const questionsAnswered = gameMode === 'survival' ? currentQuestionIndex : GAME_CONFIG.TOTAL_QUESTIONS;
+            const percentage = Math.round((score / (questionsAnswered * GAME_CONFIG.POINTS_PER_CORRECT)) * 100);
+
+            let message = '';
+            let emoji = '';
+
+            if (percentage >= GAME_CONFIG.EXCELLENT_THRESHOLD) {
+                message = 'Amazing! You\'re a Wild Animal Expert! 🌟';
+                emoji = '🏆';
+                showConfetti();
+            } else if (percentage >= GAME_CONFIG.GREAT_THRESHOLD) {
+                message = 'Great job! You know your animals well! 👏';
+                emoji = '🥈';
+            } else if (percentage >= GAME_CONFIG.GOOD_THRESHOLD) {
+                message = 'Good effort! Keep learning about animals! 👍';
+                emoji = '🥉';
+            } else {
+                message = 'Nice try! Practice makes perfect! 😊';
+                emoji = '🌟';
+            }
+
+            let modeText = '';
+            switch (gameMode) {
+                case 'survival': modeText = `Survival Mode - ${currentQuestionIndex} questions!`; break;
+                case 'speed': modeText = 'Speed Mode - Time Challenge!'; break;
+                case 'quiz': modeText = 'Quiz Mode - Mixed Questions!'; break;
+                default: modeText = 'Classic Mode Completed!';
+            }
+
+            gameArea.innerHTML = `
+                <div class="game-complete">
+                    <div style="font-size: 4em; margin-bottom: 20px;">${emoji}</div>
+                    <h2 style="color: #2E8B57; margin-bottom: 15px;">${message}</h2>
+                    <div style="font-size: 1.3em; margin-bottom: 15px; color: #8B4513;">
+                        ${modeText}
+                    </div>
+                    <div style="font-size: 1.5em; margin-bottom: 15px;">
+                        Final Score: <strong>${score}</strong>
+                    </div>
+                    <div style="font-size: 1.2em; margin-bottom: 15px;">
+                        Best Streak: <strong>${maxStreak}</strong> 🔥
+                    </div>
+                    <div style="font-size: 1.1em; margin-bottom: 20px; color: #666;">
+                        High Score: <strong>${highScore}</strong> 🏆
+                    </div>
+                    <button class="restart-btn" onclick="restartGame()">
+                        🎮 Play Again!
+                    </button>
+                </div>            `;
+
+            if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
+                window.realAnimalSounds.playUISound('complete');
+            }
+
+
+        }
+
+        // Power-up functions
+        function useHint() {
+            if (powerups.hints <= 0) return;
+
+            powerups.hints--;
+            updatePowerupButtons();
+
+            const correctAnswer = getCorrectAnswer();
+            const feedback = document.getElementById('feedback');
+            feedback.textContent = `💡 Hint: The answer starts with "${correctAnswer.charAt(0)}"`;
+            feedback.className = 'feedback';
+            if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
+                window.realAnimalSounds.playUISound('powerup');
+            }
+
+
+
+        }
+
+        function eliminateWrong() {
+            if (powerups.eliminate <= 0) return;
+
+            powerups.eliminate--;
+            updatePowerupButtons();
+
+            const correctAnswer = getCorrectAnswer();
+            const allOptionButtons = Array.from(document.querySelectorAll('.option-btn'));
+            const incorrectOptionButtons = allOptionButtons.filter(optionButton => optionButton.dataset.value !== correctAnswer);
+
+            // Remove wrong answers based on config
+            for (let eliminateIndex = 0; eliminateIndex < GAME_CONFIG.ELIMINATE_COUNT && eliminateIndex < incorrectOptionButtons.length; eliminateIndex++) {
+                incorrectOptionButtons[eliminateIndex].style.opacity = '0.3';
+                incorrectOptionButtons[eliminateIndex].disabled = true;
+            }
+
+            if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
+                window.realAnimalSounds.playUISound('powerup');
+            }
+
+        }
+
+        function skipQuestion() {
+            if (powerups.skip <= 0) return;
+
+            powerups.skip--;
+            updatePowerupButtons();
+
+            // Clear timer
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+
+            showFeedback('⏭️ Question skipped!', 'correct');
+            score += GAME_CONFIG.POINTS_FOR_SKIP;
+            updateScoreBoardDisplay();
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                loadNextQuestion();
+            }, GAME_CONFIG.SKIP_DELAY);
+
+            if (window.realAnimalSounds && window.realAnimalSounds.playUISound) {
+                window.realAnimalSounds.playUISound('powerup');
+            }
+        }
+
+        function restartGame() {
+            // Reset all buttons styles
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('correct', 'incorrect');
+                btn.disabled = false;
+            });
+
+            // Clear any existing timer
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+
+            // Restore game area
+            document.getElementById('gameArea').innerHTML = `
+                <div class="timer-container" id="timerContainer" style="display: none;">
+                    <div class="timer-bar">
+                        <div class="timer-fill" id="timerFill"></div>
+                    </div>
+                    <div class="timer-text" id="timerText">Time: 10s</div>
+                </div>
+                
+                <div class="powerups" id="powerups">
+                    <button class="powerup-btn" id="hintBtn" onclick="useHint()">💡 Hint (3)</button>
+                    <button class="powerup-btn" id="eliminateBtn" onclick="eliminateWrong()">❌ Eliminate (2)</button>
+                    <button class="powerup-btn" id="skipBtn" onclick="skipQuestion()">⏭️ Skip (1)</button>
+                </div>
+                
+                <div class="animal-display">
+                    <div class="animal-emoji" id="animalEmoji">🦁</div>
+                    <div class="question" id="question">What animal is this?</div>
+                </div>
+                
+                <div class="options" id="options">
+                    <!-- Options will be generated by JavaScript -->
+                </div>
+                
+                <div class="feedback" id="feedback"></div>
+                
+                <button class="next-btn" id="nextBtn" onclick="nextQuestion()" disabled>Next Animal →</button>
+            `;
+
+            // Reinitialize DOM cache after innerHTML change
+            initializeDOMElementCache();
+
+            // Reattach click listener for the new emoji element
+            if (cachedDOMElements.animalEmoji) {
+                cachedDOMElements.animalEmoji.onclick = playCurrentAnimalSound;
+                cachedDOMElements.animalEmoji.classList.add('clickable');
+            }
+
+            // Show/hide timer based on current mode
+            const timerContainer = document.getElementById('timerContainer');
+            if (gameMode === 'speed') {
+                timerContainer.style.display = 'block';
+            }
+
+            initGame();
+        }
+
+        function showConfetti() {
+            const celebrationContainer = document.getElementById('celebration');
+            celebrationContainer.innerHTML = '';
+
+            // Use DocumentFragment for better performance
+            const confettiFragment = document.createDocumentFragment();
+            const confettiColors = ['#FFD700', '#FF69B4', '#87CEEB', '#98FB98', '#FFA500'];
+            const createdConfettiElements = [];
+
+            for (let confettiIndex = 0; confettiIndex < GAME_CONFIG.CONFETTI_COUNT; confettiIndex++) {
+                const confettiElement = document.createElement('div');
+                confettiElement.className = 'confetti';
+                confettiElement.style.left = Math.random() * 100 + '%';
+                confettiElement.style.animationDelay = Math.random() * 3 + 's';
+                confettiElement.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                confettiFragment.appendChild(confettiElement);
+                createdConfettiElements.push(confettiElement);
+            }
+
+            celebrationContainer.appendChild(confettiFragment);
+
+            // Remove all confetti at once after configured delay
+            setTimeout(() => {
+                createdConfettiElements.forEach(confettiElement => confettiElement.remove());
+            }, GAME_CONFIG.CONFETTI_LIFETIME);
+        }
+
+        function toggleSound() {
+            const isEnabled = window.realAnimalSounds && window.realAnimalSounds.toggleSound ?
+                window.realAnimalSounds.toggleSound() : false;
+
+            // Toggle both sound systems
+
+
+            const soundBtn = document.getElementById('soundBtn');
+            soundBtn.textContent = isEnabled ? '🔊' : '🔇';
+        }
+
+        // Play current animal sound when display is clicked
+        function playCurrentAnimalSound() {
+            if (window.currentAnimal && window.animalSounds) {
+                window.animalSounds.playAnimalSound(window.currentAnimal.name);
+
+                // Add haptic feedback for mobile devices
+                if ('vibrate' in navigator) {
+                    navigator.vibrate(100);
+                }
+
+                // Add visual feedback
+                const animalEmoji = document.getElementById('animalEmoji');
+                if (animalEmoji) {
+                    animalEmoji.style.transform = 'scale(1.2)';
+                    animalEmoji.style.transition = 'transform 0.2s ease';
+                    setTimeout(() => {
+                        animalEmoji.style.transform = 'scale(1)';
+                    }, GAME_CONFIG.SCALE_RESET_DELAY);
+                }
+            }
+        }
+
+        // Add keyboard support for animal display
+        function setupKeyboardSupport() {
+            const animalDisplay = document.querySelector('.animal-display');
+            if (animalDisplay) {
+                animalDisplay.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        playCurrentAnimalSound();
+                    }
+                });
+            }
+        }
+
+        // Initialize the game when page loads
+        window.onload = () => {
+            updateHighScoreDisplay();
+            initGame();
+            setupKeyboardSupport();
+
+            // Initialize sound module
+            if (window.realAnimalSounds) {
+                console.log('Real Animal sounds module loaded successfully');
+                if (window.realAnimalSounds.isReady && window.realAnimalSounds.isReady()) {
+                    console.log('Web Audio API initialized successfully');
+                } else {
+                    console.log('Using fallback audio system');
+                }
+            } else {
+                console.warn('Real Animal sounds module not available')
+
+
+            }
+        };
+
+        // Ensure clicking the emoji repeats the current animal sound
+    </script>
+</body>
+
 </html>
