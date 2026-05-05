@@ -1,8 +1,8 @@
-## 🎵 Implementation Summary - Real Animal Sounds
+## 🎵 Implementation Summary - Animal Audio
 
 ### What's Complete ✅
 
-I've successfully implemented a **real animal sounds system** for your Wild Animals Adventure app. Here's what was done:
+I've implemented an **animal audio system** for your Wild Animals Adventure app. It supports generated local placeholders for testing and lets you replace them later with higher-quality licensed recordings.
 
 ---
 
@@ -11,6 +11,7 @@ I've successfully implemented a **real animal sounds system** for your Wild Anim
 ### New Audio Module (`audio/sound-loader.js`)
 
 - Loads MP3 audio files from `audio/sounds/` directory
+- Accepts WAV placeholders for local testing
 - Uses Web Audio API for high-quality playback
 - Automatically caches decoded audio for fast replay
 - Falls back to text-to-speech if MP3 files not found
@@ -29,7 +30,7 @@ I've successfully implemented a **real animal sounds system** for your Wild Anim
 ```
 audio/
 ├── sound-loader.js (NEW - audio system module)
-└── sounds/ (NEW - ready for MP3 files)
+└── sounds/ (NEW - generated placeholders plus replacement-ready files)
 ```
 
 ---
@@ -52,42 +53,30 @@ audio/
 
 ### Quick Setup (3 Steps)
 
-**Step 1: Get Audio Files** (Choose ONE method)
+**Step 1: Generate Placeholder Files**
 
-**Option A - Google Translate (Easiest & Free)**
-
-```
-1. Go to translate.google.com
-2. Type "roar"
-3. Click speaker icon 🔊
-4. Right-click, "Save audio as..."
-5. Name it "roar.mp3"
-6. Save to audio/sounds/
-7. Repeat for other sounds
+```bash
+bash generate-audio.sh
 ```
 
-**Option B - Record Yourself**
+This creates low-fidelity placeholder `.wav` files plus compatibility `.mp3` copies so the audio path works immediately.
 
-- Use Audacity (free software)
-- Record yourself saying "roar", "waddle-waddle", etc.
-- Export each as MP3
-- Save to audio/sounds/
+**Step 2: Upgrade Quality With Licensed Sources**
 
-**Option C - Online TTS Service**
-
-- Use Natural Reader, Google Cloud TTS, etc.
-- Generate voice recordings
-- Download MP3 files
-- Save to audio/sounds/
+- Prefer your own recordings, Freesound `CC0` or `CC-BY`, or compatible Wikimedia Commons files.
+- Do not scrape arbitrary audio websites. Licensing, attribution, login requirements, and bot protection make that unsafe and unreliable.
+- Freesound automation is possible only with an API key and proper license filtering.
 
 **Step 2: Organize Files**
 
 ```
 audio/sounds/
+├── roar.wav
 ├── roar.mp3
+├── waddle-waddle.wav
 ├── waddle-waddle.mp3
 ├── trumpet.mp3
-└── ... (18 total)
+└── ... (26 mapped sounds total)
 ```
 
 **Step 3: Test**
@@ -127,7 +116,8 @@ Map of animals to sounds:
 
 ## ✨ Key Features
 
-✅ **Human Voice Audio** - Plays MP3 files with human voice recordings
+✅ **Local Placeholder Audio** - Immediate test coverage without external downloads
+✅ **Upgradeable Quality** - Replace any file with a better licensed recording later
 ✅ **Automatic Fallback** - Uses text-to-speech if MP3 not found
 ✅ **Smart Caching** - First play loads audio, subsequent plays are instant
 ✅ **Web Audio API** - Professional audio quality and control
@@ -188,10 +178,10 @@ When a user clicks on an animal:
 
 ## ⏳ What You Need to Do
 
-1. Choose a method to create/download MP3 files (3 options provided)
-2. Create ~18-20 MP3 files with human voice saying animal sounds
-3. Place MP3 files in `audio/sounds/` directory
-4. Test in your browser
+1. Run `bash generate-audio.sh` to create the placeholder set
+2. Test in your browser
+3. Replace placeholder files with curated licensed recordings if you want better quality
+4. Track attribution and licenses for any downloaded assets
 5. Deploy to production
 
 **Estimated time: 1-2 hours** (mostly creating audio files)
@@ -202,8 +192,8 @@ When a user clicks on an animal:
 
 1. **Read** `QUICK_AUDIO_SETUP.md` (5 minutes) - Visual guide
 2. **Choose** one of 3 audio creation methods
-3. **Create** or download MP3 files (30-60 minutes)
-4. **Place** in `audio/sounds/` directory
+3. **Generate** placeholder files with `bash generate-audio.sh`
+4. **Replace** any low-quality placeholders with licensed recordings
 5. **Test** - Start server, visit localhost:8080, click animals
 6. **Deploy** - Upload to your server
 

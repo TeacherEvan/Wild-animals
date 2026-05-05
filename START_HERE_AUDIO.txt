@@ -3,7 +3,7 @@
 
 ## ✅ IMPLEMENTATION COMPLETE
 
-Your Wild Animals Adventure app now has a complete real animal sounds system ready to play human voice recordings saying "roar", "waddle-waddle", and other animal sounds!
+Your Wild Animals Adventure app now has a complete animal audio system with generated placeholder assets for testing and a clean path to swap in higher-quality licensed recordings.
 
 ---
 
@@ -41,40 +41,35 @@ setup-audio.bat & generate-audio.sh ... Setup helper scripts
 ```
 audio/
 ├── sound-loader.js ..................... (NEW) Audio system
-└── sounds/ ............................ (NEW) Ready for MP3 files
-    ├── (awaiting: roar.mp3)
-    ├── (awaiting: waddle-waddle.mp3)
-    └── ... (18 more files)
+└── sounds/ ............................ (NEW) Generated placeholders plus replacement-ready files
+   ├── roar.mp3 / roar.wav
+   ├── waddle-waddle.mp3 / waddle-waddle.wav
+   └── ... (26 mapped sounds total)
 ```
 
 ---
 
 ## 🎯 HOW TO GET AUDIO FILES
 
-### Method 1: Google Translate ⭐ EASIEST
+### Method 1: Generate Local Placeholders ⭐ FASTEST
 ```
-1. translate.google.com
-2. Type "roar"
-3. Click speaker icon 🔊
-4. Right-click → Save audio as "roar.mp3"
-5. Save to: audio/sounds/
-6. Repeat for 18 sounds
+1. Run: bash generate-audio.sh
+2. Placeholder .wav and .mp3 files appear in audio/sounds/
+3. Use these only for local testing
 ```
 
-### Method 2: Record Yourself
+### Method 2: Replace With Licensed Recordings
 ```
-1. Download Audacity (free)
-2. Record yourself saying each sound
-3. Export as MP3
-4. Save to: audio/sounds/
+1. Prefer your own recordings, Freesound CC0/CC-BY, or compatible Wikimedia Commons files
+2. Keep attribution/license notes for anything you download
+3. Replace matching filenames in audio/sounds/
 ```
 
-### Method 3: Online TTS Service
+### Method 3: Avoid Arbitrary Scraping
 ```
-1. Natural Reader, Google TTS, AWS Polly, etc.
-2. Generate voice audio
-3. Download as MP3
-4. Save to: audio/sounds/
+1. Xeno-Canto is bot-protected and not reliable for unattended scraping
+2. Freesound supports licensed downloads, but API access requires login and an API key
+3. Random audio sites may not permit reuse or automation
 ```
 
 ---
@@ -105,15 +100,17 @@ Place these MP3 files in `audio/sounds/`:
 
 ## ⚡ QUICK START
 
-### 1. Create Audio Files (30-60 min)
-Use one of 3 methods above to create/download MP3 files
+### 1. Generate Audio Files (under 1 min)
+Run the helper script to create the placeholder set
 
-### 2. Place Files (2 min)
+### 2. Replace Files If Needed (optional)
 ```
 audio/sounds/
 ├── roar.mp3
+├── roar.wav
 ├── waddle-waddle.mp3
-└── ... (18 total)
+├── waddle-waddle.wav
+└── ... (26 mapped sounds total)
 ```
 
 ### 3. Test (5 min)
@@ -123,13 +120,13 @@ python -m http.server 8080
 # Click animals → hear sounds!
 ```
 
-**Total Time: ~1-2 hours** (mostly creating audio files)
+**Total Time: under 1 minute for placeholders, longer only if you replace them with better assets**
 
 ---
 
 ## ✨ KEY FEATURES
 
-✅ Human voice animal sounds
+✅ Local animal audio playback
 ✅ Automatic text-to-speech fallback
 ✅ Fast audio caching
 ✅ Web Audio API quality
@@ -152,8 +149,8 @@ python -m http.server 8080
 2. **QUICK_AUDIO_SETUP.md** (5 min)
    → Visual guide with folder diagrams
 
-3. **Create your audio files** (30-60 min)
-   → Use one of 3 methods
+3. **Generate placeholder audio** (under 1 min)
+   → Run `bash generate-audio.sh`
 
 4. **Place in audio/sounds/** (2 min)
    → Organize MP3 files
@@ -177,7 +174,7 @@ python -m http.server 8080
 | Browser support | ✅ All modern |
 | Mobile support | ✅ Full |
 | Production ready | ✅ Yes |
-| Audio files | ⏳ Awaiting you |
+| Audio files | ✅ Placeholder set generated; quality upgrades optional |
 
 ---
 
@@ -186,8 +183,8 @@ python -m http.server 8080
 - **Code Added:** 1 module (~7 KB)
 - **Code Modified:** 2 files (minimal)
 - **Documentation:** 9 comprehensive files
-- **Setup Methods:** 3 different ways
-- **Audio Files Needed:** 18-20
+- **Setup Methods:** 1 instant placeholder path + licensed replacements
+- **Audio Files Needed:** 26 mapped sounds covered
 - **Breaking Changes:** 0
 - **Backward Compatibility:** 100%
 - **Development Time:** Complete ✅
@@ -200,11 +197,11 @@ python -m http.server 8080
 ### Immediate (Today)
 1. ✅ Read README_AUDIO_IMPLEMENTATION.md
 2. ✅ Read QUICK_AUDIO_SETUP.md
-3. ✅ Choose audio creation method
+3. ✅ Generate placeholder audio
 
 ### Short Term (This Week)
-4. ✅ Create/download MP3 files
-5. ✅ Place in audio/sounds/
+4. ✅ Replace placeholder files only if better licensed audio is available
+5. ✅ Keep files in audio/sounds/
 6. ✅ Test locally
 
 ### Long Term (Before Deploy)
@@ -221,7 +218,7 @@ User clicks animal
         ↓
 System checks for audio/sounds/[sound].mp3
         ↓
-┌─ Found: Play MP3 (human voice!) ────────┐
+┌─ Found: Play local audio file ──────────┐
 │                                          │
 └─ Not found: Fall back to text-to-speech─┘
         ↓
@@ -248,9 +245,9 @@ User hears sound! 🎵
 
 ## ✅ REQUIREMENTS MET
 
-✅ Implements real animal sounds
-✅ Human voice saying "roar"
-✅ Human voice saying "waddle-waddle"
+✅ Implements local animal audio playback
+✅ Placeholder files generated for mapped sounds
+✅ Upgrade path for higher-quality licensed recordings
 ✅ Works with Web Audio API
 ✅ Graceful text-to-speech fallback
 ✅ No server dependencies

@@ -9,8 +9,9 @@
 ls audio/sounds/  (Mac/Linux)
 dir audio\sounds  (Windows)
 
-# You should see MP3 files like:
+# You should see MP3 or WAV files like:
 # roar.mp3
+# roar.wav
 # waddle-waddle.mp3
 # etc.
 ```
@@ -51,7 +52,7 @@ dir audio\sounds  (Windows)
 
 ---
 
-### 🔊 Problem: Hearing text-to-speech instead of human voice
+### 🔊 Problem: Hearing text-to-speech instead of a local audio file
 
 **This means:** Audio files not found or Web Audio API issue
 
@@ -74,9 +75,9 @@ dir audio\sounds\roar.mp3  (Windows)
 
 **Step 3: Check file format**
 
-- Only MP3 format supported
-- ❌ WAV, OGG, AAC, M4A won't work
-- Convert files using Audacity or similar tool
+- MP3 is preferred
+- Generated WAV placeholders are also supported
+- ❌ OGG, AAC, M4A still won't work
 
 **Step 4: Verify Web Audio API available**
 Open browser console and run:
@@ -137,6 +138,30 @@ this.masterVolume = 0.8; // Change to 0.5, 1.0, etc.
 
 ---
 
+### 🎛️ Problem: The current sounds are low quality or synthetic
+
+This is expected if you are still using the generated placeholder assets.
+
+What to do:
+
+1. Keep the generated files for local test coverage only.
+2. Replace individual files with better recordings using the same filenames.
+3. Prefer your own recordings, Freesound `CC0` or `CC-BY`, or compatible Wikimedia Commons files.
+4. Track attribution and license obligations for anything you download.
+
+What not to do:
+
+- Do not scrape arbitrary sound websites unless you have clear permission and a compliant access path.
+- Do not assume a public URL means the file is reusable.
+
+Source checks completed during implementation:
+
+- Xeno-Canto is bot-protected, so unattended scraping is not reliable here.
+- Freesound offers an API, but it requires authentication with an API key and per-file license compliance.
+- Wikimedia Commons can help for some files, but coverage is inconsistent.
+
+---
+
 ### 🌐 Problem: Works locally but not on live server
 
 **Most common issue:** CORS (Cross-Origin Resource Sharing) errors
@@ -171,9 +196,9 @@ Access to XMLHttpRequest... has been blocked by CORS policy
 **Steps:**
 
 1. Get audio file or create it:
-   - Use Google Translate method
-   - Or record yourself
-   - Or use TTS service
+   - Use `bash generate-audio.sh` for a placeholder
+   - Or record it yourself
+   - Or replace it with a curated licensed recording
 
 2. Save with correct filename to `audio/sounds/`
 

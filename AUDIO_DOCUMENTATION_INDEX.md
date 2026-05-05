@@ -43,7 +43,7 @@
 **Directories Created:**
 
 - `audio/` - Audio module directory
-- `audio/sounds/` - Ready for MP3 files (you add these)
+- `audio/sounds/` - Generated placeholders plus replacement-ready audio files
 
 ---
 
@@ -51,28 +51,26 @@
 
 ### Step 1: Create Audio Files
 
-Use one of three methods to create MP3 files with human voice:
-
-- **Google Translate** (easiest, free)
-- **Record yourself** (Audacity)
-- **TTS service** (Natural Reader, etc.)
+Use `bash generate-audio.sh` for immediate local placeholders, then replace them with curated licensed recordings if you want better quality.
 
 **Files needed:**
 
-```
-roar.mp3
-waddle-waddle.mp3
-trumpet.mp3
-(+ 15 more)
+```text
+roar.mp3 / roar.wav
+waddle-waddle.mp3 / waddle-waddle.wav
+trumpet.mp3 / trumpet.wav
+(+ 23 more mapped sounds)
 ```
 
 ### Step 2: Place Files in `audio/sounds/`
 
 ```
 audio/sounds/
+├── roar.wav
 ├── roar.mp3
+├── waddle-waddle.wav
 ├── waddle-waddle.mp3
-└── ... (18 files total)
+└── ... (26 mapped sounds total)
 ```
 
 ### Step 3: Test
@@ -80,7 +78,7 @@ audio/sounds/
 ```bash
 python -m http.server 8080
 # Open http://localhost:8080/
-# Click an animal - should hear human voice!
+# Click an animal - should hear a local audio file or fall back to speech
 ```
 
 ---
@@ -114,37 +112,28 @@ python -m http.server 8080
 
 ## 🎤 Three Ways to Create Audio Files
 
-### Method 1: Google Translate (Easiest & Free)
+### Method 1: Generate Local Placeholders (Fastest)
 
-```
-1. Go to translate.google.com
-2. Type "roar"
-3. Click speaker icon
-4. Right-click speaker, save audio
-5. Name it "roar.mp3"
-6. Save to audio/sounds/
-7. Repeat for other animals
+```bash
+bash generate-audio.sh
 ```
 
-### Method 2: Record Yourself
+This creates placeholder `.wav` files and compatibility `.mp3` copies.
+
+### Method 2: Replace With Licensed Recordings
 
 ```
-1. Download Audacity (free)
-2. Click red circle to record
-3. Say "roar" into microphone
-4. File → Export → MP3
-5. Save to audio/sounds/
-6. Repeat for other animals
+1. Use your own recordings, Freesound `CC0` or `CC-BY`, or compatible Wikimedia Commons files
+2. Keep any required attribution alongside the source notes
+3. Replace matching filenames in audio/sounds/
 ```
 
-### Method 3: Online TTS Service
+### Method 3: Avoid Arbitrary Scraping
 
 ```
-1. Use Natural Reader, Google TTS, etc.
-2. Enter text (e.g., "roar")
-3. Generate audio
-4. Download MP3
-5. Save to audio/sounds/
+1. Xeno-Canto is bot-protected and unsuitable for unattended scraping here
+2. Freesound is viable only with an API key, login, and license filtering
+3. Public availability is not the same as reuse permission
 ```
 
 ---
@@ -159,7 +148,8 @@ Click animal
 SoundLoader checks for audio/sounds/[sound].mp3
     ↓
 If found: Play MP3 using Web Audio API
-If not found: Fall back to text-to-speech
+If not found: Try WAV placeholder
+If still not found: Fall back to text-to-speech
     ↓
 Display animations
     ↓
@@ -181,7 +171,8 @@ See `AUDIO_IMPLEMENTATION.md` table for complete list.
 
 ## ✨ Key Features
 
-✅ **Human Voice Audio** - Play MP3 files with voice recordings
+✅ **Local Placeholder Audio** - Immediate test coverage without external downloads
+✅ **Upgradeable Quality** - Replace files with better licensed recordings later
 ✅ **Text-to-Speech Fallback** - Works even without audio files
 ✅ **Smart Caching** - Fast playback after first load
 ✅ **Web Audio API** - High-quality audio control
@@ -304,12 +295,12 @@ Edit `audio/sound-loader.js`:
 ## ✅ Checklist for Setup
 
 - [ ] Read `QUICK_AUDIO_SETUP.md`
-- [ ] Folder `audio/sounds/` exists (auto-created)
-- [ ] Created or downloaded MP3 files
-- [ ] Files in `audio/sounds/` with correct names
-- [ ] Started web server (python -m http.server 8080)
-- [ ] Tested in browser at localhost:8080
-- [ ] Clicked animals and heard sounds
+- [x] Folder `audio/sounds/` exists (auto-created)
+- [x] Created local placeholder WAV files
+- [x] Files in `audio/sounds/` with correct base names
+- [x] Started web server (python -m http.server 8080)
+- [x] Tested in browser at localhost:8080
+- [x] Clicked animals and heard sounds
 - [ ] Checked that all 20 animals work (or see why fallback to TTS)
 - [ ] Deploy to production
 
@@ -322,7 +313,7 @@ Edit `audio/sound-loader.js`:
 | **Module**          | `audio/sound-loader.js` (7 KB)    |
 | **Audio Format**    | MP3 (browser compatible)          |
 | **Storage**         | `audio/sounds/` directory         |
-| **Files Needed**    | 18-20 MP3 files (user provides)   |
+| **Files Needed**    | Generated placeholders; optional licensed replacements |
 | **Fallback**        | Text-to-speech if MP3 missing     |
 | **Browser Support** | All modern browsers               |
 | **Mobile**          | Full support (iOS, Android)       |
@@ -338,13 +329,19 @@ Edit `audio/sound-loader.js`:
    - Mac/Linux: Review `generate-audio.sh`
    - Everyone: Read `QUICK_AUDIO_SETUP.md`
 
-2. **Create audio files** (3 methods available)
+2. **Generate placeholder files** with `bash generate-audio.sh`
 
-3. **Place MP3 files** in `audio/sounds/`
+3. **Optionally replace** low-quality files with licensed recordings
 
 4. **Test** in your browser
 
 5. **Deploy** when ready
+
+## Source Policy
+
+- Generated placeholders are for local testing.
+- Replace them only with recordings you created yourself or assets with clear compatible licenses.
+- Do not rely on arbitrary scraping. Xeno-Canto is bot-protected, Freesound requires API/login handling and license compliance, and Commons coverage is incomplete.
 
 ---
 
@@ -380,7 +377,7 @@ real-animal-sounds.js (modified) ....... Uses SoundLoader
 
 ## 💡 Pro Tips
 
-1. **Google Translate Method** is fastest and free
+1. **Generated placeholders** are the fastest way to validate the audio path
 2. **Mono MP3s** are half the file size of stereo
 3. **128 kbps bitrate** is fine for voice (smaller files)
 4. **Test locally first** before deploying
@@ -389,7 +386,7 @@ real-animal-sounds.js (modified) ....... Uses SoundLoader
 
 ---
 
-**Ready to add human voice animal sounds? Start with `QUICK_AUDIO_SETUP.md`!**
+**Ready to validate audio quickly or swap in better licensed files? Start with `QUICK_AUDIO_SETUP.md`!**
 
 ---
 

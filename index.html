@@ -9,6 +9,10 @@
     <title>Wild Animals Adventure</title>
     <link rel="manifest" href="manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preload" href="audio/sound-loader.js?v=20260505c" as="script">
+    <link rel="preload" href="animal-sounds.js?v=20260505c" as="script">
+    <link rel="preload" href="real-animal-sounds.js?v=20260505c" as="script">
+    <link rel="preload" href="interactive-features.js?v=20260505c" as="script">
     <!-- Ensure stylesheet is applied -->
     <link rel="stylesheet" href="styles.css">
     <!-- Defer main scripts for performance; already included later in file -->
@@ -114,27 +118,27 @@
         <div class="high-score" id="highScore" role="status" aria-live="polite">🏆 High Score: 0</div>
 
         <div class="mode-selection" id="modeSelection" role="group" aria-label="Game mode selection">
-            <button class="mode-btn active" onclick="selectMode('classic')"
+            <button class="mode-btn active" onclick="selectMode('classic', this)"
                 aria-label="Select Classic Mode with 10 questions" aria-pressed="true">
                 🎯 Classic Mode<br><small>10 Questions</small>
             </button>
-            <button class="mode-btn" onclick="selectMode('speed')" aria-label="Select Speed Mode time challenge"
+            <button class="mode-btn" onclick="selectMode('speed', this)" aria-label="Select Speed Mode time challenge"
                 aria-pressed="false">
                 ⚡ Speed Mode<br><small>Time Challenge</small>
             </button>
-            <button class="mode-btn" onclick="selectMode('survival')" aria-label="Select Survival Mode play until wrong"
+            <button class="mode-btn" onclick="selectMode('survival', this)" aria-label="Select Survival Mode play until wrong"
                 aria-pressed="false">
                 🔥 Survival Mode<br><small>Until Wrong</small>
             </button>
-            <button class="mode-btn" onclick="selectMode('quiz')" aria-label="Select Quiz Mode with mixed questions"
+            <button class="mode-btn" onclick="selectMode('quiz', this)" aria-label="Select Quiz Mode with mixed questions"
                 aria-pressed="false">
                 🧠 Quiz Mode<br><small>Mixed Questions</small>
             </button>
-            <button class="mode-btn" onclick="selectMode('habitat')"
+            <button class="mode-btn" onclick="selectMode('habitat', this)"
                 aria-label="Select Habitat Match drag and drop game" aria-pressed="false">
                 🏠 Habitat Match<br><small>Drag & Drop</small>
             </button>
-            <button class="mode-btn" onclick="selectMode('sounds')" aria-label="Select Sound Game guess animal sounds"
+            <button class="mode-btn" onclick="selectMode('sounds', this)" aria-label="Select Sound Game guess animal sounds"
                 aria-pressed="false">
                 🔊 Sound Game<br><small>Guess Sounds</small>
             </button>
@@ -193,10 +197,14 @@
 
     <div class="celebration" id="celebration"></div>
 
+    <script defer src="audio/sound-loader.js?v=20260505c"></script>
+    <script defer src="animal-sounds.js?v=20260505c"></script>
+    <script defer src="real-animal-sounds.js?v=20260505c"></script>
+    <script defer src="interactive-features.js?v=20260505c"></script>
     <script>
-        // TODO: Extract this game logic to separate module files (GameEngine.js, ScoreManager.js, QuestionGenerator.js)
-        // TODO: Implement dynamic imports for game modes to reduce initial bundle size
-        // TODO: Add TypeScript types for better development experience
+        // Backlog: split the inline game logic into smaller modules once behavior is stable.
+        // Backlog: convert the interactive/audio globals to ESM before introducing dynamic imports.
+        // Backlog: add type checking after the runtime shape is extracted from the page script.
 
         /**
          * Performance Utility Functions
@@ -297,6 +305,7 @@
 
             // Timing delays (in milliseconds)
             AUTO_ADVANCE_DELAY: 2000,
+            CLASSIC_NEXT_DELAY: 900,
             PARTICLE_LIFETIME: 2000,
             INDICATOR_LIFETIME: 2000,
             ACHIEVEMENT_LIFETIME: 3000,
@@ -456,8 +465,9 @@
          * Select and initialize game mode with lazy loading support
          * Implements dynamic mode switching with loading states for better UX
          * @param {string} mode - The game mode to activate ('classic', 'speed', 'survival', 'quiz', 'habitat', 'sounds')
+         * @param {HTMLButtonElement | null} triggerButton - The mode button that initiated the switch
          */
-        async function selectMode(mode) {
+        async function selectMode(mode, triggerButton = null) {
             // Clear any existing timer before mode switch to prevent memory leaks
             if (timer) {
                 clearInterval(timer);
@@ -471,8 +481,10 @@
                 btn.classList.remove('active');
                 btn.setAttribute('aria-pressed', 'false');
             });
-            event.target.classList.add('active');
-            event.target.setAttribute('aria-pressed', 'true');
+            if (triggerButton) {
+                triggerButton.classList.add('active');
+                triggerButton.setAttribute('aria-pressed', 'true');
+            }
 
             // Check if it's an interactive game mode requiring lazy loading
             if (mode === 'habitat' || mode === 'sounds') {
@@ -481,8 +493,8 @@
                 showLoadingSkeleton(gameAreaElement);
 
                 try {
-                    // TODO: [OPTIMIZATION] Replace with dynamic import: const { InteractiveFeatures } = await import('./interactive-features.js');
-                    // For now, use already-loaded module with minimal loading state for UX consistency
+                    // Future optimization: lazy-load this once interactive-features.js exports an importable module.
+                    // For now, rely on the deferred global so interactive modes stay available without an ESM rewrite.
                     if (window.interactiveFeatures && typeof window.interactiveFeatures.startGame === 'function') {
                         // Small delay for visual feedback (ensures skeleton is visible)
                         await new Promise(resolve => setTimeout(resolve, 150));
@@ -986,11 +998,12 @@
 
             if (questionAdvanceTimeout) {
                 clearTimeout(questionAdvanceTimeout);
+                questionAdvanceTimeout = null;
             }
 
             if (gameMode === 'classic') {
-                startQuestionTransitionCue();
-                startClassicQuestionTransition();
+                prepareClassicNextStep();
+                return;
             }
 
             // Auto-advance to next question after showing feedback (optimistic UI)
@@ -1036,7 +1049,7 @@
 
             // Play animal pronunciation sound when answer is selected
             if (currentQuestionType === 'name' && window.realAnimalSounds && window.realAnimalSounds.playAnimalSound) {
-                window.realAnimalSounds.playAnimalSound(selectedAnswerText);
+                window.realAnimalSounds.playAnimalSound(correctAnswerText);
             }
 
             // Update score and streak with visual feedback
@@ -1052,7 +1065,7 @@
                 streak++;
                 maxStreak = Math.max(maxStreak, streak);
 
-                displaySuccessFeedback();
+                displaySuccessFeedback(correctAnswerText);
                 playSuccessSound();
 
                 // Visual celebration effects
@@ -1072,7 +1085,7 @@
                     return;
                 }
                 streak = 0;
-                displayFailureFeedback(selectedAnswerText);
+                displayFailureFeedback(selectedAnswerText, correctAnswerText);
                 playFailureSound();
             }
 
@@ -1085,8 +1098,9 @@
         /**
          * Display success feedback with positive reinforcement
          */
-        function displaySuccessFeedback() {
-            const feedbackText = `Excellent! ${getFeedbackMessage()}! 🎉`;
+        function displaySuccessFeedback(correctAnswerText) {
+            const classicPrompt = gameMode === 'classic' ? ' Tap next when you are ready.' : '';
+            const feedbackText = `Excellent! ${getFeedbackMessage(correctAnswerText)}!${classicPrompt} 🎉`;
             showFeedback(feedbackText, 'correct');
         }
 
@@ -1094,9 +1108,10 @@
          * Display failure feedback with encouragement
          * @param {string} selectedAnswerText - The incorrect answer selected
          */
-        function displayFailureFeedback(selectedAnswerText) {
+        function displayFailureFeedback(selectedAnswerText, correctAnswerText) {
             const prefix = selectedAnswerText === 'TIME_UP' ? 'Time\'s up!' : 'Oops!';
-            const feedbackText = `${prefix} ${getFeedbackMessage()}. Try again next time! 😊`;
+            const classicPrompt = gameMode === 'classic' ? ' Tap next when you are ready.' : ' Try again next time!';
+            const feedbackText = `${prefix} ${getFeedbackMessage(correctAnswerText)}.${classicPrompt} 😊`;
             showFeedback(feedbackText, 'incorrect');
         }
 
@@ -1120,6 +1135,29 @@
 
         // Simplified next question function - now only used by power-ups like skip
         function nextQuestion() {
+            if (questionAdvanceTimeout) {
+                clearTimeout(questionAdvanceTimeout);
+                questionAdvanceTimeout = null;
+            }
+
+            if (gameMode === 'classic') {
+                startQuestionTransitionCue(GAME_CONFIG.CLASSIC_NEXT_DELAY, 'Next animal is getting ready...');
+                startClassicQuestionTransition(GAME_CONFIG.CLASSIC_NEXT_DELAY);
+
+                if (cachedDOMElements.nextBtn) {
+                    cachedDOMElements.nextBtn.disabled = true;
+                    cachedDOMElements.nextBtn.textContent = 'Next Animal →';
+                    cachedDOMElements.nextBtn.setAttribute('aria-label', 'Proceed to the next animal');
+                }
+
+                questionAdvanceTimeout = setTimeout(() => {
+                    currentQuestionIndex++;
+                    loadNextQuestion();
+                    questionAdvanceTimeout = null;
+                }, GAME_CONFIG.CLASSIC_NEXT_DELAY);
+                return;
+            }
+
             currentQuestionIndex++;
             loadNextQuestion();
         }
@@ -1134,20 +1172,30 @@
             }
         }
 
-        function getFeedbackMessage() {
+        function getFeedbackMessage(correctAnswerText = currentAnimal.name) {
             switch (currentQuestionType) {
-                case 'name': return `It's a ${currentAnimal.name}`;
+                case 'name': return `It is a ${correctAnswerText}`;
                 case 'fact': return currentAnimal.fact;
                 case 'habitat': return `${currentAnimal.name}s live in the ${currentAnimal.habitat}`;
                 case 'diet': return `${currentAnimal.name}s are ${currentAnimal.diet}s`;
-                default: return `It's a ${currentAnimal.name}`;
+                default: return `It is a ${correctAnswerText}`;
+            }
+        }
+
+        function prepareClassicNextStep() {
+            if (!cachedDOMElements.nextBtn) {
+                initializeDOMElementCache();
+            }
+
+            if (cachedDOMElements.nextBtn) {
+                cachedDOMElements.nextBtn.disabled = false;
+                cachedDOMElements.nextBtn.textContent = 'Next Animal When I\'m Ready →';
+                cachedDOMElements.nextBtn.setAttribute('aria-label', 'Go to the next animal when ready');
             }
         }
 
         function createParticles() {
-            // TODO: Use DocumentFragment for batch DOM insertion (already implemented for confetti)
-            // TODO: Consider using CSS animations instead of JavaScript for better performance
-            // TODO: Use object pooling to reuse particle elements instead of creating new ones
+            // Future optimization: pool particle nodes or move more of this effect into CSS if the effect grows.
             const animalDisplayContainer = document.querySelector('.animal-display');
             const particleColors = ['#FFD700', '#FF69B4', '#87CEEB', '#98FB98', '#FFA500'];
             for (let particleIndex = 0; particleIndex < GAME_CONFIG.PARTICLE_COUNT; particleIndex++) {
@@ -1211,7 +1259,7 @@
             }
         }
 
-        function startQuestionTransitionCue() {
+        function startQuestionTransitionCue(duration = GAME_CONFIG.AUTO_ADVANCE_DELAY, label = 'Next animal is getting ready...') {
             if (!cachedDOMElements.questionTransition || !cachedDOMElements.questionTransitionFill || !cachedDOMElements.questionTransitionLabel) {
                 initializeDOMElementCache();
             }
@@ -1224,7 +1272,7 @@
                 return;
             }
 
-            transitionLabelElement.textContent = 'Next animal is getting ready...';
+            transitionLabelElement.textContent = label;
             transitionElement.classList.add('active');
             transitionElement.setAttribute('aria-hidden', 'false');
 
@@ -1232,7 +1280,7 @@
             transitionFillElement.style.transform = 'scaleX(0)';
 
             requestAnimationFrame(() => {
-                transitionFillElement.style.transition = `transform ${GAME_CONFIG.AUTO_ADVANCE_DELAY}ms linear`;
+                transitionFillElement.style.transition = `transform ${duration}ms linear`;
                 transitionFillElement.style.transform = 'scaleX(1)';
             });
         }
@@ -1241,7 +1289,7 @@
             return gameMode === 'classic';
         }
 
-        function startClassicQuestionTransition() {
+        function startClassicQuestionTransition(duration = GAME_CONFIG.AUTO_ADVANCE_DELAY) {
             const gameAreaElement = document.getElementById('gameArea');
             if (!gameAreaElement) {
                 return;
@@ -1254,7 +1302,7 @@
             gameAreaElement.classList.add('classic-transition-active');
             gameAreaElement.classList.remove('classic-question-entering');
 
-            const exitDelay = Math.max(350, GAME_CONFIG.AUTO_ADVANCE_DELAY - 420);
+            const exitDelay = Math.max(240, duration - 320);
             questionExitTimeout = setTimeout(() => {
                 gameAreaElement.classList.add('classic-question-exiting');
                 questionExitTimeout = null;

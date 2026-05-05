@@ -1,8 +1,8 @@
-# 🎵 Real Animal Sounds Implementation - COMPLETE ✅
+# 🎵 Animal Audio Implementation - COMPLETE ✅
 
 ## Summary
 
-Your Wild Animals Adventure app is now ready to play **human voice animal sounds** saying things like "roar", "waddle-waddle", and more!
+Your Wild Animals Adventure app is now ready to play local animal audio assets. It currently includes generated placeholders for testing and supports higher-quality licensed replacements later.
 
 ## What's New
 
@@ -11,6 +11,7 @@ Your Wild Animals Adventure app is now ready to play **human voice animal sounds
 - **Sound Loader Module** - Manages audio loading and playback
 - **Web Audio API Integration** - High-quality audio control
 - **Intelligent Caching** - Fast audio playback after first load
+- **Generated Placeholder Assets** - Local test files can be created instantly
 - **Text-to-Speech Fallback** - App works even without audio files
 - **Zero Breaking Changes** - All existing functionality preserved
 
@@ -19,7 +20,7 @@ Your Wild Animals Adventure app is now ready to play **human voice animal sounds
 ```
 audio/
 ├── sound-loader.js (new module)
-└── sounds/ (ready for MP3 files)
+└── sounds/ (generated placeholders plus replacement-ready files)
 ```
 
 ### 📝 Documentation Created
@@ -36,47 +37,54 @@ audio/
 2. **real-animal-sounds.js** - Updated to use SoundLoader
 3. **audio/sound-loader.js** - New sound management module
 
-## Quick Start (3 Steps)
+## Quick Start (4 Steps)
 
-### Step 1: Create Audio Files
+### Step 1: Generate Test Audio
 
-Get human voice recordings saying:
+Run the helper script:
 
-- "roar" → roar.mp3
-- "waddle-waddle" → waddle-waddle.mp3
-- (and 17 other animal sounds)
+```bash
+bash generate-audio.sh
+```
 
-**Easiest Method: Google Translate**
+This creates local placeholder `.wav` files and compatibility `.mp3` copies for every mapped sound.
 
-1. Go to translate.google.com
-2. Type "roar"
-3. Click speaker icon
-4. Right-click speaker, save audio
-5. Save as `roar.mp3` to `audio/sounds/`
-6. Repeat for other sounds
+### Step 2: Replace Any Low-Quality Placeholder Files
 
-### Step 2: Place Files
+The generated files are intentionally low fidelity and only meant for local testing.
+
+For higher-quality sound, replace individual filenames with recordings you are allowed to use, for example:
+
+- your own recordings
+- Freesound `CC0` or `CC-BY` assets with required attribution
+- compatible Wikimedia Commons files
+
+Avoid scraping arbitrary sound websites. Many do not permit automated reuse, require login, or block bot access.
+
+### Step 3: Review Files
 
 ```
 audio/sounds/
+├── roar.wav
 ├── roar.mp3
+├── waddle-waddle.wav
 ├── waddle-waddle.mp3
-└── ... (18 files total)
+└── ... (26 mapped sounds total)
 ```
 
-### Step 3: Test
+### Step 4: Test
 
 ```bash
 python -m http.server 8080
 # Open http://localhost:8080/
-# Click on an animal - should hear human voice!
+# Click on an animal - should hear a local audio file or fall back to speech
 ```
 
 ## Features
 
 ✨ **Smart Audio Management**
 
-- Loads MP3 files on demand (lazy loading)
+- Loads MP3 files on demand and accepts WAV placeholders
 - Caches decoded audio for instant replay
 - Falls back to text-to-speech if files missing
 - Handles network errors gracefully
@@ -147,7 +155,7 @@ If not found: Fall back to text-to-speech
         ↓
 Display animations and visual feedback
         ↓
-User hears human voice saying the sound!
+User hears a local audio file or the speech fallback.
 ```
 
 ## File Details
@@ -201,9 +209,9 @@ Edit `real-animal-sounds.js`:
 
 ## Requirements Met
 
-✅ Implements real animal sounds
-✅ Human voice saying "roar"
-✅ Human voice saying "waddle-waddle"
+✅ Implements local animal audio playback
+✅ Generates placeholder files for mapped sounds
+✅ Supports higher-quality replacements later
 ✅ Works with Web Audio API
 ✅ Graceful fallback to text-to-speech
 ✅ No server dependencies
@@ -277,12 +285,9 @@ python -m http.server 8080
 
 ## Next Actions
 
-1. **Create Audio Files** (using one of 3 methods)
-   - Google Translate (easiest)
-   - Record yourself
-   - Use TTS service
+1. **Generate Placeholder Files** with `bash generate-audio.sh`
 
-2. **Place MP3 Files** in `audio/sounds/`
+2. **Optionally Replace Files** in `audio/sounds/` with better licensed recordings
 
 3. **Test the App** at localhost:8080
 
@@ -308,7 +313,7 @@ All documentation is included in the repository:
 
 ## Conclusion
 
-Your Wild Animals Adventure app is now ready for **human voice animal sounds**! 🎉
+Your Wild Animals Adventure app is now ready for **local animal audio testing and licensed upgrades**. 🎉
 
 The implementation is:
 
@@ -319,7 +324,7 @@ The implementation is:
 - ✅ Production-ready
 - ✅ Easy to customize
 
-Just add MP3 files with human voice recordings to `audio/sounds/` and you're done!
+Use `bash generate-audio.sh` for immediate local testing, then replace any placeholder files with curated licensed recordings if you want better quality.
 
 ---
 

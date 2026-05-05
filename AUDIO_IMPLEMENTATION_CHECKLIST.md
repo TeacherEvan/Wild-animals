@@ -8,7 +8,7 @@
 - [x] Modified `index.html` - Added sound-loader.js script loading
 - [x] Modified `real-animal-sounds.js` - Updated to use SoundLoader
 - [x] Created `audio/` directory - Audio module container
-- [x] Created `audio/sounds/` directory - Ready for MP3 files
+- [x] Created `audio/sounds/` directory - Ready for generated placeholders and replacements
 
 ### ✅ Documentation (7 files)
 
@@ -37,46 +37,39 @@
 
 ## What You Need to Do
 
-### Phase 1: Get Audio Files (Pick ONE Method)
+### Phase 1: Get Audio Files
 
-#### Method 1: Google Translate ⭐ Easiest
+#### Method 1: Generate Placeholder Files ⭐ Fastest
 
-```
-✓ Go to translate.google.com
-✓ Type "roar"
-✓ Click speaker icon
-✓ Right-click → Save audio as...
-✓ Save as "roar.mp3" to audio/sounds/
-✓ Repeat for each of 18 sounds
+```bash
+✓ Run: bash generate-audio.sh
+✓ Verify placeholder .wav and compatibility .mp3 files were created
+✓ Use this for local testing coverage
 ```
 
-#### Method 2: Record Yourself
+#### Method 2: Replace With Licensed Recordings
 
 ```
-✓ Download Audacity (free)
-✓ Click red button to record
-✓ Say "roar" into microphone
-✓ File → Export → MP3
-✓ Save to audio/sounds/
-✓ Repeat for each sound
+✓ Use your own recordings, Freesound CC0/CC-BY, or compatible Wikimedia Commons files
+✓ Keep attribution and license notes
+✓ Replace matching filenames in audio/sounds/
 ```
 
-#### Method 3: Online TTS Service
+#### Method 3: Avoid Arbitrary Scraping
 
 ```
-✓ Use Natural Reader, Google Cloud TTS, etc.
-✓ Generate voice audio
-✓ Download MP3 files
-✓ Save to audio/sounds/
+✓ Xeno-Canto is bot-protected
+✓ Freesound automation requires API key and license filtering
+✓ Public availability does not equal reuse permission
 ```
 
 ### Phase 2: Organize Files
 
 ```
 ✓ Create folder: audio/sounds/ (might exist)
-✓ Download/create 18-20 MP3 files
+✓ Generate placeholder files or gather licensed replacements
 ✓ Name files exactly as specified in mapping
-✓ Place all MP3s in audio/sounds/
+✓ Place generated or licensed files in audio/sounds/
 ```
 
 ### Phase 3: Test
@@ -85,7 +78,7 @@
 ✓ Start web server: python -m http.server 8080
 ✓ Open http://localhost:8080/
 ✓ Click on animals
-✓ Listen for human voice OR text-to-speech fallback
+✓ Listen for local audio OR text-to-speech fallback
 ✓ Try different game modes
 ✓ Check browser console (F12) for errors
 ```
@@ -105,30 +98,30 @@
 
 ### Must Have (Used by Most Common Animals)
 
-- [ ] roar.mp3 - Used by: Lion, Tiger
-- [ ] waddle-waddle.mp3 - Used by: Penguin
-- [ ] trumpet.mp3 - Used by: Elephant
-- [ ] ooh-ooh-ah-ah.mp3 - Used by: Monkey
-- [ ] howl.mp3 - Used by: Wolf
-- [ ] growl.mp3 - Used by: Bear, Leopard (2 uses)
+- [x] roar.wav placeholder generated - Used by: Lion, Tiger
+- [x] waddle-waddle.wav placeholder generated - Used by: Penguin
+- [x] trumpet.wav placeholder generated - Used by: Elephant
+- [x] ooh-ooh-ah-ah.wav placeholder generated - Used by: Monkey
+- [x] howl.wav placeholder generated - Used by: Wolf
+- [x] growl.wav placeholder generated - Used by: Bear, Leopard (2 uses)
 
 ### Important (Common Animals)
 
-- [ ] click-click.mp3 - Used by: Dolphin
-- [ ] ribbit.mp3 - Used by: Frog
-- [ ] screech.mp3 - Used by: Eagle
-- [ ] hum.mp3 - Used by: Giraffe
-- [ ] neigh.mp3 - Used by: Zebra
-- [ ] snort.mp3 - Used by: Rhino
-- [ ] yip-yip.mp3 - Used by: Fox
+- [x] click-click.wav placeholder generated - Used by: Dolphin
+- [x] ribbit.wav placeholder generated - Used by: Frog
+- [x] screech.wav placeholder generated - Used by: Eagle
+- [x] hum.wav placeholder generated - Used by: Giraffe
+- [x] neigh.wav placeholder generated - Used by: Zebra
+- [x] snort.wav placeholder generated - Used by: Rhino
+- [x] yip-yip.wav placeholder generated - Used by: Fox
 
 ### Additional (All 20 Animals)
 
-- [ ] grunt.mp3 - Used by: Kangaroo
-- [ ] snore.mp3 - Used by: Koala
-- [ ] hoo-hoo.mp3 - Used by: Gorilla
-- [ ] splash.mp3 - Used by: Shark
-- [ ] whoosh.mp3 - Used by: Octopus
+- [x] grunt.wav placeholder generated - Used by: Kangaroo
+- [x] snore.wav placeholder generated - Used by: Koala
+- [x] hoo-hoo.wav placeholder generated - Used by: Gorilla
+- [x] splash.wav placeholder generated - Used by: Shark
+- [x] whoosh.wav placeholder generated - Used by: Octopus
 
 ---
 
@@ -154,7 +147,7 @@ Wild-animals/
 ├── audio/ (✓ NEW)
 │   ├── sound-loader.js (✓ NEW)
 │   └── sounds/ (✓ NEW)
-│       └── [awaiting MP3 files from you]
+│       └── [placeholder WAV files generated locally]
 ├── AUDIO_DOCUMENTATION_INDEX.md (✓ NEW)
 ├── AUDIO_IMPLEMENTATION_SUMMARY.md (✓ NEW)
 ├── QUICK_AUDIO_SETUP.md (✓ NEW)
@@ -171,11 +164,11 @@ Wild-animals/
 
 ### Local Testing (Before Deploy)
 
-- [ ] Web server running on localhost:8080
-- [ ] Application loads without errors
-- [ ] Browser console (F12) shows no critical errors
-- [ ] At least one MP3 file in audio/sounds/
-- [ ] Click on animals - hear sound or see fallback
+- [x] Web server running on localhost:8080
+- [x] Application loads without errors
+- [x] Browser console (F12) shows no critical errors
+- [x] Placeholder WAV files generated in audio/sounds/
+- [x] Click on animals - hear sound or see fallback
 - [ ] Sound toggle button works (🔊/🔇)
 - [ ] All 6 game modes work with audio
 - [ ] Sound stops when clicking next animal quickly

@@ -9,6 +9,7 @@ class SoundLoader {
     this.audioContext = null;
     this.masterVolume = 0.8;
     this.loadingPromises = new Map();
+    this.supportedExtensions = ["mp3", "wav"];
 
     // Initialize Web Audio API context for better audio control
     this.initAudioContext();
@@ -35,6 +36,16 @@ class SoundLoader {
       Gorilla: "hoo-hoo",
       Shark: "splash",
       Octopus: "whoosh",
+      Camel: "grunt",
+      Crocodile: "hiss",
+      Hippo: "grunt",
+      Cheetah: "chirp",
+      Parrot: "squawk",
+      Turtle: "silent",
+      Owl: "hoot",
+      Squirrel: "chatter",
+      Hedgehog: "snuffle",
+      Bee: "buzz",
     };
   }
 
@@ -93,8 +104,6 @@ class SoundLoader {
    * @private
    */
   async _loadAudioFile(soundName, cacheKey) {
-    const audioPath = `audio/sounds/${soundName}.mp3`;
-
     try {
       // Skip if no audio context
       if (!this.audioContext) {
@@ -102,20 +111,39 @@ class SoundLoader {
         return null;
       }
 
+      for (const extension of this.supportedExtensions) {
+        const audioPath = `audio/sounds/${soundName}.${extension}`;
+        const audioBuffer = await this._fetchAndDecodeAudio(audioPath);
+        if (audioBuffer) {
+          this.soundCache.set(cacheKey, audioBuffer);
+          return audioBuffer;
+        }
+      }
+
+      console.warn(`Audio file not found for ${soundName} (${this.supportedExtensions.join(", ")})`);
+      return null;
+    } catch (error) {
+      console.warn(`Failed to load audio for ${soundName}`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Fetch and decode a candidate audio file.
+   * @param {string} audioPath - Relative path to the audio file
+   * @returns {Promise<AudioBuffer|null>} Decoded audio or null when unavailable
+   */
+  async _fetchAndDecodeAudio(audioPath) {
+    try {
       const response = await fetch(audioPath);
       if (!response.ok) {
-        console.warn(`Audio file not found: ${audioPath}`);
         return null;
       }
 
       const arrayBuffer = await response.arrayBuffer();
-      const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
-
-      // Cache the decoded audio
-      this.soundCache.set(cacheKey, audioBuffer);
-      return audioBuffer;
+      return await this.audioContext.decodeAudioData(arrayBuffer);
     } catch (error) {
-      console.warn(`Failed to load audio: ${audioPath}`, error);
+      console.warn(`Failed to decode audio: ${audioPath}`, error);
       return null;
     }
   }
