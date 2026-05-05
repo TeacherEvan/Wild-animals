@@ -143,7 +143,6 @@
         ".eslintrc.js",
         ".prettierrc",
         ".babelrc",
-        ".dockerignore",
         ".gitattributes",
         ".stylelintrc",
         ".npmrc"

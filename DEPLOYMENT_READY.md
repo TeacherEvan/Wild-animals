@@ -54,8 +54,8 @@ All quality gates passed. Application is production-ready.
 
 ### Static Hosting (Recommended)
 ```bash
-# GitHub Pages, Netlify, Vercel
-# Just point to repository root
+# Publish the repository root on any static host
+# No build command required
 ```
 
 ### Local Server
@@ -69,6 +69,12 @@ npx serve .
 - All assets ready for CDN
 - External CSS enables caching
 - No build step required
+
+### Recommended Targets
+- GitHub Pages
+- Netlify
+- Vercel
+- Any static file host or CDN origin
 
 ## 📊 Final Metrics
 

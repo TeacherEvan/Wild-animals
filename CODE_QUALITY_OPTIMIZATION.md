@@ -331,6 +331,7 @@ $ npx eslint animal-sounds.js real-animal-sounds.js interactive-features.js
 - [x] Code tested in browser
 - [x] No functional regressions
 - [x] .gitignore configured
+- [x] .copilotignore configured
 - [x] Documentation updated
 - [x] Files committed and pushed
 - [x] Performance verified

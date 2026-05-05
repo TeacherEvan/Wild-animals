@@ -206,7 +206,7 @@
 - [ ] Add focus indicators with high contrast
 - [ ] Test with NVDA/JAWS screen readers
 - [ ] Add ARIA live regions for game state changes
-- [ ] Support reduced motion preferences
+- [x] Support reduced motion preferences
 
 **Impact:** High - Inclusive education for all
 
@@ -301,8 +301,14 @@
 - [ ] Add spring physics to animal bounce
 - [ ] Smooth confetti particle physics
 - [ ] Add sound wave visualization improvements
-- [ ] Implement micro-interactions for feedback
+- [x] Implement micro-interactions for feedback
 - [ ] Add celebrate animation variety
+
+### Completed In This Pass
+- [x] Added classic-mode answer commit state for clearer tap acknowledgment
+- [x] Added visible auto-advance progress cue between classic questions
+- [x] Added classic-mode question exit/entry choreography scoped to the quiz flow
+- [x] Preserved reduced-motion readability for the new classic-mode stagecraft
 
 ### Color & Contrast
 - [ ] Ensure WCAG AAA contrast ratios

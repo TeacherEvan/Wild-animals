@@ -67,7 +67,8 @@ Successfully transformed Wild Animals Adventure from a functional educational ap
 
 **Ready for immediate deployment to:**
 - GitHub Pages
-- Netlify / Vercel
+- Netlify
+- Vercel
 - AWS CloudFront
 - Any static hosting
 

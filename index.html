@@ -179,6 +179,13 @@
 
             <div class="feedback" id="feedback" role="status" aria-live="assertive"></div>
 
+            <div class="question-transition" id="questionTransition" aria-hidden="true">
+                <div class="question-transition-track">
+                    <div class="question-transition-fill" id="questionTransitionFill"></div>
+                </div>
+                <div class="question-transition-label" id="questionTransitionLabel">Next animal is getting ready...</div>
+            </div>
+
             <button class="next-btn" id="nextBtn" onclick="nextQuestion()" disabled
                 aria-label="Proceed to next question">Next Animal →</button>
         </div>
@@ -353,6 +360,9 @@
             questionElement: null,
             optionsContainer: null,
             feedback: null,
+            questionTransition: null,
+            questionTransitionFill: null,
+            questionTransitionLabel: null,
             nextBtn: null,
             timerFill: null,
             timerText: null,
@@ -371,6 +381,9 @@
             cachedDOMElements.questionElement = document.getElementById('question');
             cachedDOMElements.optionsContainer = document.getElementById('options');
             cachedDOMElements.feedback = document.getElementById('feedback');
+            cachedDOMElements.questionTransition = document.getElementById('questionTransition');
+            cachedDOMElements.questionTransitionFill = document.getElementById('questionTransitionFill');
+            cachedDOMElements.questionTransitionLabel = document.getElementById('questionTransitionLabel');
             cachedDOMElements.nextBtn = document.getElementById('nextBtn');
             cachedDOMElements.timerFill = document.getElementById('timerFill');
             cachedDOMElements.timerText = document.getElementById('timerText');
@@ -396,6 +409,9 @@
         let questionTypes = ['name', 'fact', 'habitat', 'diet'];
         let currentQuestionType = 'name';
         let timer = null;
+        let questionAdvanceTimeout = null;
+        let questionExitTimeout = null;
+        let questionEntryTimeout = null;
         let timeLeft = GAME_CONFIG.TIMER_SECONDS;
         let powerups = {
             hints: GAME_CONFIG.INITIAL_HINTS,
@@ -638,6 +654,9 @@
          * Implements question generation, option randomization, and visual effects
          */
         function loadNextQuestion() {
+            resetQuestionTransitionCue();
+            resetClassicQuestionStage();
+
             if (gameMode === 'survival') {
                 if (currentQuestionIndex >= gameQuestions.length) {
                     // Dynamically add more animals for endless survival mode
@@ -692,6 +711,10 @@
 
             // Add engaging animal animation for kindergarten appeal
             addAnimalEntranceAnimation();
+
+            if (isClassicStagecraftMode()) {
+                playClassicQuestionEntry();
+            }
         }
 
         /**
@@ -961,10 +984,20 @@
             // Immediately process the selected answer
             processAnswerSubmission(selectedAnswerText, selectedButton);
 
+            if (questionAdvanceTimeout) {
+                clearTimeout(questionAdvanceTimeout);
+            }
+
+            if (gameMode === 'classic') {
+                startQuestionTransitionCue();
+                startClassicQuestionTransition();
+            }
+
             // Auto-advance to next question after showing feedback (optimistic UI)
-            setTimeout(() => {
+            questionAdvanceTimeout = setTimeout(() => {
                 currentQuestionIndex++;
                 loadNextQuestion();
+                questionAdvanceTimeout = null;
             }, GAME_CONFIG.AUTO_ADVANCE_DELAY);
         }
 
@@ -991,6 +1024,9 @@
             // Disable all buttons to prevent multiple clicks (optimistic UI lock)
             allAnswerButtons.forEach(buttonElement => {
                 buttonElement.disabled = true;
+                if (buttonElement === selectedButtonElement) {
+                    buttonElement.classList.add('selected');
+                }
                 if (buttonElement.dataset.value === correctAnswerText) {
                     buttonElement.classList.add('correct');
                 } else if (buttonElement === selectedButtonElement && !isAnswerCorrect) {
@@ -1173,6 +1209,110 @@
                 feedbackElement.textContent = feedbackMessage;
                 feedbackElement.className = `feedback ${feedbackType}-feedback`;
             }
+        }
+
+        function startQuestionTransitionCue() {
+            if (!cachedDOMElements.questionTransition || !cachedDOMElements.questionTransitionFill || !cachedDOMElements.questionTransitionLabel) {
+                initializeDOMElementCache();
+            }
+
+            const transitionElement = cachedDOMElements.questionTransition;
+            const transitionFillElement = cachedDOMElements.questionTransitionFill;
+            const transitionLabelElement = cachedDOMElements.questionTransitionLabel;
+
+            if (!transitionElement || !transitionFillElement || !transitionLabelElement) {
+                return;
+            }
+
+            transitionLabelElement.textContent = 'Next animal is getting ready...';
+            transitionElement.classList.add('active');
+            transitionElement.setAttribute('aria-hidden', 'false');
+
+            transitionFillElement.style.transition = 'none';
+            transitionFillElement.style.transform = 'scaleX(0)';
+
+            requestAnimationFrame(() => {
+                transitionFillElement.style.transition = `transform ${GAME_CONFIG.AUTO_ADVANCE_DELAY}ms linear`;
+                transitionFillElement.style.transform = 'scaleX(1)';
+            });
+        }
+
+        function isClassicStagecraftMode() {
+            return gameMode === 'classic';
+        }
+
+        function startClassicQuestionTransition() {
+            const gameAreaElement = document.getElementById('gameArea');
+            if (!gameAreaElement) {
+                return;
+            }
+
+            if (questionExitTimeout) {
+                clearTimeout(questionExitTimeout);
+            }
+
+            gameAreaElement.classList.add('classic-transition-active');
+            gameAreaElement.classList.remove('classic-question-entering');
+
+            const exitDelay = Math.max(350, GAME_CONFIG.AUTO_ADVANCE_DELAY - 420);
+            questionExitTimeout = setTimeout(() => {
+                gameAreaElement.classList.add('classic-question-exiting');
+                questionExitTimeout = null;
+            }, exitDelay);
+        }
+
+        function resetClassicQuestionStage() {
+            const gameAreaElement = document.getElementById('gameArea');
+            if (!gameAreaElement) {
+                return;
+            }
+
+            if (questionExitTimeout) {
+                clearTimeout(questionExitTimeout);
+                questionExitTimeout = null;
+            }
+
+            if (questionEntryTimeout) {
+                clearTimeout(questionEntryTimeout);
+                questionEntryTimeout = null;
+            }
+
+            gameAreaElement.classList.remove('classic-transition-active', 'classic-question-exiting', 'classic-question-entering');
+        }
+
+        function playClassicQuestionEntry() {
+            const gameAreaElement = document.getElementById('gameArea');
+            if (!gameAreaElement) {
+                return;
+            }
+
+            requestAnimationFrame(() => {
+                gameAreaElement.classList.add('classic-question-entering');
+                questionEntryTimeout = setTimeout(() => {
+                    gameAreaElement.classList.remove('classic-question-entering');
+                    questionEntryTimeout = null;
+                }, 520);
+            });
+        }
+
+        function resetQuestionTransitionCue() {
+            if (!cachedDOMElements.questionTransition || !cachedDOMElements.questionTransitionFill || !cachedDOMElements.questionTransitionLabel) {
+                initializeDOMElementCache();
+            }
+
+            const transitionElement = cachedDOMElements.questionTransition;
+            const transitionFillElement = cachedDOMElements.questionTransitionFill;
+            const transitionLabelElement = cachedDOMElements.questionTransitionLabel;
+
+            if (!transitionElement || !transitionFillElement || !transitionLabelElement) {
+                return;
+            }
+
+            transitionElement.classList.remove('active');
+            transitionElement.setAttribute('aria-hidden', 'true');
+            transitionLabelElement.textContent = 'Next animal is getting ready...';
+            transitionFillElement.style.transition = 'none';
+            transitionFillElement.style.transform = 'scaleX(0)';
         }
 
         /**

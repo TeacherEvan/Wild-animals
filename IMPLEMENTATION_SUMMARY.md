@@ -171,6 +171,8 @@ Added strategic TODO comments throughout codebase:
 - ✅ **Streak Counter** - Increments correctly (0 → 1)
 - ✅ **Visual Feedback** - "Excellent! It's a Hedgehog! 🎉"
 - ✅ **Button States** - Disabled after selection
+- ✅ **Transition Cue** - Classic mode shows a visible auto-advance progress bar before the next animal
+- ✅ **Question Handoff** - Classic mode now exits and re-enters as a single guided scene change
 - ✅ **CSS Variables** - All styling intact
 
 ### Code Quality

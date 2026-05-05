@@ -1,0 +1,19 @@
+# Keep Copilot focused on source, config, and maintained docs.
+
+# Dependencies and generated outputs
+node_modules/
+dist/
+build/
+coverage/
+
+# Version control and local editor metadata
+.git/
+.vscode/
+.idea/
+
+# Local snapshots, backups, and transient files
+.snapshots/
+*.bak
+*.tmp
+*.log
+.DS_Store

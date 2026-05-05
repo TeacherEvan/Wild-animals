@@ -24,7 +24,7 @@ An interactive educational game designed for kindergarten students to learn abou
 - **Visual Options**: Animal pictures to choose from
 
 #### Classic Modes (Enhanced)
-- **🎯 Classic Mode**: 10 questions with improved visual feedback
+- **🎯 Classic Mode**: 10 questions with staged answer feedback and guided auto-advance
 - **⚡ Speed Mode**: Time-based challenges with bonus points
 - **🔥 Survival Mode**: Keep playing until you make a mistake
 - **🧠 Quiz Mode**: Mixed question types about habitats, diet, and sounds
@@ -33,6 +33,7 @@ An interactive educational game designed for kindergarten students to learn abou
 
 #### Animations
 - **Animal Movements**: Animals bounce, shake, and roar
+- **Classic Quiz Handoffs**: Answer commit, progress cue, and next-animal entrance work as one sequence
 - **Sound Waves**: Visual ripples when sounds play
 - **Drag Effects**: Smooth dragging with shadow effects
 - **Celebration Particles**: Colorful particles for correct answers
@@ -53,17 +54,29 @@ An interactive educational game designed for kindergarten students to learn abou
 
 ## 🚀 Getting Started
 
-1. Open `index.html` in any modern web browser
-2. Click on a game mode to start playing
-3. Turn sound on/off using the speaker button in the top-right
+1. Start a local static server from the repository root: `python3 -m http.server 8080`
+2. Open `http://localhost:8080/` in any modern web browser
+3. Click on a game mode to start playing
+4. Turn sound on/off using the speaker button in the top-right
+
+## 🌐 Deployment
+
+- Deploy the repository directly to any static host
+- No image build or application server is required
+- Recommended targets: GitHub Pages, Netlify, Vercel, or any CDN-backed static host
 
 ## � How to Play
 
 ### Classic Animal Quiz
 1. Look at the animal emoji
 2. Click on animal names to hear their sounds
-3. Click "Next Animal" when ready to submit your answer
+3. Pick the answer and watch the progress cue prepare the next animal automatically
 4. Earn points and build streaks!
+
+### Classic Mode Motion Notes
+- Answer choices lock immediately so children can clearly see what they picked.
+- A visible "Next animal is getting ready..." progress cue explains the short auto-advance pause.
+- Reduced-motion users keep the same feedback and timing without the animated scene handoff.
 
 ### Habitat Matching Game
 1. Drag animals from the bottom pool
@@ -124,9 +137,11 @@ To add more animals, edit the `animals` array in `index.html`:
 ## 📝 Files Structure
 
 - `index.html` - Main game file with all game logic
+- `styles.css` - Shared presentation and responsive layout
 - `animal-sounds.js` - Text-to-speech pronunciation system
 - `real-animal-sounds.js` - Real animal audio playback system
 - `interactive-features.js` - Drag & drop and interactive games
+- `manifest.json` - PWA metadata for installable browser support
 - `README.md` - This documentation file
 
 ## 🌈 Future Enhancements
