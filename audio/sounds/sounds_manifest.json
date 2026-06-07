@@ -1,0 +1,37 @@
+{
+  "roar": {
+    "target_file": "roar.wav",
+    "source_url": "https://cdn.freesound.org/previews/611/611721_13511310-lq.mp3",
+    "license": "Freesound preview (review page for terms)",
+    "matched_species": "lion",
+    "notes": "Downloaded real preview audio"
+  },
+  "trumpet": {
+    "target_file": "trumpet.wav",
+    "source_url": "https://cdn.freesound.org/previews/52/52249_195754-lq.mp3",
+    "license": "Freesound preview (review page for terms)",
+    "matched_species": "elephant",
+    "notes": "Downloaded real preview audio"
+  },
+  "growl": {
+    "target_file": "growl.wav",
+    "source_url": "https://cdn.freesound.org/previews/763/763026_1764719-lq.mp3",
+    "license": "Freesound preview (review page for terms)",
+    "matched_species": "bear",
+    "notes": "Downloaded real preview audio"
+  },
+  "ribbit": {
+    "target_file": "ribbit.wav",
+    "source_url": "https://cdn.freesound.org/previews/741/741575_9273605-lq.mp3",
+    "license": "Freesound preview (review page for terms)",
+    "matched_species": "frog",
+    "notes": "Downloaded real preview audio"
+  },
+  "grunt": {
+    "target_file": "grunt.wav",
+    "source_url": "https://cdn.freesound.org/previews/788/788783_16896363-lq.mp3",
+    "license": "Freesound preview (review page for terms)",
+    "matched_species": "kangaroo",
+    "notes": "Downloaded real preview audio"
+  }
+}

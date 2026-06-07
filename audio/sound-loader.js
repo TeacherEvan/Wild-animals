@@ -6,6 +6,7 @@
 class SoundLoader {
   constructor() {
     this.soundCache = new Map();
+    this.failedCache = new Set();
     this.audioContext = null;
     this.masterVolume = 0.8;
     this.loadingPromises = new Map();
@@ -14,7 +15,7 @@ class SoundLoader {
     // Initialize Web Audio API context for better audio control
     this.initAudioContext();
 
-    // Map animals to their specific sounds
+    // Map animals to their specific sound identifiers
     this.animalSoundMap = {
       Lion: "roar",
       Tiger: "roar",
@@ -47,6 +48,15 @@ class SoundLoader {
       Hedgehog: "snuffle",
       Bee: "buzz",
     };
+
+    // Explicit manifest of known-good assets.
+    // Populate this when audio files are added; failures fall back to TTS.
+    this.assetManifest = Object.fromEntries(
+      Object.entries(this.animalSoundMap).map(([animal, sound]) => [
+        animal,
+        this.supportedExtensions.map((ext) => `audio/sounds/${sound}.${ext}`),
+      ])
+    );
   }
 
   /**
@@ -111,13 +121,21 @@ class SoundLoader {
         return null;
       }
 
-      for (const extension of this.supportedExtensions) {
-        const audioPath = `audio/sounds/${soundName}.${extension}`;
+      const candidatePaths = this._candidatePathsForSound(soundName);
+
+      // Avoid re-attempting assets already known to be missing.
+      if (candidatePaths.every((path) => this.failedCache.has(path))) {
+        return null;
+      }
+
+      for (const audioPath of candidatePaths) {
         const audioBuffer = await this._fetchAndDecodeAudio(audioPath);
         if (audioBuffer) {
           this.soundCache.set(cacheKey, audioBuffer);
           return audioBuffer;
         }
+
+        this.failedCache.add(audioPath);
       }
 
       console.warn(`Audio file not found for ${soundName} (${this.supportedExtensions.join(", ")})`);
@@ -126,6 +144,22 @@ class SoundLoader {
       console.warn(`Failed to load audio for ${soundName}`, error);
       return null;
     }
+  }
+
+  /**
+   * Resolve candidate asset paths for a sound name.
+   * Prefer explicit manifest when available.
+   * @private
+   * @param {string} soundName
+   * @returns {string[]}
+   */
+  _candidatePathsForSound(soundName) {
+    const entry = this.assetManifest && this.assetManifest[soundName];
+    if (entry) {
+      return entry;
+    }
+
+    return this.supportedExtensions.map((extension) => `audio/sounds/${soundName}.${extension}`);
   }
 
   /**
