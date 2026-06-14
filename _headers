@@ -1,0 +1,40 @@
+# Security Headers for Static Deployment
+# These headers will be applied by Netlify, Vercel, or similar platforms
+
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+  Cache-Control: public, max-age=31536000, immutable
+
+# Cache HTML for a shorter time to ensure updates are picked up
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Cache CSS and JS with version hashes for long-term caching
+/styles.css
+  Cache-Control: public, max-age=31536000, immutable
+
+/game-core.js
+  Cache-Control: public, max-age=31536000, immutable
+
+/audio/sound-loader.js
+  Cache-Control: public, max-age=31536000, immutable
+
+/animal-sounds.js
+  Cache-Control: public, max-age=31536000, immutable
+
+/real-animal-sounds.js
+  Cache-Control: public, max-age=31536000, immutable
+
+/interactive-features.js
+  Cache-Control: public, max-age=31536000, immutable
+
+# Audio files - long cache with versioning
+/audio/sounds/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Manifest and icons
+/manifest.json
+  Cache-Control: public, max-age=86400, must-revalidate

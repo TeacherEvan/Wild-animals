@@ -64,6 +64,29 @@
     }
 }
 
+/* Skip link for keyboard accessibility */
+.skip-link {
+    position: absolute;
+    top: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-primary);
+    color: white;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    z-index: 10000;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: var(--font-size-sm);
+    transition: top var(--transition-fast) var(--easing-standard);
+}
+
+.skip-link:focus {
+    top: var(--spacing-xs);
+    outline: 3px solid var(--color-accent);
+    outline-offset: 3px;
+}
+
 /* Reset and base styles with performance optimizations */
 * {
     margin: 0;
@@ -1932,6 +1955,30 @@ padding: 20px 15px;
     outline: 3px solid var(--color-accent);
     outline-offset: 3px;
     border-radius: 5px;
+}
+
+/* Ensure focused elements are not obscured by sticky headers (WCAG 2.4.11) */
+:focus {
+    scroll-margin-top: 80px;
+    scroll-margin-bottom: 60px;
+}
+
+/* Minimum touch target size (WCAG 2.5.8) */
+button,
+[role="button"],
+input[type="checkbox"] + label,
+input[type="radio"] + label {
+    min-width: 24px;
+    min-height: 24px;
+}
+
+/* Comfortable touch target size (recommended 44x44) */
+.touch-target {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* ========================================

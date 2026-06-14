@@ -15,46 +15,47 @@ class SoundLoader {
     // Initialize Web Audio API context for better audio control
     this.initAudioContext();
 
-    // Map animals to their specific sound identifiers
+    // Map animals to their specific sound identifiers (internal keys matching actual filenames)
     this.animalSoundMap = {
-      Lion: "roar",
-      Tiger: "roar",
-      Elephant: "trumpet",
+      Lion: "lion_roar",
+      Tiger: "tiger_roar",
+      Elephant: "elephant_rumble",
       Monkey: "ooh-ooh-ah-ah",
-      Wolf: "howl",
-      Bear: "growl",
-      Dolphin: "click-click",
-      Frog: "ribbit",
-      Eagle: "screech",
+      Wolf: "wolf_howl",
+      Bear: "grizzly_bear_growl",
+      Dolphin: "dolphin_clicks",
+      Frog: "frog_croak",
+      Eagle: "eagle_scream",
       Penguin: "waddle-waddle",
-      Giraffe: "hum",
-      Zebra: "neigh",
+      Giraffe: "giraffe_sound",
+      Zebra: "zebra_sound",
       Rhino: "snort",
-      Fox: "yip-yip",
-      Leopard: "growl",
+      Fox: "fox_bark",
+      Leopard: "leopard_roar",
       Kangaroo: "grunt",
       Koala: "snore",
-      Gorilla: "hoo-hoo",
+      Gorilla: "gorilla_grunt",
       Shark: "splash",
       Octopus: "whoosh",
       Camel: "grunt",
-      Crocodile: "hiss",
+      Crocodile: "crocodile_hiss",
       Hippo: "grunt",
-      Cheetah: "chirp",
-      Parrot: "squawk",
+      Cheetah: "cheetah_chirp",
+      Parrot: "parrot_call",
       Turtle: "silent",
-      Owl: "hoot",
+      Owl: "owl_hoot",
       Squirrel: "chatter",
       Hedgehog: "snuffle",
       Bee: "buzz",
     };
 
     // Explicit manifest of known-good assets.
-    // Populate this when audio files are added; failures fall back to TTS.
+    // Maps each animal to actual audio file paths (using real downloaded files).
+    // Falls back to TTS if audio file not found.
     this.assetManifest = Object.fromEntries(
-      Object.entries(this.animalSoundMap).map(([animal, sound]) => [
+      Object.entries(this.animalSoundMap).map(([animal, soundKey]) => [
         animal,
-        this.supportedExtensions.map((ext) => `audio/sounds/${sound}.${ext}`),
+        this.supportedExtensions.map((ext) => `audio/sounds/${soundKey}.${ext}`),
       ])
     );
   }
@@ -73,9 +74,9 @@ class SoundLoader {
   }
 
   /**
-   * Get the sound name for an animal
+   * Get the sound key for an animal
    * @param {string} animalName - Name of the animal
-   * @returns {string} Sound name
+   * @returns {string} Sound key
    */
   getSoundName(animalName) {
     return this.animalSoundMap[animalName] || animalName.toLowerCase();
@@ -232,17 +233,15 @@ class SoundLoader {
 
     // Fallback to text-to-speech if audio file not available
     console.log(`Falling back to text-to-speech for ${animalName}`);
-    this.playTextToSpeech(animalName, onEnd);
+    this.playTextToSpeech(soundName, onEnd);
   }
 
   /**
    * Play text-to-speech fallback
-   * @param {string} animalName - Animal name
+   * @param {string} soundName - Sound name to speak
    * @param {Function} onEnd - Callback when sound ends
    */
-  playTextToSpeech(animalName, onEnd) {
-    const soundName = this.getSoundName(animalName);
-
+  playTextToSpeech(soundName, onEnd) {
     if ("speechSynthesis" in window) {
       const utterance = new SpeechSynthesisUtterance(soundName);
       utterance.rate = 0.8;
@@ -250,7 +249,7 @@ class SoundLoader {
       utterance.volume = 0.8;
 
       utterance.onend = () => {
-        if (onEnd) onEnd(animalName);
+        if (onEnd) onEnd(soundName);
       };
 
       window.speechSynthesis.speak(utterance);

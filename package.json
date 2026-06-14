@@ -5,8 +5,14 @@
   "main": "index.html",
   "scripts": {
     "start": "python3 -m http.server 8080",
-    "test": "echo \"No tests specified - this is a static HTML application\" && exit 0",
-    "build": "echo \"No build process required - this is a static HTML application\" && exit 0"
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:unit": "vitest run",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
+    "build": "node scripts/cache-bust.js",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "eslint . --ext .js --fix",
+    "cache-bust": "node scripts/cache-bust.js"
   },
   "keywords": [
     "education",
@@ -24,6 +30,10 @@
   },
   "homepage": "https://github.com/TeacherEvan/Wild-animals",
   "devDependencies": {
-    "eslint": "^8.57.1"
+    "@playwright/test": "^1.60.0",
+    "@vitest/coverage-v8": "^4.1.8",
+    "eslint": "^8.57.1",
+    "jsdom": "^29.1.1",
+    "vitest": "^4.1.8"
   }
 }

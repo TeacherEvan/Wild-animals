@@ -3,7 +3,8 @@
         "browser": true,
         "es6": true,
         "es2017": true,
-        "es2020": true
+        "es2020": true,
+        "node": true
     },
     "parserOptions": {
         "ecmaVersion": 2020,
@@ -21,6 +22,7 @@
         "setTimeout": "readonly",
         "clearInterval": "readonly",
         "setInterval": "readonly",
-        "navigator": "readonly"
+        "navigator": "readonly",
+        "process": "readonly"
     }
 }
