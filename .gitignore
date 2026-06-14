@@ -13,3 +13,18 @@ node_modules/
 # Build outputs
 dist/
 build/
+
+# Test artifacts
+playwright-report/
+test-results/
+*.lcov
+coverage/
+
+# Cache busting artifacts
+asset-manifest.json
+
+# Audio processing
+audio/sounds/normalized/
+
+# OS files
+Thumbs.db
