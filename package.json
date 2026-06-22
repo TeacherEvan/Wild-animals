@@ -30,9 +30,9 @@
   },
   "homepage": "https://github.com/TeacherEvan/Wild-animals",
   "devDependencies": {
-    "@playwright/test": "^1.60.0",
-    "@vitest/coverage-v8": "^4.1.8",
-    "eslint": "^8.57.1",
+    "@playwright/test": "^1.61.0",
+    "@vitest/coverage-v8": "^4.1.9",
+    "eslint": "^10.5.0",
     "jsdom": "^29.1.1",
     "vitest": "^4.1.8"
   }
