@@ -54,7 +54,7 @@
             </button>
             <button type="button" class="mode-btn" onclick="selectMode('habitat', this)"
                 aria-label="Select Habitat Match drag and drop game" aria-pressed="false">
-                🏠 Habitat Match<br><small>Drag & Drop</small>
+                🏠 Habitat Match<br><small>Drag &amp; Drop</small>
             </button>
             <button type="button" class="mode-btn" onclick="selectMode('sounds', this)" aria-label="Select Sound Game guess animal sounds"
                 aria-pressed="false">
@@ -86,11 +86,11 @@
                     aria-label="Skip question, 1 remaining">⏭️ Skip (1)</button>
             </div>
 
-            <button class="animal-display" onclick="playCurrentAnimalSound()" tabindex="0"
+            <button type="button" class="animal-display" onclick="playCurrentAnimalSound()" tabindex="0"
                 aria-label="Click or press Enter to hear animal sound">
-                <div class="animal-emoji" id="animalEmoji" aria-hidden="true">🦁</div>
-                <div class="question" id="question">What animal is this?</div>
-                <div class="tap-hint">👆 Tap the animal to hear its sound!</div>
+                <span class="animal-emoji" id="animalEmoji" aria-hidden="true">🦁</span>
+                <span class="question" id="question">What animal is this?</span>
+                <span class="tap-hint">👆 Tap the animal to hear its sound!</span>
             </button>
 
             <div class="options" id="options" role="group" aria-label="Answer options">
@@ -109,7 +109,7 @@
             <button type="button" class="next-btn" id="nextBtn" onclick="nextQuestion()" disabled
                 aria-label="Proceed to next question">Next Animal →</button>
         </div>
-    </div>
+    </main>
 
     <div class="celebration" id="celebration"></div>
 
