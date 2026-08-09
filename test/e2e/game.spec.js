@@ -127,7 +127,9 @@ test.describe('Accessibility', () => {
 
   test('should have keyboard-accessible animal display', async ({ page }) => {
     const animalDisplay = page.locator('.animal-display');
-    await expect(animalDisplay).toHaveAttribute('role', 'button');
+    // Native button element has implicit role="button"
+    await expect(animalDisplay).toBeVisible();
     await expect(animalDisplay).toHaveAttribute('tabindex', '0');
+    await expect(animalDisplay).toHaveAttribute('aria-label', 'Click or press Enter to hear animal sound');
   });
 });

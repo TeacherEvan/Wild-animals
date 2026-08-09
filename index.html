@@ -26,51 +26,51 @@
 <body>
     <!-- Skip link for keyboard users -->
     <a href="#main-content" class="skip-link">Skip to main content</a>
-    
-    <button class="sound-btn" onclick="toggleSound()" id="soundBtn" aria-label="Toggle sound on or off"
+
+    <button type="button" class="sound-btn" onclick="toggleSound()" id="soundBtn" aria-label="Toggle sound on or off"
         aria-pressed="true">🔊</button>
-    <div class="game-container" role="main" id="main-content">
+    <main class="game-container" id="main-content">
         <h1>🦁 Wild Animals Adventure 🐯</h1>
         <p class="subtitle">Learn English Animal Names!</p>
 
         <div class="high-score" id="highScore" role="status" aria-live="polite">🏆 High Score: 0</div>
 
         <div class="mode-selection" id="modeSelection" role="group" aria-label="Game mode selection">
-            <button class="mode-btn active" onclick="selectMode('classic', this)"
+            <button type="button" class="mode-btn active" onclick="selectMode('classic', this)"
                 aria-label="Select Classic Mode with 10 questions" aria-pressed="true">
                 🎯 Classic Mode<br><small>10 Questions</small>
             </button>
-            <button class="mode-btn" onclick="selectMode('speed', this)" aria-label="Select Speed Mode time challenge"
+            <button type="button" class="mode-btn" onclick="selectMode('speed', this)" aria-label="Select Speed Mode time challenge"
                 aria-pressed="false">
                 ⚡ Speed Mode<br><small>Time Challenge</small>
             </button>
-            <button class="mode-btn" onclick="selectMode('survival', this)" aria-label="Select Survival Mode play until wrong"
+            <button type="button" class="mode-btn" onclick="selectMode('survival', this)" aria-label="Select Survival Mode play until wrong"
                 aria-pressed="false">
                 🔥 Survival Mode<br><small>Until Wrong</small>
             </button>
-            <button class="mode-btn" onclick="selectMode('quiz', this)" aria-label="Select Quiz Mode with mixed questions"
+            <button type="button" class="mode-btn" onclick="selectMode('quiz', this)" aria-label="Select Quiz Mode with mixed questions"
                 aria-pressed="false">
                 🧠 Quiz Mode<br><small>Mixed Questions</small>
             </button>
-            <button class="mode-btn" onclick="selectMode('habitat', this)"
+            <button type="button" class="mode-btn" onclick="selectMode('habitat', this)"
                 aria-label="Select Habitat Match drag and drop game" aria-pressed="false">
                 🏠 Habitat Match<br><small>Drag & Drop</small>
             </button>
-            <button class="mode-btn" onclick="selectMode('sounds', this)" aria-label="Select Sound Game guess animal sounds"
+            <button type="button" class="mode-btn" onclick="selectMode('sounds', this)" aria-label="Select Sound Game guess animal sounds"
                 aria-pressed="false">
                 🔊 Sound Game<br><small>Guess Sounds</small>
             </button>
         </div>
 
         <div class="score-board" role="status" aria-live="polite">
-            <div class="score-item" aria-label="Current score">Score: <span id="score">0</span></div>
-            <div class="score-item" aria-label="Question progress">Question: <span id="currentQuestion">1</span> / <span
+            <div class="score-item">Score: <span id="score">0</span></div>
+            <div class="score-item">Question: <span id="currentQuestion">1</span> / <span
                     id="totalQuestions">10</span>
             </div>
-            <div class="score-item" aria-label="Current streak">Streak: <span id="streak">0</span> 🔥</div>
+            <div class="score-item">Streak: <span id="streak">0</span> 🔥</div>
         </div>
         <div class="game-area" id="gameArea">
-            <div class="timer-container" id="timerContainer" style="display: none;">
+            <div class="timer-container" id="timerContainer" hidden>
                 <div class="timer-bar">
                     <div class="timer-fill" id="timerFill"></div>
                 </div>
@@ -78,22 +78,20 @@
             </div>
 
             <div class="powerups" id="powerups" role="group" aria-label="Power-up buttons">
-                <button class="powerup-btn" id="hintBtn" onclick="useHint()"
+                <button type="button" class="powerup-btn" id="hintBtn" onclick="useHint()"
                     aria-label="Use hint power-up, 3 remaining">💡 Hint (3)</button>
-                <button class="powerup-btn" id="eliminateBtn" onclick="eliminateWrong()"
+                <button type="button" class="powerup-btn" id="eliminateBtn" onclick="eliminateWrong()"
                     aria-label="Eliminate wrong answers, 2 remaining">❌ Eliminate (2)</button>
-                <button class="powerup-btn" id="skipBtn" onclick="skipQuestion()"
+                <button type="button" class="powerup-btn" id="skipBtn" onclick="skipQuestion()"
                     aria-label="Skip question, 1 remaining">⏭️ Skip (1)</button>
             </div>
 
-            <div class="animal-display" onclick="playCurrentAnimalSound()" role="button" tabindex="0"
+            <button class="animal-display" onclick="playCurrentAnimalSound()" tabindex="0"
                 aria-label="Click or press Enter to hear animal sound">
                 <div class="animal-emoji" id="animalEmoji" aria-hidden="true">🦁</div>
                 <div class="question" id="question">What animal is this?</div>
-                <div class="tap-hint" style="font-size: 0.9em; color: #666; margin-top: 10px;">
-                    👆 Tap the animal to hear its sound!
-                </div>
-            </div>
+                <div class="tap-hint">👆 Tap the animal to hear its sound!</div>
+            </button>
 
             <div class="options" id="options" role="group" aria-label="Answer options">
                 <!-- Options will be generated by JavaScript -->
@@ -108,7 +106,7 @@
                 <div class="question-transition-label" id="questionTransitionLabel">Next animal is getting ready...</div>
             </div>
 
-            <button class="next-btn" id="nextBtn" onclick="nextQuestion()" disabled
+            <button type="button" class="next-btn" id="nextBtn" onclick="nextQuestion()" disabled
                 aria-label="Proceed to next question">Next Animal →</button>
         </div>
     </div>
