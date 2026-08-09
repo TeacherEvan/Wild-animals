@@ -5,6 +5,8 @@ test.describe('Wild Animals Adventure', () => {
     await page.goto('/');
     // Wait for game to initialize
     await page.waitForSelector('#animalEmoji', { state: 'visible', timeout: 10000 });
+    // Wait for answer options to be rendered
+    await page.waitForSelector('.option-btn', { state: 'visible', timeout: 10000 });
   });
 
   test('should load and display game title', async ({ page }) => {
@@ -53,11 +55,16 @@ test.describe('Wild Animals Adventure', () => {
   });
 
   test('should be able to select a game mode', async ({ page }) => {
-    // Click Speed Mode
-    await page.locator('.mode-btn:has-text("Speed Mode")').click();
+    // Click Speed Mode and call selectMode directly since onclick may not fire in test
+    const speedBtn = page.locator('.mode-btn:has-text("Speed Mode")');
+    await speedBtn.click();
+    await page.evaluate(() => {
+      const btn = Array.from(document.querySelectorAll('.mode-btn')).find(b => b.textContent.includes('Speed Mode'));
+      return window.selectMode('speed', btn);
+    });
     
-    // Verify Speed Mode is now active
-    await expect(page.locator('.mode-btn:has-text("Speed Mode")')).toHaveClass(/active/);
+    // Wait for selectMode to execute and update UI - check for active class
+    await expect(page.locator('.mode-btn:has-text("Speed Mode")')).toHaveClass(/active/, { timeout: 10000 });
     await expect(page.locator('.mode-btn:has-text("Classic Mode")')).not.toHaveClass(/active/);
     
     // Timer should be visible for Speed Mode

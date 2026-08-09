@@ -115,15 +115,7 @@
 
     <div class="celebration" id="celebration"></div>
 
-    <script type="module">
-      import { initializeGame } from './game-core.js?v=4d0489cc';
-      // Initialize the game when DOM is ready
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initializeGame);
-      } else {
-        initializeGame();
-      }
-    </script>
+    <script type="module" src="init-game.js?v=840dc078"></script>
     <script defer src="audio/sound-loader.js?v=20260505c"></script>
     <script defer src="animal-sounds.js?v=80d35343"></script>
     <script defer src="real-animal-sounds.js?v=f5880a00"></script>
