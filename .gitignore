@@ -28,3 +28,5 @@ audio/sounds/normalized/
 
 # OS files
 Thumbs.db
+.vercel
+.env*
