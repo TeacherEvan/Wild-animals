@@ -465,7 +465,7 @@
 
 - [PERFORMANCE_AUDIT.md](./PERFORMANCE_AUDIT.md) - Previous performance work
 - [CODE_QUALITY_OPTIMIZATION.md](./CODE_QUALITY_OPTIMIZATION.md) - Code quality improvements
-- [REFACTORING_SUMMARY.md](./REFACTORING_SUMMARY.md) - Recent refactoring
+- [REFACTORING_SUMMARY_OLD.md](./REFACTORING_SUMMARY_OLD.md) - Recent refactoring
 - [README.md](./README.md) - Main project documentation
 
 ---

@@ -10,7 +10,7 @@
 
 ### 📖 **Detailed Documentation**
 
-- **[AUDIO_IMPLEMENTATION.md](AUDIO_IMPLEMENTATION.md)** - Complete technical guide
+- **[AUDIO_IMPLEMENTATION_SUMMARY.md](AUDIO_IMPLEMENTATION_SUMMARY.md)** - Complete technical guide
 - **[AUDIO_TROUBLESHOOTING.md](AUDIO_TROUBLESHOOTING.md)** - Problem solving
 
 ### 🛠️ **Helper Scripts**
@@ -27,7 +27,7 @@
 **New Files Created:**
 
 1. `audio/sound-loader.js` - Audio loading and playback module
-2. `AUDIO_IMPLEMENTATION.md` - Complete guide
+2. `AUDIO_IMPLEMENTATION_SUMMARY.md` - Complete guide
 3. `AUDIO_IMPLEMENTATION_SUMMARY.md` - This file
 4. `QUICK_AUDIO_SETUP.md` - Quick visual guide
 5. `AUDIO_TROUBLESHOOTING.md` - Troubleshooting reference
@@ -102,7 +102,7 @@ python -m http.server 8080
 ### For Learning
 
 - `AUDIO_IMPLEMENTATION_SUMMARY.md` - High-level overview
-- `AUDIO_IMPLEMENTATION.md` - Technical details and API reference
+- `AUDIO_IMPLEMENTATION_SUMMARY.md` - Technical details and API reference
 
 ### For Help
 
@@ -165,7 +165,7 @@ Each animal mapped to a sound name:
 - Elephant → "trumpet"
 - (20 animals total)
 
-See `AUDIO_IMPLEMENTATION.md` table for complete list.
+See `AUDIO_IMPLEMENTATION_SUMMARY.md` table for complete list.
 
 ---
 
@@ -213,7 +213,7 @@ You are here: AUDIO_DOCUMENTATION_INDEX.md
 │
 ├─ QUICK_AUDIO_SETUP.md ..................... Start here! Visual guide
 ├─ AUDIO_IMPLEMENTATION_SUMMARY.md ......... Overview
-├─ AUDIO_IMPLEMENTATION.md ................. Technical details
+├─ AUDIO_IMPLEMENTATION_SUMMARY.md ................. Technical details
 ├─ AUDIO_TROUBLESHOOTING.md ............... Problem solving
 │
 ├─ setup-audio.bat ......................... Run this (Windows)
@@ -240,7 +240,7 @@ You are here: AUDIO_DOCUMENTATION_INDEX.md
 **Need More Details:**
 
 - `AUDIO_IMPLEMENTATION_SUMMARY.md` - What was built
-- `AUDIO_IMPLEMENTATION.md` - How it works technically
+- `AUDIO_IMPLEMENTATION_SUMMARY.md` - How it works technically
 - API reference for customization
 
 **Something Not Working:**
@@ -353,7 +353,7 @@ Edit `audio/sound-loader.js`:
 AUDIO_DOCUMENTATION_INDEX.md ............ This file (navigation)
 AUDIO_IMPLEMENTATION_SUMMARY.md ........ Executive summary
 QUICK_AUDIO_SETUP.md ................... Visual setup guide
-AUDIO_IMPLEMENTATION.md ................ Technical reference
+AUDIO_IMPLEMENTATION_SUMMARY.md ................ Technical reference
 AUDIO_TROUBLESHOOTING.md ............... Problem solving
 ```
 

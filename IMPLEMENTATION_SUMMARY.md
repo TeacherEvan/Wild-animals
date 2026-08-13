@@ -20,7 +20,7 @@
 2. **Previous Audit Documentation**
    - `PERFORMANCE_AUDIT.md` - DOM caching, array optimization already done
    - `CODE_QUALITY_OPTIMIZATION.md` - ESLint compliance, JSDoc documentation complete
-   - `REFACTORING_SUMMARY.md` - GAME_CONFIG constants centralized
+   - `REFACTORING_SUMMARY_OLD.md` - GAME_CONFIG constants centralized
    - `AUDIT_RESULTS.md` - Educational facts, habitat backgrounds enhanced
 
 3. **Code Quality Checks**
@@ -405,7 +405,7 @@ h1 {
 - [OPTIMIZATION_ROADMAP.md](./OPTIMIZATION_ROADMAP.md) - Comprehensive optimization plan
 - [PERFORMANCE_AUDIT.md](./PERFORMANCE_AUDIT.md) - Previous performance work
 - [CODE_QUALITY_OPTIMIZATION.md](./CODE_QUALITY_OPTIMIZATION.md) - Code quality improvements
-- [REFACTORING_SUMMARY.md](./REFACTORING_SUMMARY.md) - Previous refactoring work
+- [REFACTORING_SUMMARY_OLD.md](./REFACTORING_SUMMARY_OLD.md) - Previous refactoring work
 - [README.md](./README.md) - Main project documentation
 
 ---
