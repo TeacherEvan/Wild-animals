@@ -10,8 +10,8 @@
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
     "build": "node scripts/cache-bust.js",
-    "lint": "eslint . --ext .js",
-    "lint:fix": "eslint . --ext .js --fix",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "cache-bust": "node scripts/cache-bust.js"
   },
   "keywords": [
@@ -30,9 +30,11 @@
   },
   "homepage": "https://github.com/TeacherEvan/Wild-animals",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.62.1",
     "@vitest/coverage-v8": "^4.1.10",
-    "eslint": "^8.57.0",
+    "eslint": "^10.9.0",
+    "globals": "^15.0.0",
     "jsdom": "^30.0.1",
     "vitest": "^4.1.8"
   }
