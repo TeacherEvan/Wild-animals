@@ -7,13 +7,11 @@ export default defineConfig({
     include: ['test/**/*.test.js'],
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      reporter: ['text', 'json', 'html', 'lcov'],
       exclude: [
         'node_modules/',
         'test/',
         '*.config.js',
-        'game-core.js',
-        'audio/',
       ],
     },
   },
