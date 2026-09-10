@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "repo": "Wild-animals",
+    "group": "GAMES",
+    "generated": "2026-08-15 18:55",
+    "branch": "main",
+    "commits": "161",
+    "lang": "Node/JS",
+    "status": "proposed"
+  },
+  "items": [
+    {
+      "area": "Habitat match",
+      "action": "Finalize drag-drop habitat matching + sound guessing game modes."
+    },
+    {
+      "area": "Audio",
+      "action": "Resolve 9 TODOs around real-animal-sound loading + TTS fallback."
+    },
+    {
+      "area": "Perf",
+      "action": "Adopt OPTIMIZATION_ROADMAP.md perf budget; trim the audit markdown sprawl."
+    }
+  ],
+  "instructions": "Wild-animals (GAMES): proposed workstreams. Agent reads HERMES_PLAN.html ticks: approve(a)=implement, change(c)=revisit/clarify, skip=ignore. Compact form below.",
+  "compact": [
+    {
+      "a": "H",
+      "summary": "Finalize drag-drop habitat matching + sound guessing game modes."
+    },
+    {
+      "a": "A",
+      "summary": "Resolve 9 TODOs around real-animal-sound loading + TTS fallback."
+    },
+    {
+      "a": "P",
+      "summary": "Adopt OPTIMIZATION_ROADMAP.md perf budget; trim the audit markdown sprawl."
+    }
+  ]
+}
