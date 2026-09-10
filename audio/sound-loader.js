@@ -219,21 +219,27 @@ class SoundLoader {
     // Notify start
     if (onStart) onStart(animalName);
 
-    // Try to load and play audio file
-    const audioBuffer = await this.loadAnimalSound(animalName);
-    if (audioBuffer) {
-      const source = this.playAudioBuffer(audioBuffer);
-      if (source) {
-        source.onended = () => {
-          if (onEnd) onEnd(animalName);
-        };
-        return;
+    try {
+      // Try to load and play audio file
+      const audioBuffer = await this.loadAnimalSound(animalName);
+      if (audioBuffer) {
+        const source = this.playAudioBuffer(audioBuffer);
+        if (source) {
+          source.onended = () => {
+            if (onEnd) onEnd(animalName);
+          };
+          return;
+        }
       }
-    }
 
-    // Fallback to text-to-speech if audio file not available
-    console.log(`Falling back to text-to-speech for ${animalName}`);
-    this.playTextToSpeech(soundName, onEnd);
+      // Fallback to text-to-speech if audio file not available
+      console.log(`Falling back to text-to-speech for ${animalName}`);
+      this.playTextToSpeech(soundName, onEnd);
+    } catch (error) {
+      // Never let a failed audio load break the game loop
+      console.warn('[SoundLoader] Audio playback failed:', error);
+      if (onEnd) onEnd(animalName);
+    }
   }
 
   /**
@@ -251,8 +257,17 @@ class SoundLoader {
       utterance.onend = () => {
         if (onEnd) onEnd(soundName);
       };
+      utterance.onerror = () => {
+        console.warn('[SoundLoader] Speech synthesis error for', soundName);
+        if (onEnd) onEnd(soundName);
+      };
 
-      window.speechSynthesis.speak(utterance);
+      try {
+        window.speechSynthesis.speak(utterance);
+      } catch (error) {
+        console.warn('[SoundLoader] speak() threw:', error);
+        if (onEnd) onEnd(soundName);
+      }
     }
   }
 

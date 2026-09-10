@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preload" href="audio/sound-loader.js?v=20260505c" as="script">
     <link rel="preload" href="animal-sounds.js?v=80d35343" as="script">
-    <link rel="preload" href="real-animal-sounds.js?v=f5880a00" as="script">
+    <link rel="preload" href="real-animal-sounds.js?v=e511d2e8" as="script">
     <link rel="preload" href="interactive-features.js?v=77262e48" as="script">
     <link rel="preload" href="game-core.js?v=4d0489cc" as="script">
     <!-- Content Security Policy -->
@@ -113,10 +113,19 @@
 
     <div class="celebration" id="celebration"></div>
 
+    <!-- Global error handling: log to console, never break the game -->
+    <script>
+      window.addEventListener('error', function (event) {
+        console.error('[GlobalError]', event.message, 'at', event.filename + ':' + event.lineno);
+      });
+      window.addEventListener('unhandledrejection', function (event) {
+        console.error('[UnhandledRejection]', event.reason);
+      });
+    </script>
     <script type="module" src="init-game.js?v=840dc078"></script>
     <script defer src="audio/sound-loader.js?v=20260505c"></script>
     <script defer src="animal-sounds.js?v=80d35343"></script>
-    <script defer src="real-animal-sounds.js?v=f5880a00"></script>
+    <script defer src="real-animal-sounds.js?v=e511d2e8"></script>
     <script defer src="interactive-features.js?v=77262e48"></script>
 </body>
 

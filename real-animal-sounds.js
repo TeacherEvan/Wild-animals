@@ -62,15 +62,34 @@ class RealAnimalSounds {
     }
 
     // Use SoundLoader to play real audio files with text-to-speech fallback
-    if (window.soundLoader) {
-      await window.soundLoader.playSound(
-        animalName,
-        () => this.onSoundStart(animalName),
-        () => this.onSoundEnd(animalName)
-      );
-    } else {
-      // Fallback if SoundLoader not available
-      this.fallbackToSpeech(animalName);
+    try {
+      if (window.soundLoader) {
+        await window.soundLoader.playSound(
+          animalName,
+          () => this.onSoundStart(animalName),
+          () => this.onSoundEnd(animalName)
+        );
+      } else {
+        // Fallback if SoundLoader not available
+        this.fallbackToSpeech(animalName);
+      }
+    } catch (error) {
+      // Never let a failed audio load break the game loop
+      console.warn('[RealAnimalSounds] Audio playback failed:', error);
+      this.showAudioError(animalName);
+    }
+  }
+
+  /**
+   * Show a gentle, child-friendly message when audio fails
+   * @param {string} animalName - Name of the animal
+   */
+  showAudioError(animalName) {
+    const feedback = document.getElementById('feedback');
+    if (feedback) {
+      feedback.textContent = `🐾 ${animalName || 'The animal'} sound is taking a moment...`;
+      feedback.setAttribute('role', 'status');
+      feedback.setAttribute('aria-live', 'polite');
     }
   }
 
@@ -88,8 +107,17 @@ class RealAnimalSounds {
 
       utterance.onstart = () => this.onSoundStart(animalName);
       utterance.onend = () => this.onSoundEnd(animalName);
+      utterance.onerror = () => {
+        console.warn('[RealAnimalSounds] Speech synthesis error for', animalName);
+        this.showAudioError(animalName);
+      };
 
-      window.speechSynthesis.speak(utterance);
+      try {
+        window.speechSynthesis.speak(utterance);
+      } catch (error) {
+        console.warn('[RealAnimalSounds] speak() threw:', error);
+        this.showAudioError(animalName);
+      }
     }
   }
 

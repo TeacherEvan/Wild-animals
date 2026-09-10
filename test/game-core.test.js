@@ -230,3 +230,72 @@ describe('shuffleArray', () => {
     expect(shuffleArray([1])).toEqual([1]);
   });
 });
+
+// --- Audio error handling tests (added 2026-09-10) ---
+// real-animal-sounds.js is a classic script (no ESM export), so we import it
+// for side effects (creates window.realAnimalSounds) and test the global instance.
+import '../real-animal-sounds.js';
+
+describe('RealAnimalSounds error handling', () => {
+  let realAnimalSounds;
+
+  beforeEach(() => {
+    document.body.innerHTML = `<div id="feedback"></div>`;
+    // jsdom has no SpeechSynthesisUtterance — provide a stub constructor
+    global.SpeechSynthesisUtterance = class {
+      constructor(text) {
+        this.text = text;
+        this.rate = 1;
+        this.pitch = 1;
+        this.volume = 1;
+        this.onstart = null;
+        this.onend = null;
+        this.onerror = null;
+      }
+    };
+    window.speechSynthesis = {
+      speak: vi.fn(),
+      cancel: vi.fn(),
+      speaking: false
+    };
+    window.soundLoader = undefined;
+    // Re-create the global instance for test isolation
+    if (window.realAnimalSounds) {
+      window.realAnimalSounds.isEnabled = true;
+      window.realAnimalSounds.debugMode = false;
+    }
+    realAnimalSounds = window.realAnimalSounds;
+  });
+
+  it('should not throw when SoundLoader.playSound rejects', async () => {
+    window.soundLoader = {
+      playSound: vi.fn(() => Promise.reject(new Error('boom')))
+    };
+    await expect(realAnimalSounds.playAnimalSound('Lion')).resolves.toBeUndefined();
+    expect(window.speechSynthesis.speak).not.toHaveBeenCalled();
+  });
+
+  it('should write child-friendly feedback on audio failure', async () => {
+    window.soundLoader = {
+      playSound: vi.fn(() => Promise.reject(new Error('network')))
+    };
+    await realAnimalSounds.playAnimalSound('Tiger');
+    const feedback = document.getElementById('feedback');
+    expect(feedback.textContent).toContain('Tiger');
+    expect(feedback.getAttribute('role')).toBe('status');
+    expect(feedback.getAttribute('aria-live')).toBe('polite');
+  });
+
+  it('should not throw when speechSynthesis.speak throws synchronously', () => {
+    window.speechSynthesis.speak = vi.fn(() => { throw new Error('speak boom'); });
+    expect(() => realAnimalSounds.fallbackToSpeech('Bear')).not.toThrow();
+  });
+
+  it('should attach onerror handler to utterance in fallbackToSpeech', () => {
+    let captured = null;
+    window.speechSynthesis.speak = vi.fn((u) => { captured = u; });
+    realAnimalSounds.fallbackToSpeech('Lion');
+    expect(captured).toBeTruthy();
+    expect(typeof captured.onerror).toBe('function');
+  });
+});
