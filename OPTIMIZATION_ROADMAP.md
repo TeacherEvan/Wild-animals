@@ -36,9 +36,9 @@
 
 **TODO:**
 - [ ] Extract CSS to separate file for better caching
-- [ ] Create CSS custom properties for repeated gradients
+- [x] Create CSS custom properties for repeated gradients
 - [ ] Minimize CSS for production
-- [ ] Use CSS containment for performance isolation
+- [x] Use CSS containment for performance isolation
 
 **Impact:** High - Faster page loads, better caching
 
@@ -175,7 +175,7 @@
 - [ ] Batch DOM updates to minimize reflows
 - [ ] Implement CSS will-change for animated elements
 - [ ] Use CSS transforms instead of position changes
-- [ ] Add passive event listeners where appropriate
+- [x] Add passive event listeners where appropriate
 
 **Impact:** Medium - Smoother 60fps gameplay
 

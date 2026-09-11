@@ -113,7 +113,7 @@ class InteractiveFeatures {
             zone.addEventListener('dragover', zone._handleDragOver);
             zone.addEventListener('drop', zone._handleDrop);
             zone.addEventListener('touchmove', zone._handleTouchMove, {passive: false});
-            zone.addEventListener('touchend', zone._handleTouchEnd);
+            zone.addEventListener('touchend', zone._handleTouchEnd, { passive: true });
         });
 
         // Global mouse/touch events (remove and re-add to avoid duplicates)
@@ -130,7 +130,7 @@ class InteractiveFeatures {
         document.addEventListener('mousemove', this._handleDragMove);
         document.addEventListener('mouseup', this._handleDragEnd);
         document.addEventListener('touchmove', this._handleTouchDragMove, {passive: false});
-        document.addEventListener('touchend', this._handleTouchDragEnd);
+        document.addEventListener('touchend', this._handleTouchDragEnd, { passive: true });
     }
 
     /**

@@ -47,7 +47,13 @@
     --easing-standard: cubic-bezier(0.4, 0, 0.2, 1);
     --easing-decelerate: cubic-bezier(0, 0, 0.2, 1);
     --easing-accelerate: cubic-bezier(0.4, 0, 1, 1);
-}
+
+    /* Gradient tokens (roadmap 1.1) */
+    --grad-gold: linear-gradient(45deg, #FFD700, #FFA500);
+    --grad-green: linear-gradient(135deg, #32CD32, #90EE90);
+    --grad-pink: linear-gradient(45deg, #FF69B4, #FFB6C1);
+    --grad-green-45: linear-gradient(45deg, #32CD32, #90EE90);
+    --grad-gold-135: linear-gradient(135deg, #FFD700, #FFA500);}
 
 /* Dark-mode support starts below; remaining work is component-by-component polish. */
 /* Future optimization: move non-critical animation definitions into a separately loaded stylesheet if needed. */
@@ -410,7 +416,7 @@ box-shadow: 0 0 20px 6px rgba(255, 215, 0, 1);
 }
 
 .option-btn.correct {
-    background: linear-gradient(135deg, #32CD32, #90EE90);
+    background: var(--grad-green);
     animation: correct 0.6s ease;
     box-shadow: 0 6px 20px rgba(50, 205, 50, 0.4);
 }
@@ -641,7 +647,7 @@ transform: translateY(100vh) rotate(360deg);
 }
 
 .game-complete {
-    background: linear-gradient(135deg, #FFD700, #FFA500);
+    background: var(--grad-gold-135);
     border: 5px solid #FF6347;
     border-radius: 20px;
     padding: 30px;
@@ -667,7 +673,7 @@ transform: scale(1);
     padding: 15px 30px;
     font-size: 1.3em;
     font-weight: bold;
-    background: linear-gradient(45deg, #32CD32, #90EE90);
+    background: var(--grad-green-45);
     color: white;
     border: none;
     border-radius: 15px;
@@ -791,7 +797,7 @@ transform: scale(1);
 
 /* Active mode gets success gradient with pulse */
 .mode-btn.active {
-    background: linear-gradient(135deg, #32CD32, #90EE90);
+    background: var(--grad-green);
     box-shadow: 0 8px 20px rgba(50, 205, 50, 0.4);
     animation: gentlePulse 2s ease-in-out infinite;
 }
@@ -838,7 +844,7 @@ transform: scale(1);
 
 .powerup-btn {
     padding: 10px 15px;
-    background: linear-gradient(45deg, #FF69B4, #FFB6C1);
+    background: var(--grad-pink);
     color: white;
     border: none;
     border-radius: 10px;
@@ -863,7 +869,7 @@ transform: scale(1);
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: linear-gradient(45deg, #FFD700, #FFA500);
+    background: var(--grad-gold);
     color: #8B4513;
     padding: 20px;
     border-radius: 15px;
@@ -1062,6 +1068,7 @@ transform: translateY(-100px) scale(0);
 
 /* Enhanced visual feedback */
 .game-container {
+    contain: layout style paint;
     transition: transform 0.1s ease;
 }
 
@@ -1096,7 +1103,7 @@ font-size: 1.8em;
 
 /* High score display */
 .high-score {
-    background: linear-gradient(45deg, #FFD700, #FFA500);
+    background: var(--grad-gold);
     padding: 10px;
     border-radius: 10px;
     margin-bottom: 20px;
@@ -1298,6 +1305,7 @@ transform: rotate(360deg);
 
 /* Habitat Game Styles */
 .habitat-game-container {
+    contain: layout style paint;
     width: 100%;
     padding: 20px;
 }
@@ -1541,7 +1549,7 @@ transform: rotate(10deg);
 .play-again-btn {
     padding: 15px 30px;
     font-size: 1.2em;
-    background: linear-gradient(45deg, #32CD32, #90EE90);
+    background: var(--grad-green-45);
     color: white;
     border: none;
     border-radius: 15px;
@@ -1560,7 +1568,7 @@ transform: rotate(10deg);
     width: 200px;
     height: 200px;
     border-radius: 50%;
-    background: linear-gradient(45deg, #FF69B4, #FFB6C1);
+    background: var(--grad-pink);
     border: none;
     cursor: pointer;
     display: flex;
@@ -1677,7 +1685,7 @@ transform: translateX(5px);
 }
 
 .animal-option-btn.correct {
-    background: linear-gradient(45deg, #32CD32, #90EE90);
+    background: var(--grad-green-45);
     animation: correctPulse 0.6s ease;
 }
 
@@ -1727,7 +1735,7 @@ transform: scale(1);
 .sound-completion {
     text-align: center;
     padding: 40px;
-    background: linear-gradient(135deg, #FFD700, #FFA500);
+    background: var(--grad-gold-135);
     border-radius: 20px;
     margin: 20px;
 }
@@ -1887,6 +1895,7 @@ padding: 20px 15px;
 .mode-btn,
 .option-btn,
 .game-container {
+    contain: layout style paint;
     will-change: transform;
     transform: translateZ(0);
     backface-visibility: hidden;
@@ -1997,6 +2006,7 @@ input[type="radio"] + label {
     }
     
     .game-container {
+    contain: layout style paint;
         box-shadow: none;
         border: 2px solid #000;
     }
@@ -2020,6 +2030,7 @@ input[type="radio"] + label {
     }
     
     .game-container {
+    contain: layout style paint;
         background: var(--bg-white);
         color: #f0f0f0;
     }
