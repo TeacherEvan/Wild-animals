@@ -31,3 +31,10 @@ Thumbs.db
 .vercel
 .env*
 docs/.scratch-audit/
+
+# Code-review skill artifacts (advisory, not project source)
+review_findings.md
+audit_report.md
+fix_summary.md
+investigation_report.md
+playwright.8081.config.js
