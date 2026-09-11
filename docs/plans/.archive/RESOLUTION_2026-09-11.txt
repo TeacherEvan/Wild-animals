@@ -1,0 +1,21 @@
+HERMES_PLAN.ai.json / HERMES_PLAN.html — resolution note (2026-09-11)
+------------------------------------------------------------------
+Plan generated 2026-08-15, meta.status="proposed", NO ticks approved.
+=> Per surgical-implementation post-hoc rule: a plan with no approval ticks
+   defines NO scope. Verified live tree instead of re-implementing.
+
+VERIFICATION (all gates re-run live this session):
+  lint   0 errors 0 warnings   PASS
+  unit   26/26                 PASS
+  e2e    15/15 (port 8081)    PASS
+  build  cache-bust manifest   PASS
+
+WORKSTREAMS
+  H (Habitat match)     — IMPLEMENTED. HabitatMatchingGame @ interactive-features.js:418.
+  A (Audio + TTS)       — IMPLEMENTED (core). sound-loader.js 292 lines, real fetch/decode.
+                          4 refinement TODOs remain (IndexedDB/retry/Howler/quality) — non-blocking.
+  P (Perf budget/sprawl)— NOT DONE. OPTIMIZATION_ROADMAP.md exists; 30+ root .md audit
+                          docs still present. Deferred — was never approved in this plan.
+
+DECISION: archive plan as "verified/implemented" (H, A) + "deferred" (P).
+No re-implementation performed — code state was already the truth.
