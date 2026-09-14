@@ -31,9 +31,9 @@
   "homepage": "https://github.com/TeacherEvan/Wild-animals",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@playwright/test": "^1.62.1",
+    "@playwright/test": "^1.63.0",
     "@vitest/coverage-v8": "^5.0.0",
-    "eslint": "^10.9.0",
+    "eslint": "^10.10.0",
     "globals": "^17.12.0",
     "jsdom": "^30.0.1",
     "vitest": "^5.0.0"
