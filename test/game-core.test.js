@@ -67,6 +67,10 @@ describe('GAME_CONFIG', () => {
     expect(GAME_CONFIG.STREAK_ACHIEVEMENT_10).toBe(10);
     expect(GAME_CONFIG.SCORE_ACHIEVEMENT_100).toBe(100);
   });
+
+  it('should have a DEBUG flag defaulting to false', () => {
+    expect(GAME_CONFIG.DEBUG).toBe(false);
+  });
 });
 
 describe('animals data', () => {

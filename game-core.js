@@ -89,6 +89,9 @@ export const PerformanceUtils = {
  * @enum {Object}
  */
 export const GAME_CONFIG = {
+  // Debug / verbose logging flag (production: false, dev: true)
+  DEBUG: false,
+
   // Scoring configuration
   POINTS_PER_CORRECT: 10,
   POINTS_FOR_SKIP: 5,
@@ -1494,14 +1497,14 @@ export function initializeGame() {
   setupKeyboardSupport();
 
   if (window.realAnimalSounds) {
-    console.log('Real Animal sounds module loaded successfully');
+    if (GAME_CONFIG.DEBUG) console.log('Real Animal sounds module loaded successfully');
     if (window.realAnimalSounds.isReady && window.realAnimalSounds.isReady()) {
-      console.log('Web Audio API initialized successfully');
+      if (GAME_CONFIG.DEBUG) console.log('Web Audio API initialized successfully');
     } else {
-      console.log('Using fallback audio system');
+      if (GAME_CONFIG.DEBUG) console.log('Using fallback audio system');
     }
   } else {
-    console.warn('Real Animal sounds module not available');
+    if (GAME_CONFIG.DEBUG) console.warn('Real Animal sounds module not available');
   }
 }
 
