@@ -15,6 +15,15 @@ const ASSET_DIRS = [
 
 const ASSET_EXTS = ['.js', '.css', '.html', '.json'];
 
+const EXCLUDED_DIRECTORIES = new Set([
+  'node_modules',
+  'test',
+  'test-results',
+  'playwright-report',
+  'coverage',
+  'docs',
+]);
+
 function getFileHash(filePath) {
   const content = readFileSync(filePath);
   return createHash('sha256').update(content).digest('hex').substring(0, 8);
@@ -26,7 +35,7 @@ function findAssets(dir) {
   
   for (const entry of entries) {
     const fullPath = join(dir, entry.name);
-    if (entry.isDirectory() && !entry.name.startsWith('.') && entry.name !== 'node_modules' && entry.name !== 'test') {
+    if (entry.isDirectory() && !entry.name.startsWith('.') && !EXCLUDED_DIRECTORIES.has(entry.name)) {
       assets.push(...findAssets(fullPath));
     } else if (entry.isFile() && ASSET_EXTS.includes(extname(entry.name))) {
       assets.push(fullPath);

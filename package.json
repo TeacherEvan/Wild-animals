@@ -9,7 +9,10 @@
     "test:unit": "vitest run",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
+    "ci": "npm run lint && npm run test:unit -- --coverage && npm run test:e2e && npm run build",
     "build": "node scripts/cache-bust.js",
+    "audio:diet": "python3 scripts/optimize-audio.py --apply",
+    "audio:diet:check": "python3 scripts/optimize-audio.py",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "cache-bust": "node scripts/cache-bust.js"

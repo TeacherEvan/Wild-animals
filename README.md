@@ -149,6 +149,7 @@ To add more animals, edit the `animals` array in `index.html`:
 - `real-animal-sounds.js` - Real animal audio playback system
 - `interactive-features.js` - Drag & drop and interactive games
 - `attention-sensory.js` - Attention cue, wiggle break, chunk schedule and sensory preferences
+- `scripts/optimize-audio.py` - Trims and compresses animal cues (see `docs/AUDIO_DIET.md`)
 - `manifest.json` - PWA metadata for installable browser support
 - `README.md` - This documentation file
 

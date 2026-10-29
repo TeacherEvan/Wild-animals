@@ -287,7 +287,7 @@
 - [ ] Add swipe gestures for navigation
 
 ### Performance
-- [ ] Reduce bundle size for mobile data
+- [x] Reduce bundle size for mobile data
 - [ ] Optimize for low-end Android devices
 - [ ] Add loading skeletons instead of spinners
 - [ ] Implement adaptive loading based on connection
@@ -310,6 +310,7 @@
 - [x] Added classic-mode question exit/entry choreography scoped to the quiz flow
 - [x] Preserved reduced-motion readability for the new classic-mode stagecraft
 - [x] Added call-and-response attention cue, animal wiggle break, chunked set schedule and persisted sensory settings (see `docs/ATTENTION_SENSORY_AUDIT.md`)
+- [x] Compressed animal audio from 631 MB to 1.34 MB and fixed placeholder MP3s masking real recordings (see `docs/AUDIO_DIET.md`)
 
 ### Color & Contrast
 - [ ] Ensure WCAG AAA contrast ratios

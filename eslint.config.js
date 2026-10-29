@@ -9,6 +9,15 @@ const js = require("@eslint/js");
 const globals = require("globals");
 
 module.exports = [
+    {
+        ignores: [
+            "coverage/**",
+            "playwright-report/**",
+            "test-results/**",
+            "node_modules/**",
+            "asset-manifest.json",
+        ],
+    },
     js.configs.recommended,
     {
         languageOptions: {

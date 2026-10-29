@@ -1,0 +1,202 @@
+{
+  "generated": "2026-10-30",
+  "cue_seconds": 5.0,
+  "bitrate": "96k",
+  "archive": "/home/leandi-duplessis/Lea/wild-animals-audio-archive/2026-10-30-originals/audio/sounds",
+  "before_bytes": 1404264,
+  "after_bytes": 1404264,
+  "cues": [
+    {
+      "animal": "Lion",
+      "key": "lion_roar",
+      "source": "lion_roar.wav",
+      "start": 0.083,
+      "duration": 5.0,
+      "gain_db": 8.82
+    },
+    {
+      "animal": "Tiger",
+      "key": "tiger_roar",
+      "source": "tiger_roar.wav",
+      "start": 0.62,
+      "duration": 5.0,
+      "gain_db": 1.74
+    },
+    {
+      "animal": "Elephant",
+      "key": "elephant_rumble",
+      "source": "elephant_rumble.wav",
+      "start": 15.247,
+      "duration": 5.0,
+      "gain_db": 2.1
+    },
+    {
+      "animal": "Monkey",
+      "key": "ooh-ooh-ah-ah",
+      "source": "ooh-ooh-ah-ah.wav",
+      "start": 48.95,
+      "duration": 5.0,
+      "gain_db": 0.0
+    },
+    {
+      "animal": "Wolf",
+      "key": "wolf_howl",
+      "source": "wolf_howl.wav",
+      "start": 18.352,
+      "duration": 5.0,
+      "gain_db": 1.02
+    },
+    {
+      "animal": "Bear",
+      "key": "grizzly_bear_growl",
+      "source": "grizzly_bear_growl.wav",
+      "start": 6.832,
+      "duration": 5.0,
+      "gain_db": 0.0
+    },
+    {
+      "animal": "Dolphin",
+      "key": "dolphin_clicks",
+      "source": "dolphin_clicks.wav",
+      "start": 18.995,
+      "duration": 5.0,
+      "gain_db": 0.0
+    },
+    {
+      "animal": "Frog",
+      "key": "frog_croak",
+      "source": "frog_croak.wav",
+      "start": 0.506,
+      "duration": 5.0,
+      "gain_db": 5.8
+    },
+    {
+      "animal": "Eagle",
+      "key": "eagle_scream",
+      "source": "eagle_scream.wav",
+      "start": 15.087,
+      "duration": 5.0,
+      "gain_db": 0.0
+    },
+    {
+      "animal": "Giraffe",
+      "key": "giraffe_sound",
+      "source": "giraffe_sound.mp3",
+      "start": 0.0,
+      "duration": 4.377,
+      "gain_db": 0.0
+    },
+    {
+      "animal": "Zebra",
+      "key": "zebra_sound",
+      "source": "zebra_sound.wav",
+      "start": 16.897,
+      "duration": 5.0,
+      "gain_db": 17.34
+    },
+    {
+      "animal": "Fox",
+      "key": "fox_bark",
+      "source": "fox_bark.wav",
+      "start": 27.507,
+      "duration": 5.0,
+      "gain_db": 15.8
+    },
+    {
+      "animal": "Leopard",
+      "key": "leopard_roar",
+      "source": "leopard_roar.wav",
+      "start": 14.711,
+      "duration": 5.0,
+      "gain_db": 0.0
+    },
+    {
+      "animal": "Kangaroo",
+      "key": "grunt",
+      "source": "grunt.wav",
+      "start": 0.0,
+      "duration": 1.137,
+      "gain_db": 13.61
+    },
+    {
+      "animal": "Gorilla",
+      "key": "gorilla_grunt",
+      "source": "gorilla_grunt.wav",
+      "start": 11.977,
+      "duration": 5.0,
+      "gain_db": 0.0
+    },
+    {
+      "animal": "Shark",
+      "key": "splash",
+      "source": "splash.wav",
+      "start": 22.207,
+      "duration": 5.0,
+      "gain_db": 23.04
+    },
+    {
+      "animal": "Camel",
+      "key": "grunt",
+      "source": "grunt.wav",
+      "start": 0.0,
+      "duration": 1.137,
+      "gain_db": 13.61
+    },
+    {
+      "animal": "Crocodile",
+      "key": "crocodile_hiss",
+      "source": "crocodile_hiss.wav",
+      "start": 52.786,
+      "duration": 5.0,
+      "gain_db": 0.0
+    },
+    {
+      "animal": "Hippo",
+      "key": "grunt",
+      "source": "grunt.wav",
+      "start": 0.0,
+      "duration": 1.137,
+      "gain_db": 13.61
+    },
+    {
+      "animal": "Cheetah",
+      "key": "cheetah_chirp",
+      "source": "cheetah_chirp.wav",
+      "start": 16.76,
+      "duration": 5.0,
+      "gain_db": 0.0
+    },
+    {
+      "animal": "Parrot",
+      "key": "parrot_call",
+      "source": "parrot_call.wav",
+      "start": 0.265,
+      "duration": 5.0,
+      "gain_db": 4.86
+    },
+    {
+      "animal": "Owl",
+      "key": "owl_hoot",
+      "source": "owl_hoot.wav",
+      "start": 32.951,
+      "duration": 5.0,
+      "gain_db": 18.35
+    },
+    {
+      "animal": "Squirrel",
+      "key": "chatter",
+      "source": "chatter.wav",
+      "start": 30.479,
+      "duration": 5.0,
+      "gain_db": 20.16
+    },
+    {
+      "animal": "Bee",
+      "key": "buzz",
+      "source": "buzz.wav",
+      "start": 21.295,
+      "duration": 5.0,
+      "gain_db": 28.77
+    }
+  ]
+}
