@@ -47,6 +47,9 @@ class InteractiveFeatures {
     initializeFeatures() {
         // Add touch/mouse event listeners for drag and drop
         this.setupDragAndDrop();
+
+        // CSP blocks inline onclick, so dynamic screens use data-action.
+        this.bindActionHandlers();
         
         // Initialize interactive games
         this.games = {
@@ -55,6 +58,41 @@ class InteractiveFeatures {
             'sounds': new SoundMatchingGame(),
             'puzzle': new AnimalPuzzleGame()
         };
+    }
+
+    /**
+     * Delegate data-action clicks from dynamically rendered screens.
+     * @returns {void}
+     */
+    bindActionHandlers() {
+        if (this._actionHandlersBound) return;
+
+        document.addEventListener('click', (event) => {
+            const actionElement = event.target && typeof event.target.closest === 'function'
+                ? event.target.closest('[data-action]')
+                : null;
+            if (!actionElement) return;
+
+            switch (actionElement.dataset.action) {
+                case 'start-game':
+                    this.startGame(actionElement.dataset.game);
+                    break;
+                case 'play-random-sound':
+                    if (this.currentGame && typeof this.currentGame.playRandomSound === 'function') {
+                        this.currentGame.playRandomSound();
+                    }
+                    break;
+                case 'show-hint':
+                    if (this.currentGame && typeof this.currentGame.showHint === 'function') {
+                        this.currentGame.showHint();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        });
+
+        this._actionHandlersBound = true;
     }
 
     /**
@@ -498,7 +536,7 @@ class HabitatMatchingGame {
             <h1>🎉 Amazing Job! 🎉</h1>
             <p>You matched all animals to their homes!</p>
             <div class="star-rating">⭐⭐⭐</div>
-            <button class="play-again-btn" onclick="window.interactiveFeatures.startGame('habitat')">Play Again</button>
+            <button class="play-again-btn" data-action="start-game" data-game="habitat">Play Again</button>
         `;
         
         document.querySelector('.habitat-game-container').appendChild(completion);
@@ -583,7 +621,7 @@ class SoundMatchingGame {
         gameContainer.innerHTML = `
             <h2 class="game-title">🔊 Guess the Animal Sound! 🔊</h2>
             <div class="sound-game-area">
-                <button class="big-play-button" onclick="window.interactiveFeatures.currentGame.playRandomSound()">
+                <button class="big-play-button" data-action="play-random-sound">
                     <span class="play-icon">▶️</span>
                     <span>Play Sound</span>
                 </button>
@@ -752,7 +790,7 @@ class SoundMatchingGame {
             <div class="sound-completion">
                 <h2>${completionMessage}</h2>
                 <div class="final-score">Final Score: ${this.correctAnswers}/5 (${scorePercentage}%)</div>
-                <button class="play-again-btn" onclick="window.interactiveFeatures.startGame('sounds')">
+                <button class="play-again-btn" data-action="start-game" data-game="sounds">
                     🎮 Play Again
                 </button>
             </div>
@@ -776,7 +814,7 @@ class AnimalPuzzleGame {
                 <div class="puzzle-grid"></div>
                 <div class="puzzle-preview"></div>
             </div>
-            <button class="hint-button" onclick="window.interactiveFeatures.currentGame.showHint()">
+            <button class="hint-button" data-action="show-hint">
                 💡 Hint
             </button>
         `;

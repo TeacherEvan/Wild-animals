@@ -106,6 +106,7 @@ export const GAME_CONFIG = {
   SURVIVAL_INITIAL_QUESTIONS: 20,
   SURVIVAL_BATCH_SIZE: 10,
   WRONG_OPTIONS_COUNT: 3,
+  CHUNK_SIZE: 5,
 
   // Powerup configuration
   INITIAL_HINTS: 3,
@@ -237,6 +238,50 @@ function initializeDOMElementCache() {
 }
 
 // ============================================================================
+// Attention & Sensory Bridge
+// The attention-sensory module owns the cue UI and preferences; game-core only
+// notifies it at the natural beat points so no UI lives inside the game loop.
+// ============================================================================
+
+/**
+ * True when the child (or the OS) asked for gentle motion.
+ * @returns {boolean}
+ */
+function isGentleMotionEnabled() {
+  return document.documentElement.dataset.motion === 'gentle';
+}
+
+/**
+ * Call an AttentionCoach method when the module is present.
+ * @param {string} methodName - Coach method
+ * @param {...*} args - Arguments forwarded to the coach
+ * @returns {*} Coach return value, or undefined when unavailable
+ */
+function notifyAttentionCoach(methodName, ...args) {
+  const coach = window.attentionCoach;
+  if (coach && typeof coach[methodName] === 'function') {
+    return coach[methodName](...args);
+  }
+  return undefined;
+}
+
+/**
+ * Short tactile confirmation, gated by the sensory preferences.
+ * @param {number|number[]} pattern - Vibration pattern in ms
+ * @returns {void}
+ */
+function playHapticFeedback(pattern) {
+  if (window.attentionCoach && typeof window.attentionCoach.haptic === 'function') {
+    window.attentionCoach.haptic(pattern);
+    return;
+  }
+
+  if ('vibrate' in navigator) {
+    navigator.vibrate(pattern);
+  }
+}
+
+// ============================================================================
 // Game State Variables
 // Centralized game state management
 // ============================================================================
@@ -254,6 +299,7 @@ let timer = null;
 let questionAdvanceTimeout = null;
 let questionExitTimeout = null;
 let questionEntryTimeout = null;
+let attentionPendingAdvance = false;
 let timeLeft = GAME_CONFIG.TIMER_SECONDS;
 let powerups = {
   hints: GAME_CONFIG.INITIAL_HINTS,
@@ -387,6 +433,9 @@ export async function selectMode(mode, triggerButton = null) {
 
   gameMode = mode;
 
+  // Keep the chunk schedule honest when switching into a non-linear mode.
+  notifyAttentionCoach('updateChunk', 1, GAME_CONFIG.TOTAL_QUESTIONS, mode, GAME_CONFIG.CHUNK_SIZE);
+
   // Update UI to reflect active mode with smooth transition
   document.querySelectorAll('.mode-btn').forEach(btn => {
     btn.classList.remove('active');
@@ -489,7 +538,7 @@ function showErrorMessage(containerElement, errorMessage) {
   containerElement.innerHTML = `
     <div style="padding: 40px; text-align: center; background: #fff3cd; border-radius: 15px; border: 3px solid #ffc107;">
       <p style="font-size: 1.3em; color: #856404; margin-bottom: 20px;">⚠️ ${errorMessage}</p>
-      <button class="restart-btn" onclick="location.reload()">Retry</button>
+      <button class="restart-btn" data-action="reload-page">Retry</button>
     </div>
   `;
 }
@@ -614,6 +663,13 @@ function loadNextQuestion() {
   if (isClassicStagecraftMode()) {
     playClassicQuestionEntry();
   }
+
+  const totalQuestionsForChunk = gameMode === 'survival' ? Infinity : GAME_CONFIG.TOTAL_QUESTIONS;
+  notifyAttentionCoach('updateChunk', currentQuestionIndex + 1, totalQuestionsForChunk, gameMode, GAME_CONFIG.CHUNK_SIZE);
+
+  if (notifyAttentionCoach('maybeOfferWiggleBreak', currentQuestionIndex, gameMode, GAME_CONFIG.CHUNK_SIZE)) {
+    showAchievement('🌟 Halfway Hero! 🌟');
+  }
 }
 
 /**
@@ -686,7 +742,25 @@ function startCountdownTimer() {
 
   if (timer) clearInterval(timer);
 
+  // Reset the bar before every question: the low-time gradient is set inline
+  // and would otherwise stay red for the rest of the round.
+  if (timerFillElement) {
+    timerFillElement.style.background = '';
+    timerFillElement.style.width = '100%';
+    timerFillElement.classList.remove('animated-progress');
+  }
+  if (timerTextElement) {
+    timerTextElement.textContent = `Time: ${GAME_CONFIG.TIMER_SECONDS}s`;
+    timerTextElement.classList.remove('haptic-pulse');
+  }
+
   timer = setInterval(() => {
+    // Attention cues and wiggle breaks pause the clock instead of eating time.
+    if (document.body.classList.contains('attention-paused') ||
+        document.body.classList.contains('break-active')) {
+      return;
+    }
+
     timeLeft--;
     const remainingTimePercentage = (timeLeft / GAME_CONFIG.TIMER_SECONDS) * 100;
 
@@ -854,6 +928,7 @@ function processAnswerSubmission(selectedAnswerText, selectedButtonElement) {
 
     displaySuccessFeedback(correctAnswerText);
     playSuccessSound();
+    playHapticFeedback([30, 40, 30]);
     createParticles();
 
     if (streak >= GAME_CONFIG.COMBO_THRESHOLD) {
@@ -870,6 +945,7 @@ function processAnswerSubmission(selectedAnswerText, selectedButtonElement) {
     streak = 0;
     displayFailureFeedback(selectedAnswerText, correctAnswerText);
     playFailureSound();
+    playHapticFeedback(120);
   }
 
   updateScoreBoardDisplay();
@@ -882,7 +958,10 @@ function processAnswerSubmission(selectedAnswerText, selectedButtonElement) {
  */
 function displaySuccessFeedback(correctAnswerText) {
   const classicPrompt = gameMode === 'classic' ? ' Tap next when you are ready.' : '';
-  const feedbackText = `Excellent! ${getFeedbackMessage(correctAnswerText)}!${classicPrompt} 🎉`;
+  const factNudge = currentAnimal && currentAnimal.fact
+    ? ` 🐾 Did you know? ${currentAnimal.fact}.`
+    : '';
+  const feedbackText = `Excellent! ${getFeedbackMessage(correctAnswerText)}!${classicPrompt} 🎉${factNudge}`;
   showFeedback(feedbackText, 'correct');
 }
 
@@ -972,7 +1051,11 @@ function prepareClassicNextStep() {
  * @returns {void}
  */
 function createParticles() {
+  if (isGentleMotionEnabled()) return;
+
   const animalDisplayContainer = document.querySelector('.animal-display');
+  if (!animalDisplayContainer) return;
+
   const particleColors = ['#FFD700', '#FF69B4', '#87CEEB', '#98FB98', '#FFA500'];
   for (let particleIndex = 0; particleIndex < GAME_CONFIG.PARTICLE_COUNT; particleIndex++) {
     const particleElement = document.createElement('div');
@@ -1208,7 +1291,15 @@ function endGame() {
 
   const gameArea = document.getElementById('gameArea');
   const questionsAnswered = gameMode === 'survival' ? currentQuestionIndex : GAME_CONFIG.TOTAL_QUESTIONS;
-  const percentage = Math.round((score / (questionsAnswered * GAME_CONFIG.POINTS_PER_CORRECT)) * 100);
+  const rawPercentage = (score / (questionsAnswered * GAME_CONFIG.POINTS_PER_CORRECT)) * 100;
+  // Speed bonuses can push raw score past the base maximum; clamp so the
+  // end screen never reports more than 100%.
+  const percentage = Math.min(100, Math.max(0, Math.round(rawPercentage)));
+
+  notifyAttentionCoach('hideBreakInvite');
+  notifyAttentionCoach('updateChunk', questionsAnswered, questionsAnswered, gameMode, GAME_CONFIG.CHUNK_SIZE);
+
+  if (!gameArea) return;
 
   let message = '';
   let emoji = '';
@@ -1252,7 +1343,7 @@ function endGame() {
       <div style="font-size: 1.1em; margin-bottom: 20px; color: #666;">
         High Score: <strong>${highScore}</strong> 🏆
       </div>
-      <button class="restart-btn" onclick="restartGame()">🎮 Play Again!</button>
+      <button class="restart-btn" data-action="restart-game">🎮 Play Again!</button>
     </div>
   `;
 
@@ -1369,31 +1460,43 @@ export function restartGame() {
     </div>
 
     <div class="powerups" id="powerups">
-      <button class="powerup-btn" id="hintBtn" onclick="useHint()">💡 Hint (3)</button>
-      <button class="powerup-btn" id="eliminateBtn" onclick="eliminateWrong()">❌ Eliminate (2)</button>
-      <button class="powerup-btn" id="skipBtn" onclick="skipQuestion()">⏭️ Skip (1)</button>
+      <button class="powerup-btn" id="hintBtn">💡 Hint (3)</button>
+      <button class="powerup-btn" id="eliminateBtn">❌ Eliminate (2)</button>
+      <button class="powerup-btn" id="skipBtn">⏭️ Skip (1)</button>
     </div>
 
-    <div class="animal-display">
-      <div class="animal-emoji" id="animalEmoji">🦁</div>
-      <div class="question" id="question">What animal is this?</div>
-    </div>
+    <button type="button" class="animal-display" tabindex="0"
+      aria-label="Click or press Enter to hear animal sound">
+      <span class="animal-emoji" id="animalEmoji" aria-hidden="true">🦁</span>
+      <span class="question" id="question">What animal is this?</span>
+      <span class="tap-hint">👆 Tap the animal to hear its sound!</span>
+    </button>
 
     <div class="options" id="options">
       <!-- Options will be generated by JavaScript -->
     </div>
 
-    <div class="feedback" id="feedback"></div>
+    <div class="feedback" id="feedback" role="status" aria-live="assertive"></div>
 
-    <button class="next-btn" id="nextBtn" onclick="nextQuestion()" disabled>Next Animal →</button>
+    <div class="question-transition" id="questionTransition" aria-hidden="true">
+      <div class="question-transition-track">
+        <div class="question-transition-fill" id="questionTransitionFill"></div>
+      </div>
+      <div class="question-transition-label" id="questionTransitionLabel">Next animal is getting ready...</div>
+    </div>
+
+    <button class="next-btn" id="nextBtn" disabled
+      aria-label="Proceed to next question">Next Animal →</button>
   `;
 
   initializeDOMElementCache();
+  bindStaticControls();
 
   if (cachedDOMElements.animalEmoji) {
-    cachedDOMElements.animalEmoji.onclick = playCurrentAnimalSound;
     cachedDOMElements.animalEmoji.classList.add('clickable');
   }
+
+  setupKeyboardSupport();
 
   const timerContainer = document.getElementById('timerContainer');
   if (gameMode === 'speed') {
@@ -1409,7 +1512,10 @@ export function restartGame() {
  */
 function showConfetti() {
   const celebrationContainer = document.getElementById('celebration');
+  if (!celebrationContainer) return;
+
   celebrationContainer.innerHTML = '';
+  if (isGentleMotionEnabled()) return;
 
   const confettiFragment = document.createDocumentFragment();
   const confettiColors = ['#FFD700', '#FF69B4', '#87CEEB', '#98FB98', '#FFA500'];
@@ -1441,7 +1547,13 @@ export function toggleSound() {
     ? window.realAnimalSounds.toggleSound() : false;
 
   const soundBtn = document.getElementById('soundBtn');
-  soundBtn.textContent = isEnabled ? '🔊' : '🔇';
+  if (soundBtn) {
+    soundBtn.textContent = isEnabled ? '🔊' : '🔇';
+    soundBtn.setAttribute('aria-pressed', String(isEnabled));
+  }
+
+  // Keep the sensory panel and the legacy speaker button in one state.
+  notifyAttentionCoach('setPreference', 'sound', Boolean(isEnabled));
 }
 
 /**
@@ -1452,9 +1564,7 @@ export function playCurrentAnimalSound() {
   if (window.currentAnimal && window.animalSounds) {
     window.animalSounds.playAnimalSound(window.currentAnimal.name);
 
-    if ('vibrate' in navigator) {
-      navigator.vibrate(100);
-    }
+    playHapticFeedback(100);
 
     const animalEmoji = document.getElementById('animalEmoji');
     if (animalEmoji) {
@@ -1473,14 +1583,45 @@ export function playCurrentAnimalSound() {
  */
 function setupKeyboardSupport() {
   const animalDisplay = document.querySelector('.animal-display');
-  if (animalDisplay) {
-    animalDisplay.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        playCurrentAnimalSound();
-      }
-    });
-  }
+  if (!animalDisplay || animalDisplay.dataset.controlBound === 'true') return;
+
+  animalDisplay.addEventListener('click', playCurrentAnimalSound);
+  animalDisplay.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      playCurrentAnimalSound();
+    }
+  });
+  animalDisplay.dataset.controlBound = 'true';
+}
+
+/**
+ * Bind every static control with a real listener.
+ *
+ * The page ships a strict CSP (`script-src 'self'`), which blocks inline
+ * `onclick` attributes. Relying on markup handlers silently disabled mode
+ * switching, power-ups, the next button and the speaker button in production.
+ *
+ * @returns {void}
+ */
+function bindStaticControls() {
+  const bindClick = (element, handler) => {
+    if (!element || element.dataset.controlBound === 'true') return;
+    element.addEventListener('click', handler);
+    element.dataset.controlBound = 'true';
+  };
+
+  bindClick(document.getElementById('soundBtn'), toggleSound);
+  bindClick(document.getElementById('nextBtn'), nextQuestion);
+  bindClick(document.getElementById('hintBtn'), useHint);
+  bindClick(document.getElementById('eliminateBtn'), eliminateWrong);
+  bindClick(document.getElementById('skipBtn'), skipQuestion);
+
+  document.querySelectorAll('.mode-btn').forEach((modeButton) => {
+    if (modeButton.dataset.controlBound === 'true' || !modeButton.dataset.mode) return;
+    modeButton.addEventListener('click', () => selectMode(modeButton.dataset.mode, modeButton));
+    modeButton.dataset.controlBound = 'true';
+  });
 }
 
 // ============================================================================
@@ -1492,7 +1633,9 @@ function setupKeyboardSupport() {
  * @returns {void}
  */
 export function initializeGame() {
+  notifyAttentionCoach('mount');
   updateHighScoreDisplay();
+  bindStaticControls();
   initGame();
   setupKeyboardSupport();
 
@@ -1507,6 +1650,61 @@ export function initializeGame() {
     if (GAME_CONFIG.DEBUG) console.warn('Real Animal sounds module not available');
   }
 }
+
+// ============================================================================
+// Attention pause / resume
+// A cue opened during the 2s auto-advance must not let the question change
+// behind the overlay; the pending advance resumes when the cue closes.
+// ============================================================================
+
+/**
+ * Freeze a pending question advance.
+ * @returns {void}
+ */
+function pausePendingQuestionAdvance() {
+  if (questionAdvanceTimeout) {
+    clearTimeout(questionAdvanceTimeout);
+    questionAdvanceTimeout = null;
+    attentionPendingAdvance = true;
+  }
+}
+
+/**
+ * Resume an advance that was frozen by an attention cue or wiggle break.
+ * @returns {void}
+ */
+function resumePendingQuestionAdvance() {
+  if (!attentionPendingAdvance) return;
+
+  attentionPendingAdvance = false;
+  currentQuestionIndex++;
+  loadNextQuestion();
+}
+
+document.addEventListener('wildanimals:attentionstart', pausePendingQuestionAdvance);
+document.addEventListener('wildanimals:breakstart', pausePendingQuestionAdvance);
+document.addEventListener('wildanimals:attentionend', resumePendingQuestionAdvance);
+document.addEventListener('wildanimals:breakend', resumePendingQuestionAdvance);
+
+// Dynamic surfaces (end screen, error card) use data-action instead of inline
+// handlers, because CSP blocks inline script.
+document.addEventListener('click', (event) => {
+  const actionElement = event.target && typeof event.target.closest === 'function'
+    ? event.target.closest('[data-action]')
+    : null;
+  if (!actionElement) return;
+
+  switch (actionElement.dataset.action) {
+    case 'restart-game':
+      restartGame();
+      break;
+    case 'reload-page':
+      window.location.reload();
+      break;
+    default:
+      break;
+  }
+});
 
 // Export for global access (backward compatibility)
 window.initGame = initGame;

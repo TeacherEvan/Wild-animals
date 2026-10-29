@@ -281,7 +281,7 @@
 
 ### Touch Experience
 - [ ] Increase touch target sizes (current: adequate)
-- [ ] Add haptic feedback API for correct answers
+- [x] Add haptic feedback API for correct answers
 - [ ] Optimize for portrait and landscape
 - [ ] Test on iOS Safari and Chrome Android
 - [ ] Add swipe gestures for navigation
@@ -309,10 +309,11 @@
 - [x] Added visible auto-advance progress cue between classic questions
 - [x] Added classic-mode question exit/entry choreography scoped to the quiz flow
 - [x] Preserved reduced-motion readability for the new classic-mode stagecraft
+- [x] Added call-and-response attention cue, animal wiggle break, chunked set schedule and persisted sensory settings (see `docs/ATTENTION_SENSORY_AUDIT.md`)
 
 ### Color & Contrast
 - [ ] Ensure WCAG AAA contrast ratios
-- [ ] Add high contrast mode
+- [x] Add high contrast mode
 - [ ] Test with color blindness simulators
 - [ ] Improve gradient readability
 - [ ] Add dark mode support

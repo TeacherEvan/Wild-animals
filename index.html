@@ -12,13 +12,14 @@
     <link rel="preload" href="audio/sound-loader.js?v=20260505c" as="script">
     <link rel="preload" href="animal-sounds.js?v=80d35343" as="script">
     <link rel="preload" href="real-animal-sounds.js?v=e511d2e8" as="script">
-    <link rel="preload" href="interactive-features.js?v=87008a1a" as="script">
-    <link rel="preload" href="game-core.js?v=1436adda" as="script">
+    <link rel="preload" href="interactive-features.js?v=d009f01b" as="script">
+    <link rel="preload" href="attention-sensory.js?v=876f4cbb" as="script">
+    <link rel="preload" href="game-core.js?v=151d73fd" as="script">
     <!-- Content Security Policy -->
     <meta http-equiv="Content-Security-Policy"
           content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';">
     <!-- Ensure stylesheet is applied -->
-    <link rel="stylesheet" href="styles.css?v=d4390e76">
+    <link rel="stylesheet" href="styles.css?v=20f1f551">
     <!-- Defer main scripts for performance; already included later in file -->
 </head>
 
@@ -27,8 +28,18 @@
     <!-- Skip link for keyboard users -->
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
-    <button type="button" class="sound-btn" onclick="toggleSound()" id="soundBtn" aria-label="Toggle sound on or off"
+    <button type="button" class="sound-btn" id="soundBtn" aria-label="Toggle sound on or off"
         aria-pressed="true">🔊</button>
+
+    <div class="sensory-controls" role="group" aria-label="Calm and attention tools">
+        <button type="button" class="sensory-btn" id="attentionBtn"
+            aria-label="Start the eyes on me attention cue">👀</button>
+        <button type="button" class="sensory-btn" id="wiggleBtn"
+            aria-label="Start a wiggle movement break">🐾</button>
+        <button type="button" class="sensory-btn" id="sensoryBtn" aria-expanded="false"
+            aria-controls="sensoryPanel" aria-label="Open sensory settings">⚙️</button>
+    </div>
+
     <main class="game-container" id="main-content">
         <h1>🦁 Wild Animals Adventure 🐯</h1>
         <p class="subtitle">Learn English Animal Names!</p>
@@ -36,28 +47,28 @@
         <div class="high-score" id="highScore" role="status" aria-live="polite">🏆 High Score: 0</div>
 
         <div class="mode-selection" id="modeSelection" role="group" aria-label="Game mode selection">
-            <button type="button" class="mode-btn active" onclick="selectMode('classic', this)"
+            <button type="button" class="mode-btn active" data-mode="classic"
                 aria-label="Select Classic Mode with 10 questions" aria-pressed="true">
                 🎯 Classic Mode<br><small>10 Questions</small>
             </button>
-            <button type="button" class="mode-btn" onclick="selectMode('speed', this)" aria-label="Select Speed Mode time challenge"
-                aria-pressed="false">
+            <button type="button" class="mode-btn" data-mode="speed"
+                aria-label="Select Speed Mode time challenge" aria-pressed="false">
                 ⚡ Speed Mode<br><small>Time Challenge</small>
             </button>
-            <button type="button" class="mode-btn" onclick="selectMode('survival', this)" aria-label="Select Survival Mode play until wrong"
-                aria-pressed="false">
+            <button type="button" class="mode-btn" data-mode="survival"
+                aria-label="Select Survival Mode play until wrong" aria-pressed="false">
                 🔥 Survival Mode<br><small>Until Wrong</small>
             </button>
-            <button type="button" class="mode-btn" onclick="selectMode('quiz', this)" aria-label="Select Quiz Mode with mixed questions"
-                aria-pressed="false">
+            <button type="button" class="mode-btn" data-mode="quiz"
+                aria-label="Select Quiz Mode with mixed questions" aria-pressed="false">
                 🧠 Quiz Mode<br><small>Mixed Questions</small>
             </button>
-            <button type="button" class="mode-btn" onclick="selectMode('habitat', this)"
+            <button type="button" class="mode-btn" data-mode="habitat"
                 aria-label="Select Habitat Match drag and drop game" aria-pressed="false">
                 🏠 Habitat Match<br><small>Drag &amp; Drop</small>
             </button>
-            <button type="button" class="mode-btn" onclick="selectMode('sounds', this)" aria-label="Select Sound Game guess animal sounds"
-                aria-pressed="false">
+            <button type="button" class="mode-btn" data-mode="sounds"
+                aria-label="Select Sound Game guess animal sounds" aria-pressed="false">
                 🔊 Sound Game<br><small>Guess Sounds</small>
             </button>
         </div>
@@ -68,6 +79,10 @@
                     id="totalQuestions">10</span>
             </div>
             <div class="score-item">Streak: <span id="streak">0</span> 🔥</div>
+            <div class="score-item chunk-item" id="chunkItem">
+                <span id="chunkProgress">Set 1 of 2</span>
+                <span class="chunk-dots" id="chunkDots" aria-hidden="true"></span>
+            </div>
         </div>
         <div class="game-area" id="gameArea">
             <div class="timer-container" id="timerContainer" hidden>
@@ -78,15 +93,15 @@
             </div>
 
             <div class="powerups" id="powerups" role="group" aria-label="Power-up buttons">
-                <button type="button" class="powerup-btn" id="hintBtn" onclick="useHint()"
+                <button type="button" class="powerup-btn" id="hintBtn"
                     aria-label="Use hint power-up, 3 remaining">💡 Hint (3)</button>
-                <button type="button" class="powerup-btn" id="eliminateBtn" onclick="eliminateWrong()"
+                <button type="button" class="powerup-btn" id="eliminateBtn"
                     aria-label="Eliminate wrong answers, 2 remaining">❌ Eliminate (2)</button>
-                <button type="button" class="powerup-btn" id="skipBtn" onclick="skipQuestion()"
+                <button type="button" class="powerup-btn" id="skipBtn"
                     aria-label="Skip question, 1 remaining">⏭️ Skip (1)</button>
             </div>
 
-            <button type="button" class="animal-display" onclick="playCurrentAnimalSound()" tabindex="0"
+            <button type="button" class="animal-display" tabindex="0"
                 aria-label="Click or press Enter to hear animal sound">
                 <span class="animal-emoji" id="animalEmoji" aria-hidden="true">🦁</span>
                 <span class="question" id="question">What animal is this?</span>
@@ -106,12 +121,15 @@
                 <div class="question-transition-label" id="questionTransitionLabel">Next animal is getting ready...</div>
             </div>
 
-            <button type="button" class="next-btn" id="nextBtn" onclick="nextQuestion()" disabled
+            <button type="button" class="next-btn" id="nextBtn" disabled
                 aria-label="Proceed to next question">Next Animal →</button>
         </div>
     </main>
 
     <div class="celebration" id="celebration"></div>
+
+    <!-- Attention cue, wiggle break and sensory settings mount here -->
+    <div class="sensory-layer" id="sensoryLayer"></div>
 
     <!-- Global error handling: log to console, never break the game -->
     <script>
@@ -122,11 +140,12 @@
         console.error('[UnhandledRejection]', event.reason);
       });
     </script>
-    <script type="module" src="init-game.js?v=840dc078"></script>
+    <script type="module" src="attention-sensory.js?v=876f4cbb"></script>
+    <script type="module" src="init-game.js?v=dfd55afe"></script>
     <script defer src="audio/sound-loader.js?v=20260505c"></script>
     <script defer src="animal-sounds.js?v=80d35343"></script>
     <script defer src="real-animal-sounds.js?v=e511d2e8"></script>
-    <script defer src="interactive-features.js?v=87008a1a"></script>
+    <script defer src="interactive-features.js?v=d009f01b"></script>
 </body>
 
 </html>

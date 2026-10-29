@@ -29,8 +29,15 @@ An interactive educational game designed for kindergarten students to learn abou
 - **🔥 Survival Mode**: Keep playing until you make a mistake
 - **🧠 Quiz Mode**: Mixed question types about habitats, diet, and sounds
 
-### 🎨 Visual Enhancements
+### 👀 Attention & Sensory Tools (NEW!)
 
+- **Eyes on Me Cue**: A call-and-response reset (“Eyes on me” → “Eyes on you!”) with a slow breath and one big “I’m ready” action. The speed clock pauses while it is open.
+- **Wiggle Break**: Four six-second animal movements (elephant stomps, eagle flaps, giraffe stretch, sleepy-wolf breath) with a progress bar, countdown and skip button. Offered gently at the halfway point.
+- **Set Progress**: The round is chunked into “Set 1 of 2” with ten progress dots, plus a “Halfway Hero” acknowledgement at question five.
+- **Sensory Settings**: Sound, gentle motion, gentle buzz (haptics) and high contrast — remembered on the device. Gentle motion follows the operating system’s reduced-motion setting and also suppresses particles and confetti.
+- **Curiosity Nudge**: Correct answers now show the animal’s fact (“Did you know? …”) to turn a right answer into a wondering moment.
+
+### 🎨 Visual Enhancements
 #### Animations
 - **Animal Movements**: Animals bounce, shake, and roar
 - **Classic Quiz Handoffs**: Answer commit, progress cue, and next-animal entrance work as one sequence
@@ -141,6 +148,7 @@ To add more animals, edit the `animals` array in `index.html`:
 - `animal-sounds.js` - Text-to-speech pronunciation system
 - `real-animal-sounds.js` - Real animal audio playback system
 - `interactive-features.js` - Drag & drop and interactive games
+- `attention-sensory.js` - Attention cue, wiggle break, chunk schedule and sensory preferences
 - `manifest.json` - PWA metadata for installable browser support
 - `README.md` - This documentation file
 

@@ -6,7 +6,7 @@
 
 import { readFileSync, writeFileSync, readdirSync } from 'fs';
 import { createHash } from 'crypto';
-import { join, extname, basename } from 'path';
+import { join, extname, basename, dirname, resolve } from 'path';
 
 const ASSET_DIRS = [
   '.',
@@ -66,6 +66,70 @@ function updateHtmlWithHashes(htmlPath, hashes) {
   console.log(`Updated ${htmlPath} with cache-busting hashes`);
 }
 
+/**
+ * Rewrite ES module import specifiers inside a .js file so a changed module
+ * can never be served from a stale cache under an old ?v= URL.
+ *
+ * index.html alone is not enough: init-game.js imports game-core.js by URL, and
+ * an un-rewritten specifier keeps pointing at the old hash forever.
+ *
+ * Only explicit relative module specifiers (`./x.js`, `../x.js`) are touched.
+ * Bare imports (`vitest/config`) and string literals stay untouched, and the
+ * target is resolved against the importing file's directory so two modules with
+ * the same basename in different folders can never swap hashes.
+ *
+ * @param {string} jsPath - JavaScript file to update
+ * @param {Map<string, string>} hashIndex - absolute path -> content hash
+ * @returns {boolean} true when the file changed on disk
+ */
+function updateJsImportsWithHashes(jsPath, hashIndex) {
+  const originalSource = readFileSync(jsPath, 'utf-8');
+  const importPattern = /(\bfrom\s*|\bimport\s*\(\s*)(["'])([^"']+)(["'])/g;
+
+  const updatedSource = originalSource.replace(importPattern, (match, prefix, quoteStart, specifier, quoteEnd) => {
+    const [pathPart] = specifier.split('?');
+
+    if (!/^\.{1,2}\//.test(pathPart)) return match;
+    if (!/\.m?js$/.test(pathPart)) return match;
+
+    const targetPath = resolve(dirname(jsPath), pathPart);
+    const targetHash = hashIndex.get(targetPath);
+    if (!targetHash) return match;
+
+    return `${prefix}${quoteStart}${pathPart}?v=${targetHash}${quoteEnd}`;
+  });
+
+  if (updatedSource === originalSource) return false;
+
+  writeFileSync(jsPath, updatedSource);
+  return true;
+}
+
+/**
+ * @param {Record<string, string>} hashes - asset path -> content hash
+ * @returns {Map<string, string>} absolute path -> content hash
+ */
+function buildHashIndex(hashes) {
+  const index = new Map();
+  for (const [assetPath, hash] of Object.entries(hashes)) {
+    index.set(resolve(assetPath), hash);
+  }
+  return index;
+}
+
+/**
+ * Recompute hashes for every JavaScript asset after import rewriting.
+ * @param {string[]} assets - all asset paths
+ * @param {Record<string, string>} hashes - mutable hash map
+ * @returns {void}
+ */
+function refreshJavaScriptHashes(assets, hashes) {
+  for (const asset of assets) {
+    if (!asset.endsWith('.js')) continue;
+    hashes[asset] = getFileHash(asset);
+  }
+}
+
 function main() {
   console.log('Generating cache-busting hashes...');
   
@@ -84,6 +148,39 @@ function main() {
       console.warn(`Failed to hash ${asset}: ${e.message}`);
     }
   }
+
+  // Pass over JS import specifiers until stable. A dependency chain may need
+  // several rounds; cap at 10 and warn loudly rather than shipping a stale
+  // specifier when a cycle prevents convergence.
+  const MAX_HASH_PASSES = 10;
+  let converged = false;
+
+  for (let pass = 0; pass < MAX_HASH_PASSES; pass++) {
+    refreshJavaScriptHashes(allAssets, hashes);
+    const hashIndex = buildHashIndex(hashes);
+    let changedAny = false;
+
+    for (const asset of allAssets) {
+      if (!asset.endsWith('.js')) continue;
+      if (updateJsImportsWithHashes(asset, hashIndex)) changedAny = true;
+    }
+
+    if (!changedAny) {
+      converged = true;
+      break;
+    }
+  }
+
+  if (!converged) {
+    console.warn(
+      `[cache-bust] Import hashes did not converge after ${MAX_HASH_PASSES} passes. ` +
+      'A module import cycle is likely; check the ?v= specifiers manually.'
+    );
+  }
+
+  // After a no-change pass the hashes already match the content; refresh once
+  // more so the manifest and index.html always describe the files on disk.
+  refreshJavaScriptHashes(allAssets, hashes);
   
   // Update index.html
   updateHtmlWithHashes('./index.html', hashes);
@@ -94,5 +191,6 @@ function main() {
   
   console.log('Cache-busting complete!');
 }
+
 
 main();

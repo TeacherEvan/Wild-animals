@@ -55,20 +55,43 @@ test.describe('Wild Animals Adventure', () => {
   });
 
   test('should be able to select a game mode', async ({ page }) => {
-    // Click Speed Mode and call selectMode directly since onclick may not fire in test
+    // Real click only: CSP blocks inline handlers, so this test fails if the
+    // control is not wired with addEventListener.
     const speedBtn = page.locator('.mode-btn:has-text("Speed Mode")');
     await speedBtn.click();
-    await page.evaluate(() => {
-      const btn = Array.from(document.querySelectorAll('.mode-btn')).find(b => b.textContent.includes('Speed Mode'));
-      return window.selectMode('speed', btn);
-    });
-    
-    // Wait for selectMode to execute and update UI - check for active class
-    await expect(page.locator('.mode-btn:has-text("Speed Mode")')).toHaveClass(/active/, { timeout: 10000 });
+
+    await expect(speedBtn).toHaveClass(/active/, { timeout: 10000 });
     await expect(page.locator('.mode-btn:has-text("Classic Mode")')).not.toHaveClass(/active/);
-    
+
     // Timer should be visible for Speed Mode
     await expect(page.locator('#timerContainer')).toBeVisible();
+  });
+
+  test('should advance to the next animal when Next is clicked', async ({ page }) => {
+    const animalName = await page.evaluate(() => window.currentAnimal.name);
+    await page.locator(`.option-btn[data-value="${animalName}"]`).click();
+
+    await expect(page.locator('#nextBtn')).toBeEnabled();
+    await page.locator('#nextBtn').click();
+
+    await expect(page.locator('#currentQuestion')).toHaveText('2', { timeout: 5000 });
+  });
+
+  test('should toggle the speaker button with a real click', async ({ page }) => {
+    const soundButton = page.locator('#soundBtn');
+    await expect(soundButton).toHaveText('🔊');
+
+    await soundButton.click();
+
+    await expect(soundButton).toHaveText('🔇');
+    await expect(soundButton).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  test('should spend a hint when the hint button is clicked', async ({ page }) => {
+    await page.locator('#hintBtn').click();
+
+    await expect(page.locator('#feedback')).toContainText('Hint:');
+    await expect(page.locator('#hintBtn')).toContainText('Hint (2)');
   });
 });
 

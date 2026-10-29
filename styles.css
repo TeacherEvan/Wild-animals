@@ -108,8 +108,9 @@ body {
     flex-direction: column;
     align-items: center;
     padding: var(--spacing-sm);
-    /* Performance: Optimize paint operations */
-    contain: layout style paint;
+    /* No `contain` on body: even `contain: layout` makes body the containing
+       block for position:fixed descendants, which pushed the attention cue and
+       the sensory toolbar off-viewport. Correct fixed positioning wins here. */
     /* Prevent background repaints on scroll */
     background-attachment: fixed;
 }
@@ -2243,3 +2244,663 @@ input[type="radio"] + label {
     aspect-ratio: 16 / 9;
 }
 
+
+/* ========================================
+   Attention & Sensory Layer (2026-10-30)
+   - call-and-response attention cue
+   - animal movement brain break
+   - chunked visual schedule
+   - child-controlled sensory preferences
+   ======================================== */
+
+.sensory-controls {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 5000;
+}
+
+.sensory-btn {
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    min-height: 56px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: #1F6B45;
+    color: #fff;
+    font-size: 1.5em;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(31, 107, 69, 0.38);
+    transition: transform var(--transition-normal) var(--easing-standard),
+                box-shadow var(--transition-normal) var(--easing-standard);
+    transform: translateZ(0);
+}
+
+.sensory-btn:hover {
+    transform: scale(1.1) translateZ(0);
+    box-shadow: 0 6px 20px rgba(31, 107, 69, 0.55);
+}
+
+.sensory-btn:active {
+    transform: scale(1.02) translateZ(0);
+}
+
+.sensory-btn:focus-visible {
+    outline: 3px solid #1B5E20;
+    outline-offset: 3px;
+}
+
+/* Baseline: hidden surfaces must never be overridden by a display rule below */
+.sensory-panel[hidden],
+.attention-overlay[hidden],
+.wiggle-overlay[hidden],
+.wiggle-invite[hidden],
+.chunk-item[hidden] {
+    display: none !important;
+}
+
+/* ---------- Sensory preferences panel ---------- */
+
+.sensory-panel {
+    position: fixed;
+    top: 88px;
+    left: 20px;
+    z-index: 6000;
+    width: min(360px, calc(100vw - 40px));
+    padding: 18px;
+    background: #FFFDF5;
+    border: 4px solid var(--color-primary);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.22);
+    text-align: left;
+    animation: sensoryPanelIn 0.25s var(--easing-decelerate);
+}
+
+@keyframes sensoryPanelIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.sensory-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.sensory-panel-title {
+    margin: 0;
+    font-size: 1.2em;
+    color: #1F5F3A;
+}
+
+.sensory-close {
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 50%;
+    background: #F0F4F8;
+    color: #333;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+.sensory-close:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.sensory-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 10px 4px;
+    border-bottom: 1px solid #E6EEF5;
+    cursor: pointer;
+    font-size: 1.02em;
+    color: #234;
+}
+
+.sensory-row:last-of-type {
+    border-bottom: none;
+}
+
+.sensory-row-label {
+    line-height: 1.25;
+}
+
+.sensory-switch {
+    appearance: none;
+    -webkit-appearance: none;
+    position: relative;
+    width: 58px;
+    height: 32px;
+    min-width: 58px;
+    margin: 0;
+    border-radius: 999px;
+    background: #C9D6E3;
+    cursor: pointer;
+    transition: background var(--transition-normal) var(--easing-standard);
+}
+
+.sensory-switch::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+    transition: transform var(--transition-normal) var(--easing-standard);
+}
+
+.sensory-switch:checked {
+    background: var(--color-primary);
+}
+
+.sensory-switch:checked::after {
+    transform: translateX(26px);
+}
+
+.sensory-switch:focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 3px;
+}
+
+.sensory-note {
+    margin: 10px 4px 0;
+    font-size: 0.85em;
+    color: #5B6B7B;
+    line-height: 1.35;
+}
+
+/* ---------- Attention cue: "Eyes on me" ---------- */
+
+.attention-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 12000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-sm);
+    overflow-y: auto;
+    background: rgba(18, 38, 58, 0.72);
+    backdrop-filter: blur(7px);
+}
+
+.attention-card {
+    width: min(540px, 92vw);
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    padding: var(--spacing-lg) var(--spacing-md);
+    text-align: center;
+    background: linear-gradient(160deg, #FFFDF5 0%, #EAF7FF 100%);
+    border: 6px solid var(--color-accent);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.38);
+    animation: attentionCardIn 0.35s var(--easing-decelerate);
+}
+
+@keyframes attentionCardIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.attention-orbit {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 6px;
+}
+
+.attention-orbit::before,
+.attention-orbit::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 4px solid rgba(255, 215, 0, 0.55);
+    animation: attentionRing 3.2s ease-out infinite;
+}
+
+.attention-orbit::after {
+    animation-delay: 1.6s;
+}
+
+@keyframes attentionRing {
+    0% { transform: scale(0.55); opacity: 0.9; }
+    100% { transform: scale(1.15); opacity: 0; }
+}
+
+.attention-face {
+    font-size: 5.2rem;
+    line-height: 1;
+    animation: attentionFacePulse 2.4s ease-in-out infinite;
+}
+
+@keyframes attentionFacePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.attention-title {
+    margin: 0 0 6px;
+    font-size: 2.1em;
+    color: #1F5F3A;
+}
+
+.attention-call {
+    margin: 0 0 8px;
+    font-size: 1.25em;
+    color: #234;
+}
+
+.attention-call strong {
+    color: #B23A1F;
+}
+
+.attention-breath {
+    min-height: 1.6em;
+    margin: 0 0 14px;
+    font-size: 1.1em;
+    color: #4A6572;
+}
+
+.attention-ready {
+    width: 100%;
+    min-height: 64px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: var(--radius-md);
+    background: var(--grad-green-45);
+    color: #103018;
+    font-family: inherit;
+    font-size: 1.3em;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 6px 0 #1F7A3D;
+    transition: transform var(--transition-fast) var(--easing-standard);
+}
+
+.attention-ready:hover {
+    transform: translateY(-2px);
+}
+
+.attention-ready:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #1F7A3D;
+}
+
+.attention-ready:focus-visible {
+    outline: 4px solid var(--color-primary);
+    outline-offset: 4px;
+}
+
+.attention-hint {
+    margin: 10px 0 0;
+    font-size: 0.95em;
+    color: #3F5566;
+}
+
+/* ---------- Wiggle break ---------- */
+
+.wiggle-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 12000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-sm);
+    overflow-y: auto;
+    background: rgba(255, 250, 235, 0.97);
+}
+
+.wiggle-card {
+    width: min(560px, 92vw);
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    padding: var(--spacing-md);
+    text-align: center;
+    background: linear-gradient(160deg, #FFFFFF 0%, #FFF7DC 100%);
+    border: 6px solid var(--color-secondary);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.22);
+    animation: attentionCardIn 0.3s var(--easing-decelerate);
+}
+
+.wiggle-kicker {
+    margin: 0 0 6px;
+    font-size: 1em;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #B23A1F;
+}
+
+.wiggle-emoji {
+    font-size: 7rem;
+    line-height: 1;
+    margin-bottom: 4px;
+    animation: wiggleBounce 0.9s ease-in-out infinite alternate;
+}
+
+@keyframes wiggleBounce {
+    from { transform: translateY(0) rotate(-3deg); }
+    to { transform: translateY(-14px) rotate(3deg); }
+}
+
+.wiggle-title {
+    margin: 0 0 6px;
+    font-size: 1.8em;
+    color: #1F5F3A;
+}
+
+.wiggle-cue {
+    margin: 0 0 16px;
+    font-size: 1.35em;
+    color: #234;
+}
+
+.wiggle-progress {
+    width: 100%;
+    height: 18px;
+    margin-bottom: 8px;
+    border-radius: 999px;
+    background: #F0E6C8;
+    overflow: hidden;
+}
+
+.wiggle-progress-fill {
+    width: 0%;
+    height: 100%;
+    border-radius: 999px;
+    background: var(--grad-green-45);
+    transition: width 0.9s linear;
+}
+
+.wiggle-count {
+    margin: 0 0 14px;
+    font-size: 1.4em;
+    font-weight: 800;
+    color: #B23A1F;
+}
+
+.wiggle-skip {
+    min-height: 54px;
+    padding: 10px 26px;
+    border: 3px solid #B9C7D4;
+    border-radius: 999px;
+    background: #FFFFFF;
+    color: #445;
+    font-family: inherit;
+    font-size: 1.05em;
+    cursor: pointer;
+}
+
+.wiggle-skip:focus-visible {
+    outline: 4px solid var(--color-primary);
+    outline-offset: 3px;
+}
+
+/* ---------- Non-blocking break invitation ---------- */
+
+.wiggle-invite {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding: 10px 14px;
+    background: #FFF8E1;
+    border: 3px dashed var(--color-secondary);
+    border-radius: var(--radius-md);
+    color: #4A3A18;
+    font-size: 1em;
+    animation: fadeIn 0.3s var(--easing-decelerate);
+}
+
+.wiggle-invite-text {
+    font-weight: 700;
+}
+
+.wiggle-invite-start,
+.wiggle-invite-later {
+    min-height: 44px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 0.95em;
+    cursor: pointer;
+}
+
+.wiggle-invite-start {
+    border: none;
+    background: #C2410C;
+    color: #fff;
+    font-weight: 800;
+}
+
+.wiggle-invite-later {
+    border: 2px solid #C9B98A;
+    background: transparent;
+    color: #5A4A22;
+}
+
+.wiggle-invite-start:focus-visible,
+.wiggle-invite-later:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* ---------- Chunked visual schedule ---------- */
+
+/* The score board keeps a light surface in both themes, so its ink must stay
+   dark even when the surrounding page switches to dark mode. */
+.score-board .score-item {
+    color: #1F6B45;
+}
+
+.chunk-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.98em;
+}
+
+.chunk-dots {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+}
+
+.chunk-dot {
+    display: block;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #C9D6E3;
+    transition: transform var(--transition-fast) var(--easing-standard),
+                background var(--transition-fast) var(--easing-standard);
+}
+
+.chunk-dot-done {
+    background: var(--color-primary);
+}
+
+.chunk-dot-current {
+    background: var(--color-secondary);
+    transform: scale(1.45);
+    box-shadow: 0 0 0 3px rgba(255, 99, 71, 0.18);
+}
+
+.chunk-dot-set-end {
+    margin-right: 5px;
+}
+
+/* ---------- Gentle motion mode ---------- */
+
+html[data-motion="gentle"] .particle,
+html[data-motion="gentle"] .confetti,
+html[data-motion="gentle"] .sound-wave,
+html[data-motion="gentle"] .combo-indicator {
+    display: none !important;
+}
+
+html[data-motion="gentle"] .animal-emoji,
+html[data-motion="gentle"] .attention-face,
+html[data-motion="gentle"] .wiggle-emoji,
+html[data-motion="gentle"] .attention-orbit::before,
+html[data-motion="gentle"] .attention-orbit::after {
+    animation: none !important;
+}
+
+html[data-motion="gentle"] .wiggle-progress-fill {
+    transition-duration: 0.1s;
+}
+
+/* ---------- High contrast mode ---------- */
+
+html[data-contrast="high"] body {
+    background: #FFFFFF;
+    color: #000000;
+}
+
+html[data-contrast="high"] .game-container {
+    background: #FFFFFF;
+    border: 4px solid #000000;
+    box-shadow: none;
+    backdrop-filter: none;
+    color: #000000;
+}
+
+/* Dark-mode surfaces must not leak a light-grey ink onto the white
+   high-contrast card. */
+html[data-contrast="high"] .game-area,
+html[data-contrast="high"] .animal-display,
+html[data-contrast="high"] .timer-container,
+html[data-contrast="high"] .powerups,
+html[data-contrast="high"] .high-score {
+    color: #000000;
+}
+
+html[data-contrast="high"] .animal-display {
+    background: #FFFFFF;
+    border: 4px solid #000000;
+}
+
+html[data-contrast="high"] h1 {
+    color: #0B3D1F;
+    text-shadow: none;
+}
+
+html[data-contrast="high"] .subtitle {
+    color: #7A2E1E;
+}
+
+html[data-contrast="high"] .score-board {
+    background: #FFFFFF;
+    border-color: #000000;
+    box-shadow: none;
+}
+
+html[data-contrast="high"] .score-board .score-item {
+    color: #000000;
+}
+
+html[data-contrast="high"] .option-btn,
+html[data-contrast="high"] .mode-btn,
+html[data-contrast="high"] .powerup-btn,
+html[data-contrast="high"] .next-btn {
+    background: #FFFFFF;
+    color: #000000;
+    border: 3px solid #000000;
+    box-shadow: none;
+}
+
+html[data-contrast="high"] .option-btn:hover,
+html[data-contrast="high"] .option-btn:focus,
+html[data-contrast="high"] .mode-btn:hover,
+html[data-contrast="high"] .mode-btn:focus {
+    background: #FFF3B0;
+    color: #000000;
+}
+
+html[data-contrast="high"] .option-btn.correct {
+    background: #B9F6CA;
+    border-color: #004D1A;
+}
+
+html[data-contrast="high"] .option-btn.incorrect {
+    background: #FFCDD2;
+    border-color: #8B0000;
+}
+
+html[data-contrast="high"] .feedback {
+    background: #FFFFFF;
+    color: #000000;
+    border: 3px solid #000000;
+}
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 640px) {
+    .sensory-controls {
+        top: 12px;
+        left: 12px;
+        gap: 8px;
+    }
+
+    .sensory-btn {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        min-height: 48px;
+        font-size: 1.25em;
+    }
+
+    .sound-btn {
+        top: 12px;
+        right: 12px;
+        padding: 12px;
+    }
+
+    .sensory-panel {
+        top: 72px;
+        left: 12px;
+    }
+
+    .score-board {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .chunk-dots {
+        display: none;
+    }
+
+    .attention-card,
+    .wiggle-card {
+        padding: var(--spacing-sm);
+    }
+
+    .wiggle-emoji {
+        font-size: 5rem;
+    }
+}
