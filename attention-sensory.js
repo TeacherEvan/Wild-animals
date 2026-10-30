@@ -272,6 +272,7 @@ export class AttentionCoach {
     this.breakInviteTimer = null;
     this.lastFocusedElement = null;
     this.boundKeydown = null;
+    this.boundApplyPreferences = null;
     this.inertedElements = [];
     this.preferences = getDefaultSensoryPreferences(this.prefersReducedMotion());
 
@@ -311,7 +312,8 @@ export class AttentionCoach {
       if (this.doc.readyState === 'complete') {
         this.applyPreferences();
       } else {
-        this.win.addEventListener('load', () => this.applyPreferences(), { once: true });
+        this.boundApplyPreferences = () => this.applyPreferences();
+        this.win.addEventListener('load', this.boundApplyPreferences, { once: true });
       }
     }
 
@@ -1070,6 +1072,11 @@ export class AttentionCoach {
       this.doc.removeEventListener('keydown', this.boundKeydown);
     }
     this.boundKeydown = null;
+
+    if (this.win && this.boundApplyPreferences) {
+      this.win.removeEventListener('load', this.boundApplyPreferences);
+    }
+    this.boundApplyPreferences = null;
 
     if (this.doc && this.doc.body) {
       this.doc.body.classList.remove('attention-paused', 'break-active');

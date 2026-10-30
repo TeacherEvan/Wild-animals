@@ -37,6 +37,15 @@ An interactive educational game designed for kindergarten students to learn abou
 - **Sensory Settings**: Sound, gentle motion, gentle buzz (haptics) and high contrast — remembered on the device. Gentle motion follows the operating system’s reduced-motion setting and also suppresses particles and confetti.
 - **Curiosity Nudge**: Correct answers now show the animal’s fact (“Did you know? …”) to turn a right answer into a wondering moment.
 
+### 📲 Installable & Offline (NEW!)
+
+- **Real app icons**: 192 px, 512 px, maskable 512 px, Apple touch icon and favicon.
+- **Offline play**: a generated service worker precaches the shell, all 28 animal cues and the icons (~1.9 MB total), so the game keeps working in a classroom with no Wi-Fi after the first visit.
+- **Update-safe caching**: the cache name changes whenever any precached file changes, and old caches are deleted.
+- **Installable**: standalone manifest with a scoped start URL and maskable icon.
+
+See `docs/PWA_OFFLINE.md` for the cache strategy and update behaviour.
+
 ### 🎨 Visual Enhancements
 #### Animations
 - **Animal Movements**: Animals bounce, shake, and roar
@@ -58,6 +67,18 @@ An interactive educational game designed for kindergarten students to learn abou
 - ✅ Mozilla Firefox
 - ✅ Safari
 - ✅ Mobile browsers (iOS/Android)
+- ✅ Automated Playwright matrix: Chromium, Firefox, WebKit, Pixel 7 and iPhone 13
+
+## 🧪 Quality Gates
+
+- **Unit**: 90 Vitest tests, including audio payload, PWA assets and deterministic WCAG contrast tokens.
+- **Accessibility**: axe WCAG 2.1 A/AA on the main screen, attention cue, sensory panel, wiggle break and dark theme; fails on critical and serious violations.
+- **Browser matrix**: Chromium, Firefox, WebKit, Pixel 7 and iPhone 13.
+- **Responsive**: 320×568, 390×844 and 844×390, plus a real touchscreen tap on mobile projects.
+- **Offline**: the generated service worker is installable and serves the shell and animal audio with no network.
+- **Budget**: initial shell under 600 KB and no animal audio fetched before a tap.
+
+See `docs/QUALITY_GATES.md` for the full gate list and known limits.
 
 ## 🚀 Getting Started
 
@@ -149,6 +170,9 @@ To add more animals, edit the `animals` array in `index.html`:
 - `real-animal-sounds.js` - Real animal audio playback system
 - `interactive-features.js` - Drag & drop and interactive games
 - `attention-sensory.js` - Attention cue, wiggle break, chunk schedule and sensory preferences
+- `pwa.js` - Service-worker registration
+- `sw.js` - Generated offline cache (do not edit by hand)
+- `icons/` - PNG app icons and maskable icon
 - `scripts/optimize-audio.py` - Trims and compresses animal cues (see `docs/AUDIO_DIET.md`)
 - `manifest.json` - PWA metadata for installable browser support
 - `README.md` - This documentation file

@@ -595,17 +595,14 @@ function updatePowerupButtonDisplay() {
   if (cachedDOMElements.hintBtn) {
     cachedDOMElements.hintBtn.textContent = `💡 Hint (${powerups.hints})`;
     cachedDOMElements.hintBtn.disabled = powerups.hints <= 0;
-    cachedDOMElements.hintBtn.setAttribute('aria-label', `Use hint power-up, ${powerups.hints} remaining`);
   }
   if (cachedDOMElements.eliminateBtn) {
     cachedDOMElements.eliminateBtn.textContent = `❌ Eliminate (${powerups.eliminate})`;
     cachedDOMElements.eliminateBtn.disabled = powerups.eliminate <= 0;
-    cachedDOMElements.eliminateBtn.setAttribute('aria-label', `Eliminate wrong answers, ${powerups.eliminate} remaining`);
   }
   if (cachedDOMElements.skipBtn) {
     cachedDOMElements.skipBtn.textContent = `⏭️ Skip (${powerups.skip})`;
     cachedDOMElements.skipBtn.disabled = powerups.skip <= 0;
-    cachedDOMElements.skipBtn.setAttribute('aria-label', `Skip question, ${powerups.skip} remaining`);
   }
 }
 
@@ -1015,7 +1012,6 @@ export function nextQuestion() {
     if (cachedDOMElements.nextBtn) {
       cachedDOMElements.nextBtn.disabled = true;
       cachedDOMElements.nextBtn.textContent = 'Next Animal →';
-      cachedDOMElements.nextBtn.setAttribute('aria-label', 'Proceed to the next animal');
     }
 
     questionAdvanceTimeout = setTimeout(() => {
@@ -1042,7 +1038,6 @@ function prepareClassicNextStep() {
   if (cachedDOMElements.nextBtn) {
     cachedDOMElements.nextBtn.disabled = false;
     cachedDOMElements.nextBtn.textContent = "Next Animal When I'm Ready →";
-    cachedDOMElements.nextBtn.setAttribute('aria-label', 'Go to the next animal when ready');
   }
 }
 
@@ -1466,7 +1461,7 @@ export function restartGame() {
     </div>
 
     <button type="button" class="animal-display" tabindex="0"
-      aria-label="Click or press Enter to hear animal sound">
+>
       <span class="animal-emoji" id="animalEmoji" aria-hidden="true">🦁</span>
       <span class="question" id="question">What animal is this?</span>
       <span class="tap-hint">👆 Tap the animal to hear its sound!</span>
@@ -1486,7 +1481,7 @@ export function restartGame() {
     </div>
 
     <button class="next-btn" id="nextBtn" disabled
-      aria-label="Proceed to next question">Next Animal →</button>
+>Next Animal →</button>
   `;
 
   initializeDOMElementCache();

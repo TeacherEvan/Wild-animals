@@ -133,9 +133,9 @@ test.describe('Accessibility', () => {
 
   test('should have proper ARIA labels on buttons', async ({ page }) => {
     await expect(page.locator('#soundBtn')).toHaveAttribute('aria-label', 'Toggle sound on or off');
-    await expect(page.locator('#hintBtn')).toHaveAttribute('aria-label', 'Use hint power-up, 3 remaining');
-    await expect(page.locator('#eliminateBtn')).toHaveAttribute('aria-label', 'Eliminate wrong answers, 2 remaining');
-    await expect(page.locator('#skipBtn')).toHaveAttribute('aria-label', 'Skip question, 1 remaining');
+    await expect(page.locator('#hintBtn')).toHaveAccessibleName(/Hint \(3\)/);
+    await expect(page.locator('#eliminateBtn')).toHaveAccessibleName(/Eliminate \(2\)/);
+    await expect(page.locator('#skipBtn')).toHaveAccessibleName(/Skip \(1\)/);
   });
 
   test('should have proper heading structure', async ({ page }) => {
@@ -153,6 +153,6 @@ test.describe('Accessibility', () => {
     // Native button element has implicit role="button"
     await expect(animalDisplay).toBeVisible();
     await expect(animalDisplay).toHaveAttribute('tabindex', '0');
-    await expect(animalDisplay).toHaveAttribute('aria-label', 'Click or press Enter to hear animal sound');
+    await expect(animalDisplay).toHaveAccessibleName(/What animal is this/);
   });
 });

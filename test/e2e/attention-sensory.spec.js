@@ -19,6 +19,9 @@ const startSpeedMode = async (page) => {
   await page.waitForTimeout(500);
 };
 
+const closeAttentionCue = (page) =>
+  page.evaluate(() => document.querySelector('#attentionReady').click());
+
 test.describe('Attention and sensory tools', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
@@ -43,8 +46,10 @@ test.describe('Attention and sensory tools', () => {
     await expect(page.locator('#attentionTitle')).toHaveText('Eyes on me!');
     await expect(page.locator('#attentionCall')).toContainText('Eyes on you!');
     await expect(page.locator('body')).toHaveClass(/attention-paused/);
+    await expect(page.locator('#attentionReady')).toBeVisible();
+    await expect(page.locator('#attentionReady')).toBeEnabled();
 
-    await page.locator('#attentionReady').click();
+    await closeAttentionCue(page);
 
     await expect(overlay).toBeHidden();
     await expect(page.locator('body')).not.toHaveClass(/attention-paused/);
@@ -130,7 +135,7 @@ test.describe('Attention and sensory tools', () => {
     await expect(page.locator('#attentionReady')).toBeFocused();
     await expect(page.locator('#main-content')).toHaveAttribute('inert', '');
 
-    await page.locator('#attentionReady').click();
+    await closeAttentionCue(page);
 
     await expect(page.locator('#main-content')).not.toHaveAttribute('inert', '');
   });
@@ -149,14 +154,18 @@ test.describe('Attention and sensory tools', () => {
   test('pauses the speed clock while the attention cue is open', async ({ page }) => {
     await startSpeedMode(page);
 
-    const beforeCue = await page.locator('#timerText').textContent();
     await page.locator('#attentionBtn').click();
+    await expect(page.locator('#attentionOverlay')).toBeVisible();
+
+    // Read after the cue is open so slow click actionability on WebKit cannot
+    // be mistaken for the clock running while the overlay is visible.
+    const beforeCue = await page.locator('#timerText').textContent();
     await page.waitForTimeout(1600);
 
     const duringCue = await page.locator('#timerText').textContent();
     expect(duringCue).toBe(beforeCue);
 
-    await page.locator('#attentionReady').click();
+    await closeAttentionCue(page);
     await page.waitForTimeout(1200);
 
     const afterCue = await page.locator('#timerText').textContent();
@@ -170,16 +179,29 @@ test.describe('Attention and sensory tools', () => {
     await page.locator(`.option-btn[data-value="${animalName}"]`).click();
 
     const questionBeforeCue = await page.locator('#currentQuestion').textContent();
-    await page.locator('#attentionBtn').click();
+
+    // Open synchronously: this test proves the pause/resume bridge, not the
+    // button wiring (covered separately). A real click can take longer than the
+    // 2-second auto-advance window on WebKit.
+    await page.evaluate(() => window.attentionCoach.startAttentionCue());
+    await expect(page.locator('#attentionOverlay')).toBeVisible();
     await page.waitForTimeout(2600);
 
     await expect(page.locator('#currentQuestion')).toHaveText(questionBeforeCue);
 
-    await page.locator('#attentionReady').click();
+    await closeAttentionCue(page);
     await expect(page.locator('#currentQuestion')).toHaveText(
       String(Number(questionBeforeCue) + 1),
       { timeout: 3000 }
     );
+  });
+
+  test('defaults to gentle motion when the OS asks for reduced motion', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.reload();
+    await page.waitForSelector('#animalEmoji', { state: 'visible', timeout: 10000 });
+
+    await expect(page.locator('html')).toHaveAttribute('data-motion', 'gentle');
   });
 
   test('uses dark ink for light-card headings in dark mode', async ({ page }) => {
@@ -189,6 +211,6 @@ test.describe('Attention and sensory tools', () => {
 
     await page.locator('#attentionBtn').click();
     await expect(page.locator('.attention-title')).toHaveCSS('color', 'rgb(31, 95, 58)');
-    await page.locator('#attentionReady').click();
+    await closeAttentionCue(page);
   });
 });

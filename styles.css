@@ -693,6 +693,7 @@ transform: scale(1);
     position: absolute;
     top: 20px;
     right: 20px;
+    z-index: 5001;
     padding: 15px;
     background: var(--color-accent);
     border: none;

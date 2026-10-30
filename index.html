@@ -7,19 +7,23 @@
     <meta name="description"
         content="Interactive educational game for kindergarten students to learn about wild animals through fun activities">
     <title>Wild Animals Adventure</title>
-    <link rel="manifest" href="manifest.json?v=fe41b4df">
+    <link rel="manifest" href="manifest.json?v=3cbc116c">
+    <link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon-180.png">
+    <meta name="theme-color" content="#2E8B57">
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preload" href="audio/sound-loader.js?v=20260505c" as="script">
     <link rel="preload" href="animal-sounds.js?v=80d35343" as="script">
     <link rel="preload" href="real-animal-sounds.js?v=e511d2e8" as="script">
     <link rel="preload" href="interactive-features.js?v=d009f01b" as="script">
-    <link rel="preload" href="attention-sensory.js?v=876f4cbb" as="script">
-    <link rel="preload" href="game-core.js?v=151d73fd" as="script">
+    <link rel="preload" href="attention-sensory.js?v=adfdc5e2" as="script">
+    <link rel="preload" href="pwa.js?v=dffb37da" as="script">
+    <link rel="preload" href="game-core.js?v=883eb29b" as="script">
     <!-- Content Security Policy -->
     <meta http-equiv="Content-Security-Policy"
-          content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';">
+          content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; worker-src 'self'; base-uri 'self'; form-action 'self';">
     <!-- Ensure stylesheet is applied -->
-    <link rel="stylesheet" href="styles.css?v=20f1f551">
+    <link rel="stylesheet" href="styles.css?v=ab9e224b">
     <!-- Defer main scripts for performance; already included later in file -->
 </head>
 
@@ -47,28 +51,22 @@
         <div class="high-score" id="highScore" role="status" aria-live="polite">🏆 High Score: 0</div>
 
         <div class="mode-selection" id="modeSelection" role="group" aria-label="Game mode selection">
-            <button type="button" class="mode-btn active" data-mode="classic"
-                aria-label="Select Classic Mode with 10 questions" aria-pressed="true">
+            <button type="button" class="mode-btn active" data-mode="classic" aria-pressed="true">
                 🎯 Classic Mode<br><small>10 Questions</small>
             </button>
-            <button type="button" class="mode-btn" data-mode="speed"
-                aria-label="Select Speed Mode time challenge" aria-pressed="false">
+            <button type="button" class="mode-btn" data-mode="speed" aria-pressed="false">
                 ⚡ Speed Mode<br><small>Time Challenge</small>
             </button>
-            <button type="button" class="mode-btn" data-mode="survival"
-                aria-label="Select Survival Mode play until wrong" aria-pressed="false">
+            <button type="button" class="mode-btn" data-mode="survival" aria-pressed="false">
                 🔥 Survival Mode<br><small>Until Wrong</small>
             </button>
-            <button type="button" class="mode-btn" data-mode="quiz"
-                aria-label="Select Quiz Mode with mixed questions" aria-pressed="false">
+            <button type="button" class="mode-btn" data-mode="quiz" aria-pressed="false">
                 🧠 Quiz Mode<br><small>Mixed Questions</small>
             </button>
-            <button type="button" class="mode-btn" data-mode="habitat"
-                aria-label="Select Habitat Match drag and drop game" aria-pressed="false">
+            <button type="button" class="mode-btn" data-mode="habitat" aria-pressed="false">
                 🏠 Habitat Match<br><small>Drag &amp; Drop</small>
             </button>
-            <button type="button" class="mode-btn" data-mode="sounds"
-                aria-label="Select Sound Game guess animal sounds" aria-pressed="false">
+            <button type="button" class="mode-btn" data-mode="sounds" aria-pressed="false">
                 🔊 Sound Game<br><small>Guess Sounds</small>
             </button>
         </div>
@@ -93,16 +91,12 @@
             </div>
 
             <div class="powerups" id="powerups" role="group" aria-label="Power-up buttons">
-                <button type="button" class="powerup-btn" id="hintBtn"
-                    aria-label="Use hint power-up, 3 remaining">💡 Hint (3)</button>
-                <button type="button" class="powerup-btn" id="eliminateBtn"
-                    aria-label="Eliminate wrong answers, 2 remaining">❌ Eliminate (2)</button>
-                <button type="button" class="powerup-btn" id="skipBtn"
-                    aria-label="Skip question, 1 remaining">⏭️ Skip (1)</button>
+                <button type="button" class="powerup-btn" id="hintBtn">💡 Hint (3)</button>
+                <button type="button" class="powerup-btn" id="eliminateBtn">❌ Eliminate (2)</button>
+                <button type="button" class="powerup-btn" id="skipBtn">⏭️ Skip (1)</button>
             </div>
 
-            <button type="button" class="animal-display" tabindex="0"
-                aria-label="Click or press Enter to hear animal sound">
+            <button type="button" class="animal-display" tabindex="0">
                 <span class="animal-emoji" id="animalEmoji" aria-hidden="true">🦁</span>
                 <span class="question" id="question">What animal is this?</span>
                 <span class="tap-hint">👆 Tap the animal to hear its sound!</span>
@@ -121,8 +115,7 @@
                 <div class="question-transition-label" id="questionTransitionLabel">Next animal is getting ready...</div>
             </div>
 
-            <button type="button" class="next-btn" id="nextBtn" disabled
-                aria-label="Proceed to next question">Next Animal →</button>
+            <button type="button" class="next-btn" id="nextBtn" disabled>Next Animal →</button>
         </div>
     </main>
 
@@ -132,16 +125,10 @@
     <div class="sensory-layer" id="sensoryLayer"></div>
 
     <!-- Global error handling: log to console, never break the game -->
-    <script>
-      window.addEventListener('error', function (event) {
-        console.error('[GlobalError]', event.message, 'at', event.filename + ':' + event.lineno);
-      });
-      window.addEventListener('unhandledrejection', function (event) {
-        console.error('[UnhandledRejection]', event.reason);
-      });
-    </script>
-    <script type="module" src="attention-sensory.js?v=876f4cbb"></script>
-    <script type="module" src="init-game.js?v=dfd55afe"></script>
+    <script defer src="error-logger.js?v=e310ba28"></script>
+    <script type="module" src="attention-sensory.js?v=adfdc5e2"></script>
+    <script type="module" src="pwa.js?v=dffb37da"></script>
+    <script type="module" src="init-game.js?v=80b61f30"></script>
     <script defer src="audio/sound-loader.js?v=20260505c"></script>
     <script defer src="animal-sounds.js?v=80d35343"></script>
     <script defer src="real-animal-sounds.js?v=e511d2e8"></script>

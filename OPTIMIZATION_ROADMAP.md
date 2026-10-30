@@ -107,11 +107,11 @@
 - No test coverage metrics
 
 **TODO:**
-- [ ] Set up Jest or Vitest for unit testing
-- [ ] Add Playwright/Cypress for E2E testing
+- [x] Set up Jest or Vitest for unit testing
+- [x] Add Playwright/Cypress for E2E testing
 - [ ] Create test cases for game logic
 - [ ] Add visual regression testing
-- [ ] Set up code coverage tracking
+- [x] Set up code coverage tracking
 
 **Impact:** High - Prevent regressions, faster development
 
@@ -124,8 +124,8 @@
 - No service worker
 
 **TODO:**
-- [ ] Create manifest.json for PWA
-- [ ] Implement service worker for offline caching
+- [x] Create manifest.json for PWA
+- [x] Implement service worker for offline caching
 - [ ] Add install prompt for mobile devices
 - [ ] Cache animal sounds for offline play
 - [ ] Add background sync for high scores
@@ -205,7 +205,7 @@
 - [ ] Improve keyboard navigation (Tab order)
 - [ ] Add focus indicators with high contrast
 - [ ] Test with NVDA/JAWS screen readers
-- [ ] Add ARIA live regions for game state changes
+- [x] Add ARIA live regions for game state changes
 - [x] Support reduced motion preferences
 
 **Impact:** High - Inclusive education for all
@@ -311,6 +311,7 @@
 - [x] Preserved reduced-motion readability for the new classic-mode stagecraft
 - [x] Added call-and-response attention cue, animal wiggle break, chunked set schedule and persisted sensory settings (see `docs/ATTENTION_SENSORY_AUDIT.md`)
 - [x] Compressed animal audio from 631 MB to 1.34 MB and fixed placeholder MP3s masking real recordings (see `docs/AUDIO_DIET.md`)
+- [x] Added axe accessibility gate, five-browser/mobile Playwright matrix, PWA icons and an offline service worker (see `docs/QUALITY_GATES.md`, `docs/PWA_OFFLINE.md`)
 
 ### Color & Contrast
 - [ ] Ensure WCAG AAA contrast ratios
