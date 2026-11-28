@@ -37,6 +37,42 @@ test.describe('Responsive layout', () => {
     });
   }
 
+  test('score board and tap hint stay legible at 390px', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/');
+    await page.waitForSelector('#animalEmoji', { state: 'visible', timeout: 10000 });
+
+    const measured = await page.evaluate(() => {
+      const board = document.querySelector('.score-board');
+      const boardRect = board.getBoundingClientRect();
+      const items = [...board.children].map((el) => {
+        const r = el.getBoundingClientRect();
+        return { right: r.right, height: r.height };
+      });
+      const hint = document.querySelector('.tap-hint');
+      return {
+        boardRight: boardRect.right,
+        items,
+        hintColor: hint ? getComputedStyle(hint).color : null,
+        hintWidth: hint ? hint.getBoundingClientRect().width : 0,
+      };
+    });
+
+    // Regression: four nowrap space-around items at 1.4em collapsed to
+    // 234px-tall single characters and overflowed the card by 38px.
+    for (const item of measured.items) {
+      expect(item.right).toBeLessThanOrEqual(measured.boardRight + 1);
+      expect(item.height).toBeLessThan(40);
+    }
+
+    // Regression: .tap-hint had no colour rule and inherited pure black
+    // on the dark card (~1.3:1). It must resolve to the light text token.
+    expect(measured.hintWidth).toBeGreaterThan(0);
+    expect(measured.hintColor).toBeTruthy();
+    expect(measured.hintColor).not.toBe('rgb(0, 0, 0)');
+    expect(measured.hintColor).not.toBe('rgba(0, 0, 0, 0)');
+  });
+
   test('answers with a real touchscreen tap on mobile projects', async ({ page, browserName }) => {
     const projectName = test.info().project.name;
     test.skip(!['mobile-chrome', 'mobile-safari'].includes(projectName), 'Touch devices only');

@@ -743,7 +743,8 @@ function startCountdownTimer() {
   // and would otherwise stay red for the rest of the round.
   if (timerFillElement) {
     timerFillElement.style.background = '';
-    timerFillElement.style.width = '100%';
+    timerFillElement.style.transform = 'scaleX(1)';
+    timerFillElement.style.transformOrigin = 'left center';
     timerFillElement.classList.remove('animated-progress');
   }
   if (timerTextElement) {
@@ -762,11 +763,12 @@ function startCountdownTimer() {
     const remainingTimePercentage = (timeLeft / GAME_CONFIG.TIMER_SECONDS) * 100;
 
     if (timerFillElement) {
-      timerFillElement.style.width = remainingTimePercentage + '%';
+      timerFillElement.style.transform = `scaleX(${remainingTimePercentage / 100})`;
+      timerFillElement.style.transformOrigin = 'left center';
       timerFillElement.classList.add('animated-progress');
 
       if (timeLeft <= 3) {
-        timerFillElement.style.background = 'linear-gradient(90deg, #FF6347, #FF4500)';
+        timerFillElement.style.background = 'linear-gradient(90deg, var(--status-critical), #e05252)';
       }
     }
 

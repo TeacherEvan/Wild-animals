@@ -871,7 +871,8 @@ export class AttentionCoach {
     const percentage = Math.min(100, Math.round((elapsed / totalSeconds) * 100));
 
     if (this.elements.wiggleProgressFill) {
-      this.elements.wiggleProgressFill.style.width = `${percentage}%`;
+      this.elements.wiggleProgressFill.style.transform = `scaleX(${percentage / 100})`;
+      this.elements.wiggleProgressFill.style.transformOrigin = 'left center';
     }
 
     const progressBar = this.elements.wiggleProgressFill
